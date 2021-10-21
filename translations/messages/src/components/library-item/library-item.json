@@ -1,0 +1,17 @@
+[
+  {
+    "id": "gui.extensionLibrary.comingSoon",
+    "description": "Label for extensions that are not yet implemented",
+    "defaultMessage": "Coming Soon"
+  },
+  {
+    "id": "gui.extensionLibrary.requires",
+    "description": "Label for extension hardware requirements",
+    "defaultMessage": "Requires"
+  },
+  {
+    "id": "gui.extensionLibrary.collaboration",
+    "description": "Label for extension collaboration",
+    "defaultMessage": "Collaboration with"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.crashMessage.label",
+    "description": "Crash Message title",
+    "defaultMessage": "Oops! Something went wrong."
+  },
+  {
+    "id": "gui.crashMessage.description",
+    "description": "Message to inform the user that page has crashed.",
+    "defaultMessage": "We are so sorry, but it looks like Scratch has crashed. This bug has been automatically reported to the Scratch Team. Please refresh your page to try again."
+  },
+  {
+    "id": "gui.crashMessage.errorNumber",
+    "description": "Message to inform the user that page has crashed.",
+    "defaultMessage": "Your error was logged with id {errorId}"
+  },
+  {
+    "id": "gui.crashMessage.reload",
+    "description": "Button to reload the page when page crashes",
+    "defaultMessage": "Reload"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.modal.help",
+    "description": "Help button in modal",
+    "defaultMessage": "Help"
+  },
+  {
+    "id": "gui.modal.back",
+    "description": "Back button in modal",
+    "defaultMessage": "Back"
+  }
+]

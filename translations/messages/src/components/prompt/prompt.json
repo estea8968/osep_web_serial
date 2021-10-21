@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.gui.variableScopeOptionAllSprites",
+    "description": "Option message when creating a variable for making it available to all sprites",
+    "defaultMessage": "For all sprites"
+  },
+  {
+    "id": "gui.gui.variableScopeOptionSpriteOnly",
+    "description": "Option message when creating a varaible for making it only available to the current sprite",
+    "defaultMessage": "For this sprite only"
+  },
+  {
+    "id": "gui.gui.cloudVariableOption",
+    "description": "Option message when creating a variable for making it a cloud variable, a variable that is stored on the server",
+    "defaultMessage": "Cloud variable (stored on server)"
+  },
+  {
+    "id": "gui.gui.variablePromptAllSpritesMessage",
+    "description": "A message that displays in a variable modal when the stage is selected indicating that the variable being created will available to all sprites.",
+    "defaultMessage": "This variable will be available to all sprites."
+  },
+  {
+    "id": "gui.prompt.cancel",
+    "description": "Button in prompt for cancelling the dialog",
+    "defaultMessage": "Cancel"
+  },
+  {
+    "id": "gui.prompt.ok",
+    "description": "Button in prompt for confirming the dialog",
+    "defaultMessage": "OK"
+  }
+]

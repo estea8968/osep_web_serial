@@ -1,0 +1,36 @@
+[
+  {
+    "id": "gui.unsupportedBrowser.label",
+    "defaultMessage": "Browser is not supported"
+  },
+  {
+    "id": "gui.unsupportedBrowser.errorLabel",
+    "description": "Heading shown when there is an unhandled exception in an unsupported browser",
+    "defaultMessage": "An Error Occurred"
+  },
+  {
+    "id": "gui.unsupportedBrowser.notRecommended",
+    "description": "Error message when the browser does not meet our minimum requirements",
+    "defaultMessage": "We are very sorry, but it looks like you are using a browser version that Scratch does not support. We recommend updating to the latest version of a supported browser such as Google Chrome, Mozilla Firefox, Microsoft Edge, or Apple Safari."
+  },
+  {
+    "id": "gui.unsupportedBrowser.description",
+    "description": "Error message when the browser does not work at all (IE)",
+    "defaultMessage": "We are very sorry, but Scratch does not support this browser. We recommend updating to the latest version of a supported browser such as Google Chrome, Mozilla Firefox, Microsoft Edge, or Apple Safari."
+  },
+  {
+    "id": "gui.unsupportedBrowser.back",
+    "description": "Button to go back in unsupported browser modal",
+    "defaultMessage": "Back"
+  },
+  {
+    "id": "gui.unsupportedBrowser.previewfaq",
+    "description": "Invitation to try 3.0 preview",
+    "defaultMessage": "To learn more, go to the {previewFaqLink}."
+  },
+  {
+    "id": "gui.unsupportedBrowser.previewfaqlinktext",
+    "description": "link to Scratch 3.0 FAQ page",
+    "defaultMessage": "FAQ"
+  }
+]

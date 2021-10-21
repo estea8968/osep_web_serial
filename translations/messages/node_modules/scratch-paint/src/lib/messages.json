@@ -1,0 +1,52 @@
+[
+  {
+    "id": "paint.brushMode.brush",
+    "description": "Label for the brush tool",
+    "defaultMessage": "Brush"
+  },
+  {
+    "id": "paint.eraserMode.eraser",
+    "description": "Label for the eraser tool",
+    "defaultMessage": "Eraser"
+  },
+  {
+    "id": "paint.fillMode.fill",
+    "description": "Label for the fill tool",
+    "defaultMessage": "Fill"
+  },
+  {
+    "id": "paint.lineMode.line",
+    "description": "Label for the line tool",
+    "defaultMessage": "Line"
+  },
+  {
+    "id": "paint.ovalMode.oval",
+    "description": "Label for the oval-drawing tool",
+    "defaultMessage": "Circle"
+  },
+  {
+    "id": "paint.rectMode.rect",
+    "description": "Label for the rectangle tool",
+    "defaultMessage": "Rectangle"
+  },
+  {
+    "id": "paint.reshapeMode.reshape",
+    "description": "Label for the reshape tool, which allows changing the points in the lines of the vectors",
+    "defaultMessage": "Reshape"
+  },
+  {
+    "id": "paint.roundedRectMode.roundedRect",
+    "description": "Label for the rounded rectangle tool",
+    "defaultMessage": "Rounded Rectangle"
+  },
+  {
+    "id": "paint.selectMode.select",
+    "description": "Label for the select tool, which allows selecting, moving, and resizing shapes",
+    "defaultMessage": "Select"
+  },
+  {
+    "id": "paint.textMode.text",
+    "description": "Label for the text tool",
+    "defaultMessage": "Text"
+  }
+]

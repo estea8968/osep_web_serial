@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.gui.projectTitlePlaceholder",
+    "description": "Placeholder for project title when blank",
+    "defaultMessage": "Project title here"
+  }
+]

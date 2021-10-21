@@ -1,0 +1,52 @@
+[
+  {
+    "id": "gui.loader.message1",
+    "description": "One of the loading messages",
+    "defaultMessage": "Creating blocks …"
+  },
+  {
+    "id": "gui.loader.message2",
+    "description": "One of the loading messages",
+    "defaultMessage": "Loading sprites …"
+  },
+  {
+    "id": "gui.loader.message3",
+    "description": "One of the loading messages",
+    "defaultMessage": "Loading sounds …"
+  },
+  {
+    "id": "gui.loader.message4",
+    "description": "One of the loading messages",
+    "defaultMessage": "Loading extensions …"
+  },
+  {
+    "id": "gui.loader.message5",
+    "description": "One of the loading messages",
+    "defaultMessage": "Herding cats …"
+  },
+  {
+    "id": "gui.loader.message6",
+    "description": "One of the loading messages",
+    "defaultMessage": "Transmitting nanos …"
+  },
+  {
+    "id": "gui.loader.message7",
+    "description": "One of the loading messages",
+    "defaultMessage": "Inflating gobos …"
+  },
+  {
+    "id": "gui.loader.message8",
+    "description": "One of the loading messages",
+    "defaultMessage": "Preparing emojis …"
+  },
+  {
+    "id": "gui.loader.headline",
+    "description": "Main loading message",
+    "defaultMessage": "Loading Project"
+  },
+  {
+    "id": "gui.loader.creating",
+    "description": "Main creating message",
+    "defaultMessage": "Creating Project"
+  }
+]

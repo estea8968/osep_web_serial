@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.extensionLibrary.chooseAnExtension",
+    "description": "Heading for the extension library",
+    "defaultMessage": "Choose an Extension"
+  },
+  {
+    "id": "gui.extensionLibrary.extensionUrl",
+    "description": "Prompt for unoffical extension url",
+    "defaultMessage": "Enter the URL of the extension"
+  }
+]

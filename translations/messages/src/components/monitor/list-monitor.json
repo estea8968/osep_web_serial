@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.monitor.listMonitor.listLength",
+    "description": "Length label on list monitors. DO NOT translate {length} (with brackets).",
+    "defaultMessage": "length {length}"
+  }
+]

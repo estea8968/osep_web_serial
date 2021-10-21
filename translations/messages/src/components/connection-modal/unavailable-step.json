@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.connection.unavailable.installscratchlink",
+    "description": "Message for getting Scratch Link installed",
+    "defaultMessage": "Make sure you have Scratch Link installed and running"
+  },
+  {
+    "id": "gui.connection.unavailable.enablebluetooth",
+    "description": "Message for making sure Bluetooth is enabled",
+    "defaultMessage": "Check that Bluetooth is enabled"
+  },
+  {
+    "id": "gui.connection.unavailable.tryagainbutton",
+    "description": "Button to initiate trying the device connection again after an error",
+    "defaultMessage": "Try again"
+  },
+  {
+    "id": "gui.connection.unavailable.helpbutton",
+    "description": "Button to view help content",
+    "defaultMessage": "Help"
+  }
+]

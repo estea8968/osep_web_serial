@@ -1,0 +1,102 @@
+[
+  {
+    "id": "gui.soundEditor.sound",
+    "description": "Label for the name of the sound",
+    "defaultMessage": "Sound"
+  },
+  {
+    "id": "gui.soundEditor.play",
+    "description": "Title of the button to start playing the sound",
+    "defaultMessage": "Play"
+  },
+  {
+    "id": "gui.soundEditor.stop",
+    "description": "Title of the button to stop the sound",
+    "defaultMessage": "Stop"
+  },
+  {
+    "id": "gui.soundEditor.copy",
+    "description": "Title of the button to copy the sound",
+    "defaultMessage": "Copy"
+  },
+  {
+    "id": "gui.soundEditor.paste",
+    "description": "Title of the button to paste the sound",
+    "defaultMessage": "Paste"
+  },
+  {
+    "id": "gui.soundEditor.copyToNew",
+    "description": "Title of the button to copy the selection into a new sound",
+    "defaultMessage": "Copy to New"
+  },
+  {
+    "id": "gui.soundEditor.delete",
+    "description": "Title of the button to delete the sound",
+    "defaultMessage": "Delete"
+  },
+  {
+    "id": "gui.soundEditor.save",
+    "description": "Title of the button to save trimmed sound",
+    "defaultMessage": "Save"
+  },
+  {
+    "id": "gui.soundEditor.undo",
+    "description": "Title of the button to undo",
+    "defaultMessage": "Undo"
+  },
+  {
+    "id": "gui.soundEditor.redo",
+    "description": "Title of the button to redo",
+    "defaultMessage": "Redo"
+  },
+  {
+    "id": "gui.soundEditor.faster",
+    "description": "Title of the button to apply the faster effect",
+    "defaultMessage": "Faster"
+  },
+  {
+    "id": "gui.soundEditor.slower",
+    "description": "Title of the button to apply the slower effect",
+    "defaultMessage": "Slower"
+  },
+  {
+    "id": "gui.soundEditor.echo",
+    "description": "Title of the button to apply the echo effect",
+    "defaultMessage": "Echo"
+  },
+  {
+    "id": "gui.soundEditor.robot",
+    "description": "Title of the button to apply the robot effect",
+    "defaultMessage": "Robot"
+  },
+  {
+    "id": "gui.soundEditor.louder",
+    "description": "Title of the button to apply the louder effect",
+    "defaultMessage": "Louder"
+  },
+  {
+    "id": "gui.soundEditor.softer",
+    "description": "Title of the button to apply thr.softer effect",
+    "defaultMessage": "Softer"
+  },
+  {
+    "id": "gui.soundEditor.reverse",
+    "description": "Title of the button to apply the reverse effect",
+    "defaultMessage": "Reverse"
+  },
+  {
+    "id": "gui.soundEditor.fadeOut",
+    "description": "Title of the button to apply the fade out effect",
+    "defaultMessage": "Fade out"
+  },
+  {
+    "id": "gui.soundEditor.fadeIn",
+    "description": "Title of the button to apply the fade in effect",
+    "defaultMessage": "Fade in"
+  },
+  {
+    "id": "gui.soundEditor.mute",
+    "description": "Title of the button to apply the mute effect",
+    "defaultMessage": "Mute"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.SpriteInfo.spritePlaceholder",
+    "description": "Placeholder text for sprite name",
+    "defaultMessage": "Name"
+  },
+  {
+    "id": "gui.SpriteInfo.sprite",
+    "description": "Sprite info label",
+    "defaultMessage": "Sprite"
+  },
+  {
+    "id": "gui.SpriteInfo.show",
+    "description": "Sprite info show label",
+    "defaultMessage": "Show"
+  },
+  {
+    "id": "gui.SpriteInfo.size",
+    "description": "Sprite info size label",
+    "defaultMessage": "Size"
+  }
+]

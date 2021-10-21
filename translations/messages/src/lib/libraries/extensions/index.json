@@ -1,0 +1,182 @@
+[
+  {
+    "id": "gui.extension.music.name",
+    "description": "Name for the 'Music' extension",
+    "defaultMessage": "Music"
+  },
+  {
+    "id": "gui.extension.music.description",
+    "description": "Description for the 'Music' extension",
+    "defaultMessage": "Play instruments and drums."
+  },
+  {
+    "id": "gui.extension.pen.name",
+    "description": "Name for the 'Pen' extension",
+    "defaultMessage": "Pen"
+  },
+  {
+    "id": "gui.extension.pen.description",
+    "description": "Description for the 'Pen' extension",
+    "defaultMessage": "Draw with your sprites."
+  },
+  {
+    "id": "gui.extension.videosensing.name",
+    "description": "Name for the 'Video Sensing' extension",
+    "defaultMessage": "Video Sensing"
+  },
+  {
+    "id": "gui.extension.videosensing.description",
+    "description": "Description for the 'Video Sensing' extension",
+    "defaultMessage": "Sense motion with the camera."
+  },
+  {
+    "id": "gui.extension.text2speech.name",
+    "description": "Name for the Text to Speech extension",
+    "defaultMessage": "Text to Speech"
+  },
+  {
+    "id": "gui.extension.text2speech.description",
+    "description": "Description for the Text to speech extension",
+    "defaultMessage": "Make your projects talk."
+  },
+  {
+    "id": "gui.extension.translate.name",
+    "description": "Name for the Translate extension",
+    "defaultMessage": "Translate"
+  },
+  {
+    "id": "gui.extension.translate.description",
+    "description": "Description for the Translate extension",
+    "defaultMessage": "Translate text into many languages."
+  },
+  {
+    "id": "gui.extension.makeymakey.description",
+    "description": "Description for the 'Makey Makey' extension",
+    "defaultMessage": "Make anything into a key."
+  },
+  {
+    "id": "gui.extension.microbit.description",
+    "description": "Description for the 'micro:bit' extension",
+    "defaultMessage": "Connect your projects with the world."
+  },
+  {
+    "id": "gui.extension.microbit.connectingMessage",
+    "description": "Message to help people connect to their micro:bit.",
+    "defaultMessage": "Connecting"
+  },
+  {
+    "id": "gui.extension.ev3.description",
+    "description": "Description for the 'LEGO MINDSTORMS EV3' extension",
+    "defaultMessage": "Build interactive robots and more."
+  },
+  {
+    "id": "gui.extension.ev3.connectingMessage",
+    "description": "Message to help people connect to their EV3. Must note the PIN should be 1234.",
+    "defaultMessage": "Connecting. Make sure the pin on your EV3 is set to 1234."
+  },
+  {
+    "id": "gui.extension.boost.description",
+    "description": "Description for the 'LEGO BOOST' extension",
+    "defaultMessage": "Bring robotic creations to life."
+  },
+  {
+    "id": "gui.extension.boost.connectingMessage",
+    "description": "Message to help people connect to their BOOST.",
+    "defaultMessage": "Connecting"
+  },
+  {
+    "id": "gui.extension.wedo2.description",
+    "description": "Description for the 'LEGO WeDo 2.0' extension",
+    "defaultMessage": "Build with motors and sensors."
+  },
+  {
+    "id": "gui.extension.wedo2.connectingMessage",
+    "description": "Message to help people connect to their WeDo.",
+    "defaultMessage": "Connecting"
+  },
+  {
+    "id": "gui.extension.gdxfor.description",
+    "description": "Description for the Vernier Go Direct Force and Acceleration sensor extension",
+    "defaultMessage": "Sense push, pull, motion, and spin."
+  },
+  {
+    "id": "gui.extension.gdxfor.connectingMessage",
+    "description": "Message to help people connect to their force and acceleration sensor.",
+    "defaultMessage": "Connecting"
+  },
+  {
+    "id": "gui.extension.OneGPIOArduino.description",
+    "description": "Onegpio for the Arduino extension",
+    "defaultMessage": "OneGPIOArduino"
+  },
+  {
+    "id": "gui.extension.OneGPIOEsp.description",
+    "description": "OneGpio ESP-8266 extension",
+    "defaultMessage": "OneGpio ESP-8266"
+  },
+  {
+    "id": "gui.extension.OneGPIOPicoboard.description",
+    "description": "OneGpio Picoboard extension",
+    "defaultMessage": "OneGpio Picoboard"
+  },
+  {
+    "id": "gui.extension.OneGPIOCpx.description",
+    "description": "OneGpio Playground Express extension",
+    "defaultMessage": "OneGpio Playground Express"
+  },
+  {
+    "id": "gui.extension.OneGPIORpi.description",
+    "description": "OneGpio Raspberry Pi extension",
+    "defaultMessage": "OneGpio Raspberry Pi"
+  },
+  {
+    "id": "gui.extension.gasojson.description",
+    "description": "Fetch JSON extension",
+    "defaultMessage": "Fetch JSON."
+  },
+  {
+    "id": "gui.extension.gasoifttt.description",
+    "description": "IFTTT Webhook extension",
+    "defaultMessage": "IFTTT Webhook"
+  },
+  {
+    "id": "gui.extension.gasolass.description",
+    "description": "Fetch LASS extension",
+    "defaultMessage": "Fetch LASS."
+  },
+  {
+    "id": "gui.extension.gasothingspeak.description",
+    "description": "ThingSpeak extension",
+    "defaultMessage": "ThingSpeak"
+  },
+  {
+    "id": "gui.extension.voicetotext.description",
+    "description": "Voice To Text extension",
+    "defaultMessage": "VoiceToText"
+  },
+  {
+    "id": "gui.extension.urltxt.description",
+    "description": "get url text data extension",
+    "defaultMessage": "urlTXT"
+  },
+  {
+    "id": "gui.extension.rwgoogle.description",
+    "description": "read write google sheets extension",
+    "defaultMessage": "rwGoogle"
+  },
+  {
+    "id": "gui.extension.knnalgorithm.description",
+    "description": "Description for the 'knn algorithm' extension",
+    "defaultMessage": "knn algorithm."
+  },
+  {
+    "id": "gui.extension.WebSerialArduino.description",
+    "description": "Web serial for the Arduino extension",
+    "defaultMessage": "WebSerialArduino chrome only"
+  },
+  {
+    "id": "gui.extension.WebSerialPcoboard.description",
+    "description": "WebSerial Picoboard extension",
+    "defaultMessage": "WebSerial Picoboard"
+  }
+]

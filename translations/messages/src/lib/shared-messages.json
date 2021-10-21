@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.sharedMessages.backdrop",
+    "description": "Default name for a new backdrop, scratch will automatically adjust the number if necessary",
+    "defaultMessage": "backdrop{index}"
+  },
+  {
+    "id": "gui.sharedMessages.costume",
+    "description": "Default name for a new costume, scratch will automatically adjust the number if necessary",
+    "defaultMessage": "costume{index}"
+  },
+  {
+    "id": "gui.sharedMessages.sprite",
+    "description": "Default name for a new sprite, scratch will automatically adjust the number if necessary",
+    "defaultMessage": "Sprite{index}"
+  },
+  {
+    "id": "gui.sharedMessages.pop",
+    "description": "Name of the pop sound, the default sound added to a sprite",
+    "defaultMessage": "pop"
+  },
+  {
+    "id": "gui.sharedMessages.replaceProjectWarning",
+    "description": "Confirmation that user wants to overwrite the current project contents",
+    "defaultMessage": "Replace contents of the current project?"
+  },
+  {
+    "id": "gui.sharedMessages.loadFromComputerTitle",
+    "description": "Title for uploading a project from your computer",
+    "defaultMessage": "Load from your computer"
+  }
+]

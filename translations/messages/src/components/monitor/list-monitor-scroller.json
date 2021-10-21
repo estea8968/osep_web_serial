@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.monitor.listMonitor.empty",
+    "description": "Text shown on a list monitor when a list is empty",
+    "defaultMessage": "(empty)"
+  }
+]

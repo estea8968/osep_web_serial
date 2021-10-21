@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.projectLoader.loadError",
+    "description": "An error that displays when a local project file fails to load.",
+    "defaultMessage": "The project file that was selected failed to load."
+  }
+]

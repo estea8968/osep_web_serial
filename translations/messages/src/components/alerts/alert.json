@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.alerts.lostPeripheralConnection",
+    "description": "Message indicating that an extension peripheral has been disconnected",
+    "defaultMessage": "Scratch lost connection to {extensionName}."
+  },
+  {
+    "id": "gui.alerts.tryAgain",
+    "description": "Button to try saving again",
+    "defaultMessage": "Try Again"
+  },
+  {
+    "id": "gui.alerts.download",
+    "description": "Button to download project locally",
+    "defaultMessage": "Download"
+  },
+  {
+    "id": "gui.connection.reconnect",
+    "description": "Button to reconnect the device",
+    "defaultMessage": "Reconnect"
+  }
+]

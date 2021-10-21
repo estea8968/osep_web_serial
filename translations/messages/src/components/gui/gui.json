@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gui.gui.addExtension",
+    "description": "Button to add an extension in the target pane",
+    "defaultMessage": "Add Extension"
+  },
+  {
+    "id": "gui.gui.codeTab",
+    "description": "Button to get to the code panel",
+    "defaultMessage": "Code"
+  },
+  {
+    "id": "gui.gui.backdropsTab",
+    "description": "Button to get to the backdrops panel",
+    "defaultMessage": "Backdrops"
+  },
+  {
+    "id": "gui.gui.costumesTab",
+    "description": "Button to get to the costumes panel",
+    "defaultMessage": "Costumes"
+  },
+  {
+    "id": "gui.gui.soundsTab",
+    "description": "Button to get to the sounds panel",
+    "defaultMessage": "Sounds"
+  }
+]

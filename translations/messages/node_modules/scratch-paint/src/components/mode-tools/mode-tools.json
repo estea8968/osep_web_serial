@@ -1,0 +1,62 @@
+[
+  {
+    "id": "paint.modeTools.brushSize",
+    "description": "Label for the brush size input",
+    "defaultMessage": "Size"
+  },
+  {
+    "id": "paint.modeTools.eraserSize",
+    "description": "Label for the eraser size input",
+    "defaultMessage": "Eraser size"
+  },
+  {
+    "id": "paint.modeTools.copy",
+    "description": "Label for the copy button",
+    "defaultMessage": "Copy"
+  },
+  {
+    "id": "paint.modeTools.paste",
+    "description": "Label for the paste button",
+    "defaultMessage": "Paste"
+  },
+  {
+    "id": "paint.modeTools.delete",
+    "description": "Label for the delete button",
+    "defaultMessage": "Delete"
+  },
+  {
+    "id": "paint.modeTools.curved",
+    "description": "Label for the button that converts selected points to curves",
+    "defaultMessage": "Curved"
+  },
+  {
+    "id": "paint.modeTools.pointed",
+    "description": "Label for the button that converts selected points to sharp points",
+    "defaultMessage": "Pointed"
+  },
+  {
+    "id": "paint.modeTools.thickness",
+    "description": "Label for the number input to choose the line thickness",
+    "defaultMessage": "Thickness"
+  },
+  {
+    "id": "paint.modeTools.flipHorizontal",
+    "description": "Label for the button to flip the image horizontally",
+    "defaultMessage": "Flip Horizontal"
+  },
+  {
+    "id": "paint.modeTools.flipVertical",
+    "description": "Label for the button to flip the image vertically",
+    "defaultMessage": "Flip Vertical"
+  },
+  {
+    "id": "paint.modeTools.filled",
+    "description": "Label for the button that sets the bitmap rectangle/oval mode to draw outlines",
+    "defaultMessage": "Filled"
+  },
+  {
+    "id": "paint.modeTools.outlined",
+    "description": "Label for the button that sets the bitmap rectangle/oval mode to draw filled-in shapes",
+    "defaultMessage": "Outlined"
+  }
+]

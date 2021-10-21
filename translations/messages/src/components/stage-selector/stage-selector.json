@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.spriteSelector.addBackdropFromLibrary",
+    "description": "Button to add a stage in the target pane from library",
+    "defaultMessage": "Choose a Backdrop"
+  },
+  {
+    "id": "gui.stageSelector.addBackdropFromPaint",
+    "description": "Button to add a stage in the target pane from paint",
+    "defaultMessage": "Paint"
+  },
+  {
+    "id": "gui.stageSelector.addBackdropFromSurprise",
+    "description": "Button to add a random stage in the target pane",
+    "defaultMessage": "Surprise"
+  },
+  {
+    "id": "gui.stageSelector.addBackdropFromFile",
+    "description": "Button to add a stage in the target pane from file",
+    "defaultMessage": "Upload Backdrop"
+  },
+  {
+    "id": "gui.stageSelector.stage",
+    "description": "Label for the stage in the stage selector",
+    "defaultMessage": "Stage"
+  },
+  {
+    "id": "gui.stageSelector.backdrops",
+    "description": "Label for the backdrops in the stage selector",
+    "defaultMessage": "Backdrops"
+  }
+]

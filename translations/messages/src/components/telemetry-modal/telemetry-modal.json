@@ -1,0 +1,52 @@
+[
+  {
+    "id": "gui.telemetryOptIn.label",
+    "description": "Scratch 3.0 telemetry modal label - for accessibility",
+    "defaultMessage": "Report statistics to improve Scratch"
+  },
+  {
+    "id": "gui.telemetryOptIn.body1",
+    "description": "First paragraph of body text for telemetry opt-in modal",
+    "defaultMessage": "The Scratch Team is always looking to better understand how Scratch is used around the world. To help support this effort, you can allow Scratch to automatically send usage information to the Scratch Team."
+  },
+  {
+    "id": "gui.telemetryOptIn.body2",
+    "description": "First paragraph of body text for telemetry opt-in modal",
+    "defaultMessage": "The information we collect includes language selection, blocks usage, and some events like saving, loading, and uploading a project. We DO NOT collect any personal information. Please see our {privacyPolicyLink} for more information."
+  },
+  {
+    "id": "gui.telemetryOptIn.privacyPolicyLink",
+    "description": "Link to the Scratch privacy policy",
+    "defaultMessage": "Privacy Policy"
+  },
+  {
+    "id": "gui.telemetryOptIn.optInText",
+    "description": "Text for telemetry modal opt-in button",
+    "defaultMessage": "Share my usage data with the Scratch Team"
+  },
+  {
+    "id": "gui.telemetryOptIn.optInTooltip",
+    "description": "Tooltip for telemetry modal opt-in button",
+    "defaultMessage": "Enable telemetry"
+  },
+  {
+    "id": "gui.telemetryOptIn.optOutText",
+    "description": "Text for telemetry modal opt-in button",
+    "defaultMessage": "Do not share my usage data with the Scratch Team"
+  },
+  {
+    "id": "gui.telemetryOptIn.optOutTooltip",
+    "description": "Tooltip for telemetry modal opt-out button",
+    "defaultMessage": "Disable telemetry"
+  },
+  {
+    "id": "gui.telemetryOptIn.settingWasUpdated",
+    "description": "Message indicating that the telemetry setting was updated and saved",
+    "defaultMessage": "Your setting was updated."
+  },
+  {
+    "id": "gui.telemetryOptIn.buttonClose",
+    "description": "Text for the button which closes the telemetry modal dialog",
+    "defaultMessage": "Close"
+  }
+]

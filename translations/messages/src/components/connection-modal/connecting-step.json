@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.connection.connecting-cancelbutton",
+    "description": "Label indicating that connection is in progress",
+    "defaultMessage": "Connecting..."
+  }
+]

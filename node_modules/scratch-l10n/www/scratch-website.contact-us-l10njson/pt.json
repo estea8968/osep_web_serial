@@ -1,0 +1,16 @@
+{
+    "contactUs.title": "Contacte-nos",
+    "contactUs.intro": "Pode encontrar respostas à maioria das questões sobre o Scratch na nossa página {faqLink}.",
+    "contactUs.faqLinkText": "Perguntas Frequentes",
+    "contactUs.forumsInfo": "Se não conseguir encontrar uma resposta nas PF, nos Fóruns de Discussão há muitos Scratchadores experimentados que o ajudarão de bom grado.",
+    "contactUs.forumsLinkText": "Fóruns de Discussão",
+    "contactUs.questionsForum": "Pode colocar questões gerais sobre como fazer coisas variadas no fórum {questionsLink}.",
+    "contactUs.questionsLinkText": "Perguntas Sobre o Scratch",
+    "contactUs.scriptsForum": "Se precisar de ajuda com um projecto em particular, tente colocar o seu problema no fórum {scriptsLink}.",
+    "contactUs.scriptsLinkText": "Ajuda sobre Guiões",
+    "contactUs.bugsForum": "Se quiser reportar um erro (bug) no Scratch, experimente o fórum {bugsLink}. É o melhor lugar para reportar erros e para ver se outras pessoas têm as mesmas dificuldades.",
+    "contactUs.bugsLinkText": "Erros e Deslizes",
+    "contactUs.formIntro": "Se ainda assim precisar de nos contactar, por favor preencha o formulário abaixo com tantos pormenores quanto for possível. Se tiver capturas de ecrã, anexos ou ligações que ajudem a explicar o seu problema, por favor inclua-os. Recebemos muitas mensagens, por isso podemos não ser capazes de lhe responder.",
+    "contactUs.findHelp": "Onde encontrar ajuda:",
+    "contactUs.contactScratch": "Contactar a Equipa Scratch"
+}

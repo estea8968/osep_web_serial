@@ -1,0 +1,127 @@
+[
+  {
+    "id": "gui.libraryTags.all",
+    "description": "Tag for filtering a library for everything",
+    "defaultMessage": "All"
+  },
+  {
+    "id": "gui.libraryTags.animals",
+    "description": "Tag for filtering a library for animals",
+    "defaultMessage": "Animals"
+  },
+  {
+    "id": "gui.libraryTags.dance",
+    "description": "Tag for filtering a library for dance",
+    "defaultMessage": "Dance"
+  },
+  {
+    "id": "gui.libraryTags.effects",
+    "description": "Tag for filtering a library for effects",
+    "defaultMessage": "Effects"
+  },
+  {
+    "id": "gui.libraryTags.fantasy",
+    "description": "Tag for filtering a library for fantasy",
+    "defaultMessage": "Fantasy"
+  },
+  {
+    "id": "gui.libraryTags.fashion",
+    "description": "Tag for filtering a library for fashion",
+    "defaultMessage": "Fashion"
+  },
+  {
+    "id": "gui.libraryTags.food",
+    "description": "Tag for filtering a library for food",
+    "defaultMessage": "Food"
+  },
+  {
+    "id": "gui.libraryTags.indoors",
+    "description": "Tag for filtering a library for indoors",
+    "defaultMessage": "Indoors"
+  },
+  {
+    "id": "gui.libraryTags.loops",
+    "description": "Tag for filtering a library for loops",
+    "defaultMessage": "Loops"
+  },
+  {
+    "id": "gui.libraryTags.music",
+    "description": "Tag for filtering a library for music",
+    "defaultMessage": "Music"
+  },
+  {
+    "id": "gui.libraryTags.notes",
+    "description": "Tag for filtering a library for notes",
+    "defaultMessage": "Notes"
+  },
+  {
+    "id": "gui.libraryTags.outdoors",
+    "description": "Tag for filtering a library for outdoors",
+    "defaultMessage": "Outdoors"
+  },
+  {
+    "id": "gui.libraryTags.patterns",
+    "description": "Tag for filtering a library for patterns",
+    "defaultMessage": "Patterns"
+  },
+  {
+    "id": "gui.libraryTags.people",
+    "description": "Tag for filtering a library for people",
+    "defaultMessage": "People"
+  },
+  {
+    "id": "gui.libraryTags.percussion",
+    "description": "Tag for filtering a library for percussion",
+    "defaultMessage": "Percussion"
+  },
+  {
+    "id": "gui.libraryTags.space",
+    "description": "Tag for filtering a library for space",
+    "defaultMessage": "Space"
+  },
+  {
+    "id": "gui.libraryTags.sports",
+    "description": "Tag for filtering a library for sports",
+    "defaultMessage": "Sports"
+  },
+  {
+    "id": "gui.libraryTags.underwater",
+    "description": "Tag for filtering a library for underwater",
+    "defaultMessage": "Underwater"
+  },
+  {
+    "id": "gui.libraryTags.voice",
+    "description": "Tag for filtering a library for voice",
+    "defaultMessage": "Voice"
+  },
+  {
+    "id": "gui.libraryTags.wacky",
+    "description": "Tag for filtering a library for wacky",
+    "defaultMessage": "Wacky"
+  },
+  {
+    "id": "gui.libraryTags.animation",
+    "description": "Tag for filtering a library for animation",
+    "defaultMessage": "Animation"
+  },
+  {
+    "id": "gui.libraryTags.art",
+    "description": "Tag for filtering a library for art",
+    "defaultMessage": "Art"
+  },
+  {
+    "id": "gui.libraryTags.games",
+    "description": "Tag for filtering a library for games",
+    "defaultMessage": "Games"
+  },
+  {
+    "id": "gui.libraryTags.stories",
+    "description": "Tag for filtering a library for stories",
+    "defaultMessage": "Stories"
+  },
+  {
+    "id": "gui.libraryTags.letters",
+    "description": "Tag for filtering a library for letters",
+    "defaultMessage": "Letters"
+  }
+]

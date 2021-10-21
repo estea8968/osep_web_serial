@@ -1,0 +1,12 @@
+[
+  {
+    "id": "paint.paintEditor.bitmap",
+    "description": "Label for button that converts the paint editor to bitmap mode",
+    "defaultMessage": "Convert to Bitmap"
+  },
+  {
+    "id": "paint.paintEditor.vector",
+    "description": "Label for button that converts the paint editor to vector mode",
+    "defaultMessage": "Convert to Vector"
+  }
+]

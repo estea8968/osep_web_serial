@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.SpriteInfo.direction",
+    "description": "Sprite info direction label",
+    "defaultMessage": "Direction"
+  },
+  {
+    "id": "gui.directionPicker.rotationStyles.allAround",
+    "description": "Button to change to the all around rotation style",
+    "defaultMessage": "All Around"
+  },
+  {
+    "id": "gui.directionPicker.rotationStyles.leftRight",
+    "description": "Button to change to the left-right rotation style",
+    "defaultMessage": "Left/Right"
+  },
+  {
+    "id": "gui.directionPicker.rotationStyles.dontRotate",
+    "description": "Button to change to the dont rotate rotation style",
+    "defaultMessage": "Do not rotate"
+  }
+]

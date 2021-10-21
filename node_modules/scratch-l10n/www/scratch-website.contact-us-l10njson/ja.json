@@ -1,0 +1,16 @@
+{
+    "contactUs.title": "連絡先",
+    "contactUs.intro": "Scratchに関するたいていの質問への回答は{faqLink}ページにあります。",
+    "contactUs.faqLinkText": "よくある質問と答え(FAQ)",
+    "contactUs.forumsInfo": "もしよくある質問と答え(FAQ)に回答が見つからなければ、喜んで手助けしてくれる経験豊富なScratcherがディスカッションフォーラムにたくさんいます。",
+    "contactUs.forumsLinkText": "ディスカッションフォーラム",
+    "contactUs.questionsForum": "何かのやり方のような一般的な質問は、{questionsLink}フォーラムで聞いてください。",
+    "contactUs.questionsLinkText": "Scratchに関する質問",
+    "contactUs.scriptsForum": "特定のプロジェクトに手助けが必要ならば、{scriptsLink}フォーラムに投稿してみてください。",
+    "contactUs.scriptsLinkText": "スクリプトのヘルプ",
+    "contactUs.bugsForum": "Scratchのバグを報告したいならば、{bugsLink}フォーラムを確認してください。そこは、バグを報告したり、他の人が同じような困難を感じているかどうか確かめるのに最も適しています。",
+    "contactUs.bugsLinkText": "バグと不具合",
+    "contactUs.formIntro": "それでもなおScratchチームと連絡を取りたい場合は、できるかぎり詳細を以下のフォームに入力してください。あなたの問題を説明するのに役立つスクリーンショットや添付ファイル、リンクがあれば、それらも含めてください。Scratchチームには大量のメールが送られてくるため、お問い合わせに返信できない場合もあります。",
+    "contactUs.findHelp": "ヘルプが見つかる場所",
+    "contactUs.contactScratch": "Scratchチームに連絡する"
+}

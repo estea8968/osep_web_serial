@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.connection.peripheral-name-label",
+    "description": "Label for field showing the device name",
+    "defaultMessage": "Device name"
+  },
+  {
+    "id": "gui.connection.connect",
+    "description": "Button to start connecting to a specific device",
+    "defaultMessage": "Connect"
+  }
+]

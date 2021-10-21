@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.defaultProject.meow",
+    "description": "Name for the meow sound",
+    "defaultMessage": "Meow"
+  },
+  {
+    "id": "gui.defaultProject.variable",
+    "description": "Name for the default variable",
+    "defaultMessage": "my variable"
+  }
+]

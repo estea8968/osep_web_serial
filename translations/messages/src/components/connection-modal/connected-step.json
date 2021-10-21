@@ -1,0 +1,17 @@
+[
+  {
+    "id": "gui.connection.connected",
+    "description": "Message indicating that a device was connected",
+    "defaultMessage": "Connected"
+  },
+  {
+    "id": "gui.connection.disconnect",
+    "description": "Button to disconnect the device",
+    "defaultMessage": "Disconnect"
+  },
+  {
+    "id": "gui.connection.go-to-editor",
+    "description": "Button to return to the editor",
+    "defaultMessage": "Go to Editor"
+  }
+]

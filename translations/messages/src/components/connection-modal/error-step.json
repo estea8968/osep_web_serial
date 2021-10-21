@@ -1,0 +1,17 @@
+[
+  {
+    "id": "gui.connection.error.errorMessage",
+    "description": "The device connection process has encountered an error.",
+    "defaultMessage": "Oops, looks like something went wrong."
+  },
+  {
+    "id": "gui.connection.error.tryagainbutton",
+    "description": "Button to initiate trying the device connection again after an error",
+    "defaultMessage": "Try again"
+  },
+  {
+    "id": "gui.connection.error.helpbutton",
+    "description": "Button to view help content",
+    "defaultMessage": "Help"
+  }
+]

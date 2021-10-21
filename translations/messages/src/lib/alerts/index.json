@@ -1,0 +1,67 @@
+[
+  {
+    "id": "gui.alerts.createsuccess",
+    "description": "Message indicating that project was successfully created",
+    "defaultMessage": "New project created."
+  },
+  {
+    "id": "gui.alerts.createcopysuccess",
+    "description": "Message indicating that project was successfully created",
+    "defaultMessage": "Project saved as a copy."
+  },
+  {
+    "id": "gui.alerts.createremixsuccess",
+    "description": "Message indicating that project was successfully created",
+    "defaultMessage": "Project saved as a remix."
+  },
+  {
+    "id": "gui.alerts.creating",
+    "description": "Message indicating that project is in process of creating",
+    "defaultMessage": "Creating new…"
+  },
+  {
+    "id": "gui.alerts.creatingCopy",
+    "description": "Message indicating that project is in process of copying",
+    "defaultMessage": "Copying project…"
+  },
+  {
+    "id": "gui.alerts.creatingRemix",
+    "description": "Message indicating that project is in process of remixing",
+    "defaultMessage": "Remixing project…"
+  },
+  {
+    "id": "gui.alerts.creatingError",
+    "description": "Message indicating that project could not be created",
+    "defaultMessage": "Could not create the project. Please try again!"
+  },
+  {
+    "id": "gui.alerts.savingError",
+    "description": "Message indicating that project could not be saved",
+    "defaultMessage": "Project could not save."
+  },
+  {
+    "id": "gui.alerts.savesuccess",
+    "description": "Message indicating that project was successfully saved",
+    "defaultMessage": "Project saved."
+  },
+  {
+    "id": "gui.alerts.saving",
+    "description": "Message indicating that project is in process of saving",
+    "defaultMessage": "Saving project…"
+  },
+  {
+    "id": "gui.alerts.cloudInfo",
+    "description": "Info about cloud variable limitations",
+    "defaultMessage": "Please note, cloud variables only support numbers, not letters or symbols. {learnMoreLink}"
+  },
+  {
+    "id": "gui.alerts.cloudInfoLearnMore",
+    "description": "Link text to cloud var faq",
+    "defaultMessage": "Learn more."
+  },
+  {
+    "id": "gui.alerts.importing",
+    "description": "Message indicating that project is in process of importing",
+    "defaultMessage": "Importing…"
+  }
+]

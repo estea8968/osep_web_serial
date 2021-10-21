@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.recordingStep.beginRecord",
+    "description": "Message for recording sound modal",
+    "defaultMessage": "Begin recording by clicking the button below"
+  },
+  {
+    "id": "gui.recordingStep.permission",
+    "description": "Permission required notice in recording sound modal. Do not translate {arrow}",
+    "defaultMessage": "{arrow}We need your permission to use your microphone"
+  },
+  {
+    "id": "gui.recordingStep.stop",
+    "description": "Stop recording button label",
+    "defaultMessage": "Stop recording"
+  },
+  {
+    "id": "gui.recordingStep.record",
+    "description": "Record button label",
+    "defaultMessage": "Record"
+  }
+]

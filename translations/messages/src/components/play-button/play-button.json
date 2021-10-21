@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.playButton.play",
+    "description": "Title of the button to start playing the sound",
+    "defaultMessage": "Play"
+  },
+  {
+    "id": "gui.playButton.stop",
+    "description": "Title of the button to stop the sound",
+    "defaultMessage": "Stop"
+  }
+]

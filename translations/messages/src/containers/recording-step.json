@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.recordingStep.alertMsg",
+    "description": "Alert for recording error",
+    "defaultMessage": "Could not start recording"
+  }
+]

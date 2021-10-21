@@ -1,0 +1,17 @@
+[
+  {
+    "id": "gui.comingSoon.message1",
+    "description": "One of the \"coming soon\" random messages for yet-to-be-done features",
+    "defaultMessage": "Don't worry, we're on it {emoji}"
+  },
+  {
+    "id": "gui.comingSoon.message2",
+    "description": "One of the \"coming soon\" random messages for yet-to-be-done features",
+    "defaultMessage": "Coming Soon..."
+  },
+  {
+    "id": "gui.comingSoon.message3",
+    "description": "One of the \"coming soon\" random messages for yet-to-be-done features",
+    "defaultMessage": "We're working on it {emoji}"
+  }
+]

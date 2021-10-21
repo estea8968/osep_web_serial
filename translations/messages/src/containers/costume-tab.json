@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.costumeTab.addBackdropFromLibrary",
+    "description": "Button to add a backdrop in the editor tab",
+    "defaultMessage": "Choose a Backdrop"
+  },
+  {
+    "id": "gui.costumeTab.addCostumeFromLibrary",
+    "description": "Button to add a costume in the editor tab",
+    "defaultMessage": "Choose a Costume"
+  },
+  {
+    "id": "gui.costumeTab.addBlankCostume",
+    "description": "Button to add a blank costume in the editor tab",
+    "defaultMessage": "Paint"
+  },
+  {
+    "id": "gui.costumeTab.addSurpriseCostume",
+    "description": "Button to add a surprise costume in the editor tab",
+    "defaultMessage": "Surprise"
+  },
+  {
+    "id": "gui.costumeTab.addFileBackdrop",
+    "description": "Button to add a backdrop by uploading a file in the editor tab",
+    "defaultMessage": "Upload Backdrop"
+  },
+  {
+    "id": "gui.costumeTab.addFileCostume",
+    "description": "Button to add a costume by uploading a file in the editor tab",
+    "defaultMessage": "Upload Costume"
+  }
+]

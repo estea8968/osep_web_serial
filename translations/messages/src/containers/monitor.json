@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.monitors.importListColumnPrompt",
+    "description": "Prompt for which column should be used",
+    "defaultMessage": "Which column should be used (1-{numberOfColumns})?"
+  }
+]

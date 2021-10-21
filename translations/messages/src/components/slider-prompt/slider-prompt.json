@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gui.sliderModal.min",
+    "description": "Label of slider modal",
+    "defaultMessage": "Minimum value"
+  },
+  {
+    "id": "gui.sliderModal.max",
+    "description": "Label of slider modal",
+    "defaultMessage": "Maximum value"
+  },
+  {
+    "id": "gui.sliderModal.title",
+    "description": "Title of slider modal",
+    "defaultMessage": "Change slider range"
+  },
+  {
+    "id": "gui.sliderPrompt.cancel",
+    "description": "Button in prompt for cancelling the dialog",
+    "defaultMessage": "Cancel"
+  },
+  {
+    "id": "gui.sliderPrompt.ok",
+    "description": "Button in prompt for confirming the dialog",
+    "defaultMessage": "OK"
+  }
+]

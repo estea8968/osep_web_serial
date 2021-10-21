@@ -1,0 +1,17 @@
+[
+  {
+    "id": "gui.spriteSelectorItem.contextMenuDuplicate",
+    "description": "Menu item to duplicate in the right click menu",
+    "defaultMessage": "duplicate"
+  },
+  {
+    "id": "gui.spriteSelectorItem.contextMenuExport",
+    "description": "Menu item to export the selected item",
+    "defaultMessage": "export"
+  },
+  {
+    "id": "gui.spriteSelectorItem.contextMenuDelete",
+    "description": "Menu item to delete in the right click menu",
+    "defaultMessage": "delete"
+  }
+]

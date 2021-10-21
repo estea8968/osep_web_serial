@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.controls.go",
+    "description": "Green flag button title",
+    "defaultMessage": "Go"
+  },
+  {
+    "id": "gui.controls.stop",
+    "description": "Stop button title",
+    "defaultMessage": "Stop"
+  }
+]

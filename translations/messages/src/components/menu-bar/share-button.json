@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.menuBar.isShared",
+    "description": "Label for shared project",
+    "defaultMessage": "Shared"
+  },
+  {
+    "id": "gui.menuBar.share",
+    "description": "Label for project share button",
+    "defaultMessage": "Share"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.connection.auto-scanning.noPeripheralsFound",
+    "description": "Text shown when no devices could be found",
+    "defaultMessage": "No devices found"
+  },
+  {
+    "id": "gui.connection.auto-scanning.prescan",
+    "description": "Prompt for beginning the search",
+    "defaultMessage": "Have your device nearby, then begin searching."
+  },
+  {
+    "id": "gui.connection.auto-scanning.pressbutton",
+    "description": "Prompt for pushing the button on the device",
+    "defaultMessage": "Press the button on your device."
+  },
+  {
+    "id": "gui.connection.auto-scanning.start-search",
+    "description": "Button in prompt for starting a search",
+    "defaultMessage": "Start Searching"
+  },
+  {
+    "id": "gui.connection.connecting-searchbutton",
+    "description": "Label indicating that search is in progress",
+    "defaultMessage": "Searching..."
+  },
+  {
+    "id": "gui.connection.auto-scanning.try-again",
+    "description": "Button in prompt for trying a device search again",
+    "defaultMessage": "Try again"
+  }
+]

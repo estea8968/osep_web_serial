@@ -1,0 +1,12 @@
+[
+  {
+    "id": "gui.library.filterPlaceholder",
+    "description": "Placeholder text for library search field",
+    "defaultMessage": "Search"
+  },
+  {
+    "id": "gui.library.allTag",
+    "description": "Label for library tag to revert to all items after filtering by tag.",
+    "defaultMessage": "All"
+  }
+]

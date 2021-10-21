@@ -1,0 +1,107 @@
+[
+  {
+    "id": "gui.opcodeLabels.direction",
+    "description": "Label for the direction monitor when shown on the stage",
+    "defaultMessage": "direction"
+  },
+  {
+    "id": "gui.opcodeLabels.xposition",
+    "description": "Label for the x position monitor when shown on the stage",
+    "defaultMessage": "x position"
+  },
+  {
+    "id": "gui.opcodeLabels.yposition",
+    "description": "Label for the y position monitor when shown on the stage",
+    "defaultMessage": "y position"
+  },
+  {
+    "id": "gui.opcodeLabels.size",
+    "description": "Label for the size monitor when shown on the stage",
+    "defaultMessage": "size"
+  },
+  {
+    "id": "gui.opcodeLabels.costumename",
+    "description": "Label for the costume name monitor when shown on the stage",
+    "defaultMessage": "costume name"
+  },
+  {
+    "id": "gui.opcodeLabels.costumenumber",
+    "description": "Label for the costume number monitor when shown on the stage",
+    "defaultMessage": "costume number"
+  },
+  {
+    "id": "gui.opcodeLabels.backdropname",
+    "description": "Label for the backdrop name monitor when shown on the stage",
+    "defaultMessage": "backdrop name"
+  },
+  {
+    "id": "gui.opcodeLabels.backdropnumber",
+    "description": "Label for the backdrop number monitor when shown on the stage",
+    "defaultMessage": "backdrop number"
+  },
+  {
+    "id": "gui.opcodeLabels.volume",
+    "description": "Label for the volume monitor when shown on the stage",
+    "defaultMessage": "volume"
+  },
+  {
+    "id": "gui.opcodeLabels.tempo",
+    "description": "Label for the tempo monitor when shown on the stage",
+    "defaultMessage": "tempo"
+  },
+  {
+    "id": "gui.opcodeLabels.answer",
+    "description": "Label for the answer monitor when shown on the stage",
+    "defaultMessage": "answer"
+  },
+  {
+    "id": "gui.opcodeLabels.loudness",
+    "description": "Label for the loudness monitor when shown on the stage",
+    "defaultMessage": "loudness"
+  },
+  {
+    "id": "gui.opcodeLabels.username",
+    "description": "Label for the username monitor when shown on the stage",
+    "defaultMessage": "username"
+  },
+  {
+    "id": "gui.opcodeLabels.year",
+    "description": "Label for the current year monitor when shown on the stage",
+    "defaultMessage": "year"
+  },
+  {
+    "id": "gui.opcodeLabels.month",
+    "description": "Label for the current month monitor when shown on the stage.",
+    "defaultMessage": "month"
+  },
+  {
+    "id": "gui.opcodeLabels.date",
+    "description": "Label for the current date monitor when shown on the stage. Shows the current day of the month",
+    "defaultMessage": "date"
+  },
+  {
+    "id": "gui.opcodeLabels.dayofweek",
+    "description": "Label for the current day of week monitor when shown on the stage",
+    "defaultMessage": "day of week"
+  },
+  {
+    "id": "gui.opcodeLabels.hour",
+    "description": "Label for the current hour monitor when shown on the stage",
+    "defaultMessage": "hour"
+  },
+  {
+    "id": "gui.opcodeLabels.minute",
+    "description": "Label for the current minute monitor when shown on the stage",
+    "defaultMessage": "minute"
+  },
+  {
+    "id": "gui.opcodeLabels.second",
+    "description": "Label for the current second monitor when shown on the stage",
+    "defaultMessage": "second"
+  },
+  {
+    "id": "gui.opcodeLabels.timer",
+    "description": "Label for the timer monitor when shown on the stage",
+    "defaultMessage": "timer"
+  }
+]

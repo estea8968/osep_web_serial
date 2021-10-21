@@ -1,0 +1,32 @@
+[
+  {
+    "id": "gui.monitor.contextMenu.default",
+    "description": "Menu item to switch to the default monitor",
+    "defaultMessage": "normal readout"
+  },
+  {
+    "id": "gui.monitor.contextMenu.large",
+    "description": "Menu item to switch to the large monitor",
+    "defaultMessage": "large readout"
+  },
+  {
+    "id": "gui.monitor.contextMenu.slider",
+    "description": "Menu item to switch to the slider monitor",
+    "defaultMessage": "slider"
+  },
+  {
+    "id": "gui.monitor.contextMenu.sliderRange",
+    "description": "Menu item to change the slider range",
+    "defaultMessage": "change slider range"
+  },
+  {
+    "id": "gui.monitor.contextMenu.import",
+    "description": "Menu item to import into list monitors",
+    "defaultMessage": "import"
+  },
+  {
+    "id": "gui.monitor.contextMenu.export",
+    "description": "Menu item to export from list monitors",
+    "defaultMessage": "export"
+  }
+]

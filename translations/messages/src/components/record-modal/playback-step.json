@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gui.playbackStep.stopMsg",
+    "description": "Stop/Play button in recording playback",
+    "defaultMessage": "Stop"
+  },
+  {
+    "id": "gui.playbackStep.playMsg",
+    "description": "Stop/Play button in recording playback",
+    "defaultMessage": "Play"
+  },
+  {
+    "id": "gui.playbackStep.loadingMsg",
+    "description": "Loading/Save button in recording playback",
+    "defaultMessage": "Loading..."
+  },
+  {
+    "id": "gui.playbackStep.saveMsg",
+    "description": "Loading/Save button in recording playback",
+    "defaultMessage": "Save"
+  },
+  {
+    "id": "gui.playbackStep.reRecordMsg",
+    "description": "Button to re-record sound in recording playback",
+    "defaultMessage": "Re-record"
+  }
+]

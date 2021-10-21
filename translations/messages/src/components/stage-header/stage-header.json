@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gui.stageHeader.stageSizeLarge",
+    "description": "Button to change stage size to large",
+    "defaultMessage": "Switch to large stage"
+  },
+  {
+    "id": "gui.stageHeader.stageSizeSmall",
+    "description": "Button to change stage size to small",
+    "defaultMessage": "Switch to small stage"
+  },
+  {
+    "id": "gui.stageHeader.stageSizeFull",
+    "description": "Button to change stage size to full screen",
+    "defaultMessage": "Enter full screen mode"
+  },
+  {
+    "id": "gui.stageHeader.stageSizeUnFull",
+    "description": "Button to get out of full screen mode",
+    "defaultMessage": "Exit full screen mode"
+  },
+  {
+    "id": "gui.stageHeader.fullscreenControl",
+    "description": "Button to enter/exit full screen mode",
+    "defaultMessage": "Full Screen Control"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "paint.paintEditor.costume",
+    "description": "Label for the name of a costume",
+    "defaultMessage": "Costume"
+  },
+  {
+    "id": "paint.paintEditor.group",
+    "description": "Label for the button to group shapes",
+    "defaultMessage": "Group"
+  },
+  {
+    "id": "paint.paintEditor.ungroup",
+    "description": "Label for the button to ungroup shapes",
+    "defaultMessage": "Ungroup"
+  },
+  {
+    "id": "paint.paintEditor.undo",
+    "description": "Alt to image for the button to undo an action",
+    "defaultMessage": "Undo"
+  },
+  {
+    "id": "paint.paintEditor.redo",
+    "description": "Alt to image for the button to redo an action",
+    "defaultMessage": "Redo"
+  },
+  {
+    "id": "paint.paintEditor.forward",
+    "description": "Label for the `Send forward on canvas` button",
+    "defaultMessage": "Forward"
+  },
+  {
+    "id": "paint.paintEditor.backward",
+    "description": "Label for the `Send backward on canvas` button",
+    "defaultMessage": "Backward"
+  },
+  {
+    "id": "paint.paintEditor.front",
+    "description": "Label for the `Send to front of canvas` button",
+    "defaultMessage": "Front"
+  },
+  {
+    "id": "paint.paintEditor.back",
+    "description": "Label for the `Send to back of canvas` button",
+    "defaultMessage": "Back"
+  },
+  {
+    "id": "paint.paintEditor.more",
+    "description": "Label for dropdown to access more action buttons",
+    "defaultMessage": "More"
+  }
+]

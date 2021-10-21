@@ -1,0 +1,27 @@
+[
+  {
+    "id": "general.username",
+    "description": "Label for login username input",
+    "defaultMessage": "Username"
+  },
+  {
+    "id": "general.password",
+    "description": "Label for login password input",
+    "defaultMessage": "Password"
+  },
+  {
+    "id": "general.signIn",
+    "description": "Button text for user to sign in",
+    "defaultMessage": "Sign in"
+  },
+  {
+    "id": "login.needHelp",
+    "description": "Button text for user to indicate that they need help",
+    "defaultMessage": "Need Help?"
+  },
+  {
+    "id": "form.validationRequired",
+    "description": "Message to tell user they must enter text in a form field",
+    "defaultMessage": "This field is required"
+  }
+]

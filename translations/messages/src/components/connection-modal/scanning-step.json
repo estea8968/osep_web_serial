@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.connection.scanning.lookingforperipherals",
+    "description": "Text shown while scanning for devices",
+    "defaultMessage": "Looking for devices"
+  },
+  {
+    "id": "gui.connection.scanning.noPeripheralsFound",
+    "description": "Text shown when no devices could be found",
+    "defaultMessage": "No devices found"
+  },
+  {
+    "id": "gui.connection.scanning.instructions",
+    "description": "Prompt for choosing a device to connect to",
+    "defaultMessage": "Select your device in the list above."
+  },
+  {
+    "id": "gui.connection.search",
+    "description": "Button in prompt for starting a search",
+    "defaultMessage": "Refresh"
+  }
+]

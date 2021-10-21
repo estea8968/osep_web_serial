@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gui.soundTab.fileUploadSound",
+    "description": "Button to upload sound from file in the editor tab",
+    "defaultMessage": "Upload Sound"
+  },
+  {
+    "id": "gui.soundTab.surpriseSound",
+    "description": "Button to get a random sound in the editor tab",
+    "defaultMessage": "Surprise"
+  },
+  {
+    "id": "gui.soundTab.recordSound",
+    "description": "Button to record a sound in the editor tab",
+    "defaultMessage": "Record"
+  },
+  {
+    "id": "gui.soundTab.addSoundFromLibrary",
+    "description": "Button to add a sound in the editor tab",
+    "defaultMessage": "Choose a Sound"
+  }
+]

@@ -1,0 +1,7 @@
+[
+  {
+    "id": "gui.spriteLibrary.chooseASprite",
+    "description": "Heading for the sprite library",
+    "defaultMessage": "Choose a Sprite"
+  }
+]

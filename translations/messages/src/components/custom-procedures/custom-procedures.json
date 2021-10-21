@@ -1,0 +1,47 @@
+[
+  {
+    "id": "gui.customProcedures.myblockModalTitle",
+    "description": "Title for the modal where you create a custom block.",
+    "defaultMessage": "Make a Block"
+  },
+  {
+    "id": "gui.customProcedures.addAnInputNumberText",
+    "description": "Label for button to add a number/text input",
+    "defaultMessage": "Add an input"
+  },
+  {
+    "id": "gui.customProcedures.numberTextType",
+    "description": "Description of the number/text input type",
+    "defaultMessage": "number or text"
+  },
+  {
+    "id": "gui.customProcedures.addAnInputBoolean",
+    "description": "Label for button to add a boolean input",
+    "defaultMessage": "Add an input"
+  },
+  {
+    "id": "gui.customProcedures.booleanType",
+    "description": "Description of the boolean input type",
+    "defaultMessage": "boolean"
+  },
+  {
+    "id": "gui.customProcedures.addALabel",
+    "description": "Label for button to add a label",
+    "defaultMessage": "Add a label"
+  },
+  {
+    "id": "gui.customProcedures.runWithoutScreenRefresh",
+    "description": "Label for checkbox to run without screen refresh",
+    "defaultMessage": "Run without screen refresh"
+  },
+  {
+    "id": "gui.customProcedures.cancel",
+    "description": "Label for button to cancel custom procedure edits",
+    "defaultMessage": "Cancel"
+  },
+  {
+    "id": "gui.customProcedures.ok",
+    "description": "Label for button to save new custom procedure",
+    "defaultMessage": "OK"
+  }
+]
