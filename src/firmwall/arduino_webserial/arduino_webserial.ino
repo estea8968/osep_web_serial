@@ -4,13 +4,6 @@
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
-//ws2812
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-#endif
-#define NUMPIXELS 12 // Popular NeoPixel ring size
-//ws2812 end 
 
 DHTStable DHT;
 
@@ -41,12 +34,7 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
-  //ws2812
-  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
-  clock_prescale_set(clock_div_1);
-  #endif
-  //pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  
+    
 }
 
 void loop() 
@@ -72,21 +60,7 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     int inputTime = atoi(strtok(NULL, "#"));
-
-    //ws2812
-      if(strcmp(commandString, "ws") == 0){
-        int r = atoi(strtok(inputValue,","));
-        int g = atoi(strtok(NULL, ","));
-        int b = atoi(strtok(NULL, ","));
-        Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
-        pixels.begin();
-        //pixels.clear();
-        pixels.setPixelColor(inputTime, pixels.Color(r, g, b));
-        //pixels.setPixelColor(5, pixels.Color(r, g, b));
-        pixels.show(); 
-        
-      }
-      
+          
     //超音波
     if(strcmp(commandString, "HC-SR04")== 0){
        long duration, cm; 
