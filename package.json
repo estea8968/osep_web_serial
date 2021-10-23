@@ -155,6 +155,7 @@
     "@tensorflow/tfjs-core": "^0.13.11",
     "@tensorflow/tfjs-layers": "^0.8.5",
     "chokidar": "^3.4.2",
+    "cors-anywhere": "^0.4.4",
     "react-intl-redux": "^0.7.0",
     "sweetalert": "^2.1.2",
     "watch": "^1.0.2"
