@@ -62,7 +62,7 @@ import rwGoogleInsetIconURL from './rwgoogle/rwgoogle.svg';
 import knnalgorithmImage from './knnAlgorithm/knnAlgorithm.png';
 import knnalgorithmInsetImage from './knnAlgorithm/knnAlgorithm-small.svg';
 
-import webserialArduinoImage from './webserialArduino/webserialArduino.svg';
+import webserialArduinoImage from './webserialArduino/webserialArduino.png';
 import webserialArduinoInsetIconURL from './webserialArduino/onegpioArduino-small.png';
 
 

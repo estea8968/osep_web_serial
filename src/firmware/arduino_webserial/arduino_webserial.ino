@@ -34,7 +34,11 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
+<<<<<<< HEAD
    
+=======
+    
+>>>>>>> ce43158ca0f1a61a0188735c4722e6a91b95cb38
 }
 
 void loop() 
@@ -60,8 +64,12 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     int inputTime = atoi(strtok(NULL, "#"));
+<<<<<<< HEAD
 
        
+=======
+          
+>>>>>>> ce43158ca0f1a61a0188735c4722e6a91b95cb38
     //超音波
     if(strcmp(commandString, "HC-SR04")== 0){
        long duration, cm; 
