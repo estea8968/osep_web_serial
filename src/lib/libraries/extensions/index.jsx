@@ -47,17 +47,21 @@ import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
 import jsonImage from './json/json.png';
+import jsonInsetIconURL from './json/clound-small.png';
 import lassImage from './lass/lass.png';
+import lassInsetIconURL from './lass/clound-small.png';
 import iftttImage from './ifttt/ifttt.png';
+import iftttInsetIconURL from './ifttt/clound-small.png';
 import thingspeakImage from './thingspeak/thingspeak.png';
+import thingspeakInsetIconURL from './thingspeak/clound-small.png';
 
 import voicetotextImage from './voicetotext/voicetotext.png';
 import voicetotextInsetIconURL from './voicetotext/voicetotext.svg';
 
 import urltxtImage from './urltxt/urltxt.png';
-import urltxtInsetIconURL from './urltxt/urltxt.svg';
+import urltxtInsetIconURL from './urltxt/clound-small.png';
 import rwGoogleImage from './rwgoogle/rwgoogle.png';
-import rwGoogleInsetIconURL from './rwgoogle/rwgoogle.svg';
+import rwGoogleInsetIconURL from './rwgoogle/clound-small.png';
 
 import knnalgorithmImage from './knnAlgorithm/knnAlgorithm.png';
 import knnalgorithmInsetImage from './knnAlgorithm/knnAlgorithm-small.svg';
@@ -65,6 +69,8 @@ import knnalgorithmInsetImage from './knnAlgorithm/knnAlgorithm-small.svg';
 import webserialArduinoImage from './webserialArduino/webserialArduino.png';
 import webserialArduinoInsetIconURL from './webserialArduino/webserialArduino-small.png';
 
+import webserialEsp8266Image from './webserialEsp8266/webserialEsp.png';
+import webserialEsp8266InsetIconURL from './webserialEsp8266/webserialEsp-small.png';
 
 export default [
     {
@@ -344,7 +350,7 @@ export default [
     	extensionId: 'gasoJSON',
     	collaborator: 'gasolin',
     	iconURL: jsonImage,
-    	insetIconURL: gdxforInsetIconURL,
+    	insetIconURL: jsonInsetIconURL,
     	description: (
         	<FormattedMessage
             	defaultMessage="Fetch JSON."
@@ -365,7 +371,7 @@ export default [
 	extensionId: 'gasoIFTTT',
 	collaborator: 'gasolin',
 	iconURL: iftttImage,
-	insetIconURL: gdxforInsetIconURL,
+	insetIconURL: iftttInsetIconURL,
 	description: (
             <FormattedMessage
                 defaultMessage="IFTTT Webhook"
@@ -386,7 +392,7 @@ export default [
 	extensionId: 'gasoLASS',
 	collaborator: 'gasolin',
 	iconURL: lassImage,
-	insetIconURL: gdxforInsetIconURL,
+	insetIconURL: lassInsetIconURL,
 	description: (
             <FormattedMessage
                 defaultMessage="Fetch LASS."
@@ -407,7 +413,7 @@ export default [
 	extensionId: 'gasoThingSpeak',
 	collaborator: 'gasolin',
 	iconURL: thingspeakImage,
-	insetIconURL: gdxforInsetIconURL,
+	insetIconURL: thingspeakInsetIconURL,
 	description: (
             <FormattedMessage
                 defaultMessage="ThingSpeak"
@@ -522,5 +528,25 @@ export default [
         bluetoothRequired: false,
         //helpLink: 'https://mryslab.github.io/s3-extend/'
 
-    }
+    },
+    {
+        name: 'Webserial ESP-8266',
+        extensionId: 'webserialEsp',
+        collaborator: "estea chen",
+        iconURL: webserialEsp8266Image,
+        insetIconURL: webserialEsp8266InsetIconURL,
+        description: (
+        	<FormattedMessage
+            	defaultMessage="Webserial ESP-8266"
+            	description="Webserial ESP-8266 extension"
+            	id="gui.extension.WebserialEsp.description"
+        	/>
+    	),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        //helpLink: ''
+
+    },
 ];
