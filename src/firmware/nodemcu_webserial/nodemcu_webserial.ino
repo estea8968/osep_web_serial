@@ -11,6 +11,11 @@
 #include <Arduino.h>
 #include <U8g2lib.h>
 
+//qrcode
+//#include <Wire.h>
+#include "SSD1306.h"
+#include <qrcode.h>
+
 //ws2812
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
@@ -27,24 +32,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
 DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
-
-//const char* ssid = ""; // Your WiFi SSID
-//const char* password = ""; // Your WiFi Password
-//wifi
-///const uint16_t port = 3000;
-//ESP8266WiFiMulti WiFiMulti;
-
-/*4(D2) 5(D1) 12(D6) 13(D7) 14(D5) 15(D8)
-//pin 2 is led
-const int outPin5 =  5;       // the number of the LED pin
-const int outPin4 =  4;
-const int outPin12 =  12;
-const int outPin13 =  13;
-const int outPin14 =  14;
-const int outPin15 =  15;
-*/
-
-// variable for storing the pushbutton status
+//qrcode
+SSD1306  display(0x3c, D2, D1);
+QRcode qrcode (&display);
 
 char* serialString()
 {
@@ -81,7 +71,9 @@ void setup() {
   clock_prescale_set(clock_div_1);
   #endif
   //pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  
+  //qrcode
+  display.init();
+  display.display();
 }
 
 void loop() {
@@ -161,6 +153,13 @@ void loop() {
        cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
        Serial.println(cm);        
     }
+
+    //oled qrcode
+      if(strcmp(commandString, "q") == 0) {
+        qrcode.init();
+        qrcode.create(inputPin);
+      }
+        
      //oled 16x2
     //format: l#string#row
     if(strcmp(commandString, "o") == 0) {
