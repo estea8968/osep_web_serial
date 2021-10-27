@@ -1,4 +1,6 @@
-
+/*update 110/10/27 
+estea chen estea8968@gmail.com
+*/
 #include <ESP8266WiFi.h>
 //#include <ESP8266WiFiMulti.h>
 
@@ -39,7 +41,7 @@ QRcode qrcode (&display);
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
-  static char str[21]; // For strings of max length=20
+  static char str[52]; // For strings of max length=20
   if (!Serial.available()) return NULL;
   delay(16); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
@@ -108,9 +110,38 @@ void loop() {
         int b = atoi(strtok(NULL, ","));
         Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
         pixels.begin();
-        //pixels.clear();
-        pixels.setPixelColor(atoi(inputTime), pixels.Color(r, g, b));
-        
+        pixels.clear();
+        char* sp = "";
+        for( int i = 0; i<12 ; i++){
+          //sp = inputTime[i];
+          if(inputTime[i] == '0') {
+            sp = "0";
+          }else if(inputTime[i] == '1'){
+            sp = "1";
+          }else if(inputTime[i] == '2'){
+            sp = "2";
+          }else if(inputTime[i] == '3'){
+            sp = "3";
+          }else if(inputTime[i] == '4'){
+            sp = "4";
+          }else if(inputTime[i] == '5'){
+            sp = "5";
+          }else if(inputTime[i] == '6'){
+            sp = "6";
+          }else if(inputTime[i] == '7'){
+            sp = "7";
+          }else if(inputTime[i] == '8'){
+            sp = "8";
+          }else if(inputTime[i] == '9'){
+            sp = "9";
+          }else if(inputTime[i] == 'a'){
+            sp = "10";
+          }else if(inputTime[i] == 'b'){
+            sp = "11";
+          }
+          pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
+        }
+          
         //pixels.setPixelColor(5, pixels.Color(r, g, b));
         pixels.show(); 
         
