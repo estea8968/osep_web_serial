@@ -268,12 +268,18 @@ void loop() {
       
       if(strcmp(commandString, "analogRead") == 0){
         int int_inputPin = atoi(inputPin);
+        Serial.print("A0");
+        //Serial.print(atoi(inputPin));
+        Serial.print(":");
         Serial.println(analogRead(int_inputPin));
       }
       //數位讀取
       if(strcmp(commandString, "digitalRead") == 0){
         int digitalPin = atoi(inputPin);
         pinMode(digitalPin, INPUT);
+        Serial.print("G");
+        Serial.print(atoi(inputPin));
+        Serial.print(":");
         Serial.println(digitalRead(digitalPin));
       }
       //類比寫入
