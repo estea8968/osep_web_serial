@@ -271,7 +271,8 @@ void loop() {
         Serial.print("A0");
         //Serial.print(atoi(inputPin));
         Serial.print(":");
-        Serial.println(analogRead(int_inputPin));
+        int value =round(map(analogRead(int_inputPin), 10, 1024, 0, 1023));
+        Serial.println(value);
       }
       //數位讀取
       if(strcmp(commandString, "digitalRead") == 0){

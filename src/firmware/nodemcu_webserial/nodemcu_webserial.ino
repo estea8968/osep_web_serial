@@ -2,41 +2,39 @@
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
-//#include <ESP8266WiFiMulti.h>
 
 #include <Servo.h>
-#include "DHTStable.h"
+#include <DHTStable.h>
 #include <Wire.h> 
-//#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal_I2C.h>
 //oled
-//#include <string.h>
-//#include <Arduino.h>
-//#include <U8g2lib.h>
+#include <string.h>
+#include <Arduino.h>
+#include <U8g2lib.h>
 
 //qrcode
-//#include <Wire.h>
-//#include "SSD1306.h"
-//#include <qrcode.h>
+#include <SSD1306.h>
+#include <qrcode.h>
 
 //ws2812
 #include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-#endif
+//#ifdef __AVR__
+// #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+//#endif
 
 #define NUMPIXELS 12 // Popular NeoPixel ring size
 //Adafruit_NeoPixel pixels(NUMPIXELS, 5, NEO_GRB + NEO_KHZ800);
 
-//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //oled end
-
-//LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
+//設定LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
 //qrcode
-//SSD1306  display(0x3c, D2, D1);
-//QRcode qrcode (&display);
+SSD1306  display(0x3c, D2, D1);
+QRcode qrcode (&display);
 
 char* serialString()
 {
@@ -63,20 +61,19 @@ char* serialString()
 void setup() {
   Serial.begin(115200);
   //lcd
-  //lcd.init(); //初始化LCD 
-  //lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
-  //lcd.backlight(); //開啟背光
+  lcd.init(); //初始化LCD 
+  lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
+  lcd.backlight(); //開啟背光
   //oled
-  //u8g2.begin();
-  //u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
+  u8g2.begin();
+  u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
   //ws2812
-  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
-  clock_prescale_set(clock_div_1);
-  #endif
-  //pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  //#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+  //  clock_prescale_set(clock_div_1);
+  //#endif
   //qrcode
-  //display.init();
-  //display.display();
+  display.init();
+  display.display();
 }
 
 void loop() {
@@ -105,7 +102,7 @@ void loop() {
       //Serial.println(inputTime);
 
       //ws2812
-      /*
+      
       if(strcmp(commandString, "ws") == 0){
         int r = atoi(strtok(inputValue,","));
         int g = atoi(strtok(NULL, ","));
@@ -147,7 +144,7 @@ void loop() {
         //pixels.setPixelColor(5, pixels.Color(r, g, b));
         pixels.show(); 
         
-      }*/
+      }
       
       //wifi
       if(strcmp(commandString, "w") == 0){
@@ -163,8 +160,6 @@ void loop() {
             }
          }
          Serial.println(WiFi.localIP());
-         
-         
       }
       
       //超音波
@@ -188,15 +183,13 @@ void loop() {
     }
 
     //oled qrcode
-    /*
       if(strcmp(commandString, "q") == 0) {
         qrcode.init();
         qrcode.create(inputPin);
-      }*/
+      }
         
      //oled 16x2
     //format: l#string#row
-    /*
     if(strcmp(commandString, "o") == 0) {
         u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
         u8g2.firstPage();
@@ -215,11 +208,10 @@ void loop() {
           u8g2.print(inputPin);
         }while ( u8g2.nextPage() );
             //delay(1000);
-    }*/
+    }
     
     //lcd 16x2
     //format: l#string#row
-    /*
     if(strcmp(commandString, "l") == 0) {
       if(strcmp(inputPin, "clear") == 0) {
           lcd.clear();
@@ -232,7 +224,7 @@ void loop() {
           }
           lcd.print(inputPin);  
       }
-    }*/
+    }
       
       //dht11
       
@@ -268,12 +260,19 @@ void loop() {
       
       if(strcmp(commandString, "analogRead") == 0){
         int int_inputPin = atoi(inputPin);
-        Serial.println(analogRead(int_inputPin));
+        Serial.print("A0");
+        //Serial.print(atoi(inputPin));
+        Serial.print(":");
+        int value =round(map(analogRead(int_inputPin), 10, 1024, 0, 1023));
+        Serial.println(value);
       }
       //數位讀取
       if(strcmp(commandString, "digitalRead") == 0){
         int digitalPin = atoi(inputPin);
         pinMode(digitalPin, INPUT);
+        Serial.print("G");
+        Serial.print(atoi(inputPin));
+        Serial.print(":");
         Serial.println(digitalRead(digitalPin));
       }
       //類比寫入
