@@ -1,5 +1,5 @@
 /*
- * 更新日期110/10/22 estea chen
+ * 更新日期110/10/29-18 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -34,11 +34,7 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
-<<<<<<< HEAD
-   
-=======
-    
->>>>>>> ce43158ca0f1a61a0188735c4722e6a91b95cb38
+
 }
 
 void loop() 
@@ -64,12 +60,7 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     int inputTime = atoi(strtok(NULL, "#"));
-<<<<<<< HEAD
 
-       
-=======
-          
->>>>>>> ce43158ca0f1a61a0188735c4722e6a91b95cb38
     //超音波
     if(strcmp(commandString, "HC-SR04")== 0){
        long duration, cm; 
@@ -115,13 +106,19 @@ void loop()
     }
     //類比讀取
     if(strcmp(commandString, "analogRead") == 0){
+      Serial.print("A");
+      Serial.print(atoi(inputPin));
+      Serial.print(":");
       Serial.println(analogRead(atoi(inputPin)));
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
       pinMode(atoi(inputPin),OUTPUT);
+      //2-19
+      Serial.print("D");
+      Serial.print(atoi(inputPin));
+      Serial.print(":");
       Serial.println(digitalRead(atoi(inputPin)));
-      
     }
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
