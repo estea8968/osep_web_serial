@@ -1,4 +1,4 @@
-/*update 110/10/27 
+/*update 110/11/01 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -235,16 +235,15 @@ void loop() {
     }*/
       
       //dht11
-      
+      if(strcmp(commandString, "dht11Set") == 0){
+        DHT.read11(atoi(inputPin));
+      }
+
       if(strcmp(commandString, "dht11Read") == 0){
-      int chk = DHT.read11(atoi(inputPin));
-      
-      if( atoi(inputValue) == 1 ){
-          Serial.println(DHT.getTemperature(), 1);
-        }else{
-          Serial.println(DHT.getHumidity(), 1);
-        }
-      
+      //int chk = DHT.read11(atoi(inputPin));
+        Serial.print(DHT.getTemperature());
+        Serial.print(",");
+        Serial.println(DHT.getHumidity());      
       }
       
       //伺服馬達

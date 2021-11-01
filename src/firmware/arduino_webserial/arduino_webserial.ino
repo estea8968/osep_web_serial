@@ -1,5 +1,5 @@
 /*
- * 更新日期110/10/29-18 estea chen
+ * 更新日期110/11/01 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -82,14 +82,21 @@ void loop()
     }
     
     //dht11
+    if(strcmp(commandString, "dht11Set") == 0){
+      DHT.read11(atoi(inputPin));
+    }
+    
     if(strcmp(commandString, "dht11Read") == 0){
-      int chk = DHT.read11(atoi(inputPin));
+      //int chk = DHT.read11(atoi(inputPin));
+      Serial.print(DHT.getTemperature());
+      Serial.print(",");
+      Serial.println(DHT.getHumidity());
+      /*
       if( atoi(inputValue) == 1 ){
           Serial.println(DHT.getTemperature(), 1);
       }else{
           Serial.println(DHT.getHumidity(), 1);
-      }
-      
+      }*/
     }
     //tone
     if(strcmp(commandString, "tonePlay") == 0){

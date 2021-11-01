@@ -1,4 +1,4 @@
-/*update 110/10/27 
+/*update 110/11/01 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -100,16 +100,15 @@ void loop() {
       //取出第4個值
       char* inputTime =strtok(NULL, "#");
       //Serial.println(inputTime);
-
-      //ws2812
       
+      //ws2812
       if(strcmp(commandString, "ws") == 0){
         int r = atoi(strtok(inputValue,","));
         int g = atoi(strtok(NULL, ","));
         int b = atoi(strtok(NULL, ","));
         Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
-        pixels.begin();
-        pixels.clear();
+        pixels.begin();        
+        //pixels.clear();
         char* sp = "";
         for( int i = 0; i<12 ; i++){
           //sp = inputTime[i];
@@ -145,6 +144,7 @@ void loop() {
         pixels.show(); 
         
       }
+      
       
       //wifi
       if(strcmp(commandString, "w") == 0){
@@ -227,16 +227,15 @@ void loop() {
     }
       
       //dht11
-      
+      if(strcmp(commandString, "dht11Set") == 0){
+        DHT.read11(atoi(inputPin));
+      }
+
       if(strcmp(commandString, "dht11Read") == 0){
-      int chk = DHT.read11(atoi(inputPin));
-      
-      if( atoi(inputValue) == 1 ){
-          Serial.println(DHT.getTemperature(), 1);
-        }else{
-          Serial.println(DHT.getHumidity(), 1);
-        }
-      
+      //int chk = DHT.read11(atoi(inputPin));
+        Serial.print(DHT.getTemperature());
+        Serial.print(",");
+        Serial.println(DHT.getHumidity());      
       }
       
       //伺服馬達
