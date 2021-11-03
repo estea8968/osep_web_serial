@@ -72,6 +72,9 @@ import webserialArduinoInsetIconURL from './webserialArduino/webserialArduino-sm
 import webserialEsp8266Image from './webserialEsp8266/webserialEsp.png';
 import webserialEsp8266InsetIconURL from './webserialEsp8266/webserialEsp-small.png';
 
+import mqttImage from './mqtt/mqtt.svg';
+import mqttInsetIconURL from './mqtt/mqtt-small.png';
+
 export default [
     {
         name: (
@@ -540,6 +543,26 @@ export default [
             	defaultMessage="Webserial ESP-8266"
             	description="Webserial ESP-8266 extension"
             	id="gui.extension.WebserialEsp.description"
+        	/>
+    	),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        //helpLink: ''
+
+    },
+    {
+        name: 'MQTT',
+        extensionId: 'mqtt',
+        collaborator: "estea chen",
+        iconURL: mqttImage,
+        insetIconURL: mqttInsetIconURL,
+        description: (
+        	<FormattedMessage
+            	defaultMessage="MQTT"
+            	description="MQTT extension"
+            	id="gui.extension.Mqtt.description"
         	/>
     	),
         featured: true,
