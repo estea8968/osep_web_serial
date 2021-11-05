@@ -1,13 +1,16 @@
 /*
- * 更新日期110/11/01 estea chen
+ * 更新日期110/11/05 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
-
+//ws2812
+#include <Adafruit_NeoPixel.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
-
 Servo myservo;  // create servo object to control a servo
+#define NUMPIXELS 12 
 
 char* serialString()
 {
@@ -34,7 +37,12 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
-
+  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+    clock_prescale_set(clock_div_1);
+  #endif
+  lcd.init(); //初始化LCD 
+  lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
+  lcd.backlight(); //開啟背光
 }
 
 void loop() 
@@ -59,8 +67,66 @@ void loop()
     //取出第3個值
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
-    int inputTime = atoi(strtok(NULL, "#"));
-
+    char* inputTime = strtok(NULL, "#");
+    
+    //ws2812
+    if(strcmp(commandString, "ws") == 0){
+        int r = atoi(strtok(inputValue,","));
+        int g = atoi(strtok(NULL, ","));
+        int b = atoi(strtok(NULL, ","));
+        Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+        pixels.begin();        
+        //pixels.clear();
+        char* sp = "";
+        for( int i = 0; i<12 ; i++){
+          //sp = inputTime[i];
+          if (inputTime[i] == '0') {
+            sp = "0";
+          }else if(inputTime[i] == '1'){
+            sp = "1";
+          }else if(inputTime[i] == '2'){
+            sp = "2";
+          }else if(inputTime[i] == '3'){
+            sp = "3";
+          }else if(inputTime[i] == '4'){
+            sp = "4";
+          }else if(inputTime[i] == '5'){
+            sp = "5";
+          }else if(inputTime[i] == '6'){
+            sp = "6";
+          }else if(inputTime[i] == '7'){
+            sp = "7";
+          }else if(inputTime[i] == '8'){
+            sp = "8";
+          }else if(inputTime[i] == '9'){
+            sp = "9";
+          }else if(inputTime[i] == 'a'){
+            sp = "10";
+          }else if(inputTime[i] == 'b'){
+            sp = "11";
+          }
+          pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
+        }
+        pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
+        //pixels.setPixelColor(1, pixels.Color(10, 0, 0));
+        pixels.show(); 
+      }
+    //lcd 16x2
+    //format: l#string#row
+    if(strcmp(commandString, "l") == 0) {
+      if(strcmp(inputPin, "clear") == 0) {
+          lcd.clear();
+      }else{
+          Serial.println(inputPin);
+          if(atoi(inputValue) == 0){
+            lcd.setCursor(0,0);
+          }else{
+            lcd.setCursor(0,1);
+          }
+          lcd.print(inputPin);  
+      }
+    }
+      
     //超音波
     if(strcmp(commandString, "HC-SR04")== 0){
        long duration, cm; 
