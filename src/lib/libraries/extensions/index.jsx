@@ -78,6 +78,9 @@ import mqttInsetIconURL from './mqtt/mqtt-small.png';
 import ml2scratchIconURL from './ml2scratch/ml2scratch.png';
 import ml2scratchInsetIconURL from './ml2scratch/ml2scratch-small.png';
 
+import posenet2scratchIconURL from './posenet2scratch/posenet2scratch.png';
+import posenet2scratchInsetIconURL from './posenet2scratch/posenet2scratch-small.png';
+
 //export {entry}; // loadable-extension needs this line.
 //export default entry;
 export default [
@@ -589,6 +592,24 @@ export default [
                 defaultMessage='ML2Scratch Blocks.'
                 description='ML2Scratch Blocks.'
                 id='gui.extension.ml2scratchblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
+    {
+        name: 'Posenet2Scratch',
+        extensionId: 'posenet2scratch',
+        collaborator: 'champierre',
+        iconURL: posenet2scratchIconURL,
+        insetIconURL: posenet2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='PoseNet2Scratch Blocks.'
+                description='PoseNet2Scratch Blocks.'
+                id='gui.extension.posenet2scratchblocks.description'
             />
         ),
         featured: true,
