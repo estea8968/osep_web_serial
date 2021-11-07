@@ -75,6 +75,11 @@ import webserialEsp8266InsetIconURL from './webserialEsp8266/webserialEsp-small.
 import mqttImage from './mqtt/mqtt.svg';
 import mqttInsetIconURL from './mqtt/mqtt-small.png';
 
+import ml2scratchIconURL from './ml2scratch/ml2scratch.png';
+import ml2scratchInsetIconURL from './ml2scratch/ml2scratch-small.png';
+
+//export {entry}; // loadable-extension needs this line.
+//export default entry;
 export default [
     {
         name: (
@@ -351,7 +356,7 @@ export default [
     {
 	name: 'JSON',
     	extensionId: 'gasoJSON',
-    	collaborator: 'gasolin',
+    	collaborator: 'gasolin,TYiC',
     	iconURL: jsonImage,
     	insetIconURL: jsonInsetIconURL,
     	description: (
@@ -478,7 +483,7 @@ export default [
     {
 	name: 'rwGoogle',
 	extensionId: 'rwGoogle',
-	collaborator: 'estea chen',
+	collaborator: 'TYiC',
 	iconURL: rwGoogleImage,
 	insetIconURL: rwGoogleInsetIconURL,
 	description: (
@@ -509,6 +514,7 @@ export default [
 	       id="gui.extension.knnalgorithm.description"
            />
         ),
+        internetConnectionRequired: true,        
         featured: true,
         helpLink: 'https://github.com/CodeLabClub/scratch3_knn'
    },
@@ -529,7 +535,7 @@ export default [
         disabled: false,
         internetConnectionRequired: true,
         bluetoothRequired: false,
-        //helpLink: 'https://mryslab.github.io/s3-extend/'
+        helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
 
     },
     {
@@ -549,7 +555,7 @@ export default [
         disabled: false,
         internetConnectionRequired: true,
         bluetoothRequired: false,
-        //helpLink: ''
+        helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
 
     },
     {
@@ -572,4 +578,23 @@ export default [
         //helpLink: ''
 
     },
+    {
+        name: 'ML2Scratch',
+        extensionId: 'ml2scratch',
+        collaborator: 'champierre',
+        iconURL: ml2scratchIconURL,
+        insetIconURL: ml2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='ML2Scratch Blocks.'
+                description='ML2Scratch Blocks.'
+                id='gui.extension.ml2scratchblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
 ];
+
