@@ -155,7 +155,11 @@
     "@tensorflow/tfjs-core": "^0.13.11",
     "@tensorflow/tfjs-layers": "^0.8.5",
     "chokidar": "^3.4.2",
+    "cross-fetch": "^3.1.4",
+    "ml5": "^0.7.1",
+    "mqtt": "^4.2.8",
     "react-intl-redux": "^0.7.0",
+    "sheetrock": "^1.2.0",
     "sweetalert": "^2.1.2",
     "watch": "^1.0.2"
   }
