@@ -1,4 +1,4 @@
-/*update 110/11/08 
+/*update 110/11/10 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -9,23 +9,23 @@ estea chen estea8968@gmail.com
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 //oled
-//#include <string.h>
-//#include <Arduino.h>
-//#include <U8g2lib.h>
+#include <string.h>
+#include <Arduino.h>
+#include <U8g2lib.h>
 
 //qrcode
 //#include <SSD1306.h>
 //#include <qrcode.h>
 
 //ws2812
-#include <Adafruit_NeoPixel.h>
+//#include <Adafruit_NeoPixel.h>
 //#ifdef __AVR__
 //  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 //#endif
 
-#define NUMPIXELS 12 // Popular NeoPixel ring size
+//#define NUMPIXELS 12 // Popular NeoPixel ring size
 
-//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //oled end
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
@@ -65,8 +65,8 @@ void setup() {
   lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
   lcd.backlight(); //開啟背光
   //oled
-  //u8g2.begin();
-  //u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
+  u8g2.begin();
+  u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
   //ws2812
   //#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
   //    clock_prescale_set(clock_div_1);
@@ -103,7 +103,7 @@ void loop() {
       //Serial.println(inputTime);
 
       //ws2812
-      
+      /*
       if(strcmp(commandString, "ws") == 0){
         int r = atoi(strtok(inputValue,","));
         int g = atoi(strtok(NULL, ","));
@@ -145,7 +145,7 @@ void loop() {
         //pixels.setPixelColor(5, pixels.Color(r, g, b));
         pixels.show(); 
         
-      }
+      }*/
       
       //wifi
       if(strcmp(commandString, "w") == 0){
@@ -194,7 +194,7 @@ void loop() {
       */  
      //oled 16x2
     //format: l#string#row
-    /*
+    
     if(strcmp(commandString, "o") == 0) {
         u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
         u8g2.firstPage();
@@ -213,7 +213,7 @@ void loop() {
           u8g2.print(inputPin);
         }while ( u8g2.nextPage() );
             //delay(1000);
-    }*/
+    }
     
     //lcd 16x2
     //format: l#string#row
