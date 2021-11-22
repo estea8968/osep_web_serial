@@ -72,7 +72,10 @@ import webserialArduinoInsetIconURL from './webserialArduino/webserialArduino-sm
 import webserialEsp8266Image from './webserialEsp8266/webserialEsp.png';
 import webserialEsp8266InsetIconURL from './webserialEsp8266/webserialEsp-small.png';
 
-import mqttImage from './mqtt/mqtt.svg';
+import webserialEsp32Image from './webserialEsp32/webserialEsp32.png';
+import webserialEsp32InsetIconURL from './webserialEsp32/webserialEsp-small.png';
+
+import mqttImage from './mqtt/mqtt.png';
 import mqttInsetIconURL from './mqtt/mqtt-small.png';
 
 import ml2scratchIconURL from './ml2scratch/ml2scratch.png';
@@ -562,6 +565,27 @@ export default [
         helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
 
     },
+    /*
+    {
+        name: 'Webserial ESP-32',
+        extensionId: 'webserialEsp32',
+        collaborator: "Mr. Y's Lab,estea chen",
+        iconURL: webserialEsp32Image,
+        insetIconURL: webserialEsp32InsetIconURL,
+        description: (
+        	<FormattedMessage
+            	defaultMessage="Webserial ESP-32"
+            	description="Webserial ESP-32 extension"
+            	id="gui.extension.WebserialEsp32.description"
+        	/>
+    	),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        helpLink: 'https://ys-fang.github.io/OSEP/app/'
+
+    },*/
     {
         name: 'MQTT',
         extensionId: 'mqtt',

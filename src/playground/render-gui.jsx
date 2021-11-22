@@ -8,7 +8,7 @@ import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 
 const onClickLogo = () => {
-    window.location = 'https://www.junyiacademy.org/';
+    window.location = 'https://sites.google.com/view/scratch-web-serial-api/';
 };
 
 const handleTelemetryModalCancel = () => {

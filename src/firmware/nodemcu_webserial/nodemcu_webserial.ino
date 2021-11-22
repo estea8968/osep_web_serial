@@ -216,7 +216,7 @@ void loop() {
       if(strcmp(inputPin, "clear") == 0) {
           lcd.clear();
       }else{
-          //Serial.println(inputPin);
+          Serial.println(inputPin);
           if(atoi(inputValue) == 0){
             lcd.setCursor(0,0);
           }else{
