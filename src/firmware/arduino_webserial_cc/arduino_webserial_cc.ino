@@ -15,7 +15,7 @@ Servo myservo;  // create servo object to control a servo
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
-  static char str[21]; // For strings of max length=20
+  static char str[52]; // For strings of max length=20
   if (!Serial.available()) return NULL;
   delay(16); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
@@ -78,7 +78,7 @@ void loop()
         pixels.begin();        
         //pixels.clear();
         char* sp = "";
-        for( int i = 0; i<12 ; i++){
+        for( int i = 0; i<NUMPIXELS ; i++){
           //sp = inputTime[i];
           if (inputTime[i] == '1') {
             sp = "0";
@@ -107,8 +107,6 @@ void loop()
           }
           pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
         }
-        pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
-        //pixels.setPixelColor(1, pixels.Color(10, 0, 0));
         pixels.show(); 
       }
     //lcd 16x2
