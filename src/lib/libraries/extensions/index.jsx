@@ -63,8 +63,8 @@ import urltxtInsetIconURL from './urltxt/clound-small.png';
 import rwGoogleImage from './rwgoogle/rwgoogle.png';
 import rwGoogleInsetIconURL from './rwgoogle/clound-small.png';
 
-import knnalgorithmImage from './knnAlgorithm/knnAlgorithm.png';
-import knnalgorithmInsetImage from './knnAlgorithm/knnAlgorithm-small.svg';
+//import knnalgorithmImage from './knnAlgorithm/knnAlgorithm.png';
+//import knnalgorithmInsetImage from './knnAlgorithm/knnAlgorithm-small.svg';
 
 import webserialArduinoImage from './webserialArduino/webserialArduino.png';
 import webserialArduinoInsetIconURL from './webserialArduino/webserialArduino-small.png';
@@ -508,6 +508,7 @@ export default [
         useAutoScan: false,
         helpLink: 'https://github.com/estea8968/scratch3-internet'
     },
+    /*
     {
         name: 'knnAlgorithm',
         extensionId: 'knnAlgorithm',
@@ -524,7 +525,7 @@ export default [
         internetConnectionRequired: true,        
         featured: true,
         helpLink: 'https://github.com/CodeLabClub/scratch3_knn'
-   },
+   },*/
    {
         name: 'Web Serial Arduino',
         extensionId: 'webserialArduino',
