@@ -164,10 +164,12 @@ void loop()
     }
     //tone
     if(strcmp(commandString, "tonePlay") == 0){
-      tone(atoi(inputPin), atoi(inputValue),inputTime);
-      delay(inputTime);
+      int tonePin = atoi(inputPin);
+      int delayTime = atoi(inputTime)-35;
+      tone(tonePin, atoi(inputValue),delayTime);
+      delay(delayTime);
       noTone(atoi(inputPin));
-      delay(10);
+      delay(1);
     }
     //伺服馬達
     if(strcmp(commandString, "servoWrite") == 0){
