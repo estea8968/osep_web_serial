@@ -1,5 +1,5 @@
 /*
- * 更新日期110/11/29 estea chen
+ * 更新日期110/12/1 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -68,6 +68,61 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
+
+    //ws2812_shu
+    if(strcmp(commandString, "sh") == 0){
+      int r = 0;
+      int g = 0;
+      int b = 0;
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      char *bb ;
+      int i = 0;
+      int sp;
+      bb = strtok(inputTime, ",");
+      led_value[i] = atoi(bb);
+      Serial.println(led_value[i]);
+      i++;
+      while( bb != NULL){
+        bb = strtok(NULL, ",");
+        led_value[i] = atoi(bb);
+        Serial.println(led_value[i]);
+        i++;
+      }
+      Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+      pixels.begin();
+      //int length = sizeof(led_value) / sizeof(led_value[0]);
+     
+      for ( i=0;i<16;i++){
+        if (led_value[i] > 0){
+          //sp = led_value[i];
+          Serial.println(led_value[i]);
+            sp = led_value[i]-1;
+          i++;
+          //Serial.println(inputValue);
+          if(strcmp(inputValue, "r") == 0) {
+            r = led_value[i];
+            g = 0;
+            b = 0;
+          }else if( strcmp(inputValue, "g") == 0){
+            r = 0;
+            g = led_value[i];
+            b = 0;
+          }else if( strcmp(inputValue, "b") == 0){
+            r = 0;
+            g = 0;
+            b = led_value[i];
+          }
+          Serial.println(led_value[i]);
+          
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));
+        
+        }else{
+          i++;
+        }
+      }
+      pixels.show(); 
+      
+    }
     
     //ws2812
     if(strcmp(commandString, "ws") == 0){
