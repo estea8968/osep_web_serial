@@ -90,15 +90,10 @@ void loop()
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
-      //int length = sizeof(led_value) / sizeof(led_value[0]);
-     
       for ( i=0;i<16;i++){
         if (led_value[i] > 0){
-          //sp = led_value[i];
-          Serial.println(led_value[i]);
             sp = led_value[i]-1;
           i++;
-          //Serial.println(inputValue);
           if(strcmp(inputValue, "r") == 0) {
             r = led_value[i];
             g = 0;
@@ -112,8 +107,6 @@ void loop()
             g = 0;
             b = led_value[i];
           }
-          Serial.println(led_value[i]);
-          
           pixels.setPixelColor(sp, pixels.Color(r, g, b));
         
         }else{
