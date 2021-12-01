@@ -74,42 +74,65 @@ void loop()
       int r = 0;
       int g = 0;
       int b = 0;
-      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
       char *bb ;
       int i = 0;
       int sp;
-      bb = strtok(inputTime, ",");
+      bb = strtok(inputValue, ",");
       led_value[i] = atoi(bb);
       Serial.println(led_value[i]);
       i++;
       while( bb != NULL){
         bb = strtok(NULL, ",");
         led_value[i] = atoi(bb);
-        Serial.println(led_value[i]);
+        //Serial.println(led_value[i]);
         i++;
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
-      for ( i=0;i<16;i++){
+      for ( i=0;i<24;i++){
         if (led_value[i] > 0){
             sp = led_value[i]-1;
           i++;
-          if(strcmp(inputValue, "r") == 0) {
+          if( led_value[i] == 0) {
+            i++;
             r = led_value[i];
             g = 0;
             b = 0;
-          }else if( strcmp(inputValue, "g") == 0){
+          }else if( led_value[i] == 1){
+            i++;
             r = 0;
             g = led_value[i];
             b = 0;
-          }else if( strcmp(inputValue, "b") == 0){
+          }else if( led_value[i] == 2){
+            i++;
             r = 0;
             g = 0;
             b = led_value[i];
+          }else if( led_value[i] == 3){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 4){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 5){
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 6){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = led_value[i];
           }
           pixels.setPixelColor(sp, pixels.Color(r, g, b));
-        
         }else{
+          i++;
           i++;
         }
       }
