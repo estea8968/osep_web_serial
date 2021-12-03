@@ -8,8 +8,8 @@
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
 //PMS5003T
-#include "Adafruit_PM25AQI.h"
-Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
+//#include "Adafruit_PM25AQI.h"
+//Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
@@ -73,7 +73,7 @@ void loop()
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
 
-    //
+    /*
     if(strcmp(commandString, "pm") == 0){
       //if (! aqi.begin_I2C()) {
       //  Serial.println(",Could not find PM 2.5 sensor!, ");  
@@ -93,7 +93,7 @@ void loop()
         delay(100);        
       }
       
-    }
+    }*/
 
     
 
