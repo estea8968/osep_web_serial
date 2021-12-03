@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/1 estea chen
+ * 更新日期110/12/2 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -7,6 +7,10 @@
 //ws2812
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
+//PMS5003T
+#include "Adafruit_PM25AQI.h"
+Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
@@ -68,6 +72,30 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
+
+    //
+    if(strcmp(commandString, "pm") == 0){
+      //if (! aqi.begin_I2C()) {
+      //  Serial.println(",Could not find PM 2.5 sensor!, ");  
+      //}
+      int pms = atoi(inputValue);
+      PM25_AQI_Data data;
+      if (! aqi.read(&data)) {
+        Serial.println(",Could not read from AQI, ");
+      }else{
+        if(pms ==1){
+          Serial.print(data.pm10_standard);  
+        }else if (pms ==2){
+          Serial.print(data.pm25_standard);  
+        }else if(pms ==3){
+          Serial.println(data.pm100_standard);  
+        }
+        delay(100);        
+      }
+      
+    }
+
+    
 
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
@@ -236,11 +264,11 @@ void loop()
     //tone
     if(strcmp(commandString, "tonePlay") == 0){
       int tonePin = atoi(inputPin);
-      int delayTime = atoi(inputTime)-35;
+      int delayTime = atoi(inputTime)-3;
       tone(tonePin, atoi(inputValue),delayTime);
       delay(delayTime);
       noTone(atoi(inputPin));
-      delay(1);
+      delay(2);
     }
     //伺服馬達
     if(strcmp(commandString, "servoWrite") == 0){
