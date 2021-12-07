@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormattedMessage} from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import musicIconURL from './music/music.png';
 import musicInsetIconURL from './music/music-small.svg';
@@ -359,35 +359,35 @@ export default [
         ),
         helpLink: 'https://scratch.mit.edu/vernier'
     }
-,
+    ,
     {
-	name: 'JSON',
-    	extensionId: 'gasoJSON',
-    	collaborator: 'gasolin,TYiC',
-    	iconURL: jsonImage,
-    	insetIconURL: jsonInsetIconURL,
-    	description: (
-        	<FormattedMessage
-            	defaultMessage="Fetch JSON."
-            	description="Fetch JSON extension"
-            	id="gui.extension.gasojson.description"
-        	/>
-    	),
-    	featured: true,
-    	disabled: false,
-    	// bluetoothRequired: false,
-    	internetConnectionRequired: true,
-    	// launchPeripheralConnectionFlow: false,
-    	useAutoScan: false,
-    	helpLink: 'https://github.com/gasolin/scratch3-internet'
+        name: 'JSON',
+        extensionId: 'gasoJSON',
+        collaborator: 'gasolin,TYiC',
+        iconURL: jsonImage,
+        insetIconURL: jsonInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Fetch JSON."
+                description="Fetch JSON extension"
+                id="gui.extension.gasojson.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        // bluetoothRequired: false,
+        internetConnectionRequired: true,
+        // launchPeripheralConnectionFlow: false,
+        useAutoScan: false,
+        helpLink: 'https://github.com/gasolin/scratch3-internet'
     },
     {
-    	name: 'IFTTT',
-	extensionId: 'gasoIFTTT',
-	collaborator: 'gasolin',
-	iconURL: iftttImage,
-	insetIconURL: iftttInsetIconURL,
-	description: (
+        name: 'IFTTT',
+        extensionId: 'gasoIFTTT',
+        collaborator: 'gasolin',
+        iconURL: iftttImage,
+        insetIconURL: iftttInsetIconURL,
+        description: (
             <FormattedMessage
                 defaultMessage="IFTTT Webhook"
                 description="IFTTT Webhook extension"
@@ -403,12 +403,12 @@ export default [
         helpLink: 'https://github.com/gasolin/scratch3-internet'
     },
     {
-  	name: 'LASS',
-	extensionId: 'gasoLASS',
-	collaborator: 'gasolin',
-	iconURL: lassImage,
-	insetIconURL: lassInsetIconURL,
-	description: (
+        name: 'LASS',
+        extensionId: 'gasoLASS',
+        collaborator: 'gasolin',
+        iconURL: lassImage,
+        insetIconURL: lassInsetIconURL,
+        description: (
             <FormattedMessage
                 defaultMessage="Fetch LASS."
                 description="Fetch LASS extension"
@@ -424,14 +424,14 @@ export default [
         helpLink: 'https://github.com/gasolin/scratch3-internet'
     },
     {
-	name: 'ThingSpeak',
-	extensionId: 'gasoThingSpeak',
-	collaborator: 'gasolin',
-	iconURL: thingspeakImage,
-	insetIconURL: thingspeakInsetIconURL,
-	description: (
+        name: 'ThingSpeak',
+        extensionId: 'gasoThingSpeak',
+        collaborator: 'gasolin',
+        iconURL: thingspeakImage,
+        insetIconURL: thingspeakInsetIconURL,
+        description: (
             <FormattedMessage
-                defaultMessage="ThingSpeak"
+                defaultMessage="Send data to ThingSpeak."
                 description="ThingSpeak extension"
                 id="gui.extension.gasothingspeak.description"
             />
@@ -445,15 +445,15 @@ export default [
         helpLink: 'https://github.com/gasolin/scratch3-internet'
     },
     {
-	name: 'voicetoTEXT',
-	extensionId: 'voicetoTEXT',
-	collaborator: 'estea chen',
-	iconURL: voicetotextImage,
-	insetIconURL: voicetotextInsetIconURL,
-	description: (
+        name: 'Speech to Text',
+        extensionId: 'voicetoTEXT',
+        collaborator: 'estea chen',
+        iconURL: voicetotextImage,
+        insetIconURL: voicetotextInsetIconURL,
+        description: (
             <FormattedMessage
-                defaultMessage="VoiceToText"
-                description="Voice To Text extension"
+                defaultMessage="Convert speech to text."
+                description="Speech To Text extension"
                 id="gui.extension.voicetotext.description"
             />
         ),
@@ -466,14 +466,14 @@ export default [
         helpLink: 'https://github.com/estea8968/scratch3-internet'
     },
     {
-	name: 'urlTXT',
-	extensionId: 'urlTXT',
-	collaborator: 'estea chen',
-	iconURL: urltxtImage,
-	insetIconURL: urltxtInsetIconURL,
-	description: (
+        name: 'URL & Text File',
+        extensionId: 'urlTXT',
+        collaborator: 'estea chen',
+        iconURL: urltxtImage,
+        insetIconURL: urltxtInsetIconURL,
+        description: (
             <FormattedMessage
-                defaultMessage="urlTXT"
+                defaultMessage="Read and write text files and open a URL."
                 description="get url text data extension"
                 id="gui.extension.urltxt.description"
             />
@@ -486,16 +486,16 @@ export default [
         useAutoScan: false,
         helpLink: 'https://github.com/estea8968/scratch3-internet'
     },
-    
+
     {
-	name: 'rwGoogle',
-	extensionId: 'rwGoogle',
-	collaborator: 'TYiC',
-	iconURL: rwGoogleImage,
-	insetIconURL: rwGoogleInsetIconURL,
-	description: (
+        name: 'Google Sheets',
+        extensionId: 'rwGoogle',
+        collaborator: 'TYiC',
+        iconURL: rwGoogleImage,
+        insetIconURL: rwGoogleInsetIconURL,
+        description: (
             <FormattedMessage
-                defaultMessage="rwGoogle"
+                defaultMessage="Read and write Google Sheets and Google Forms."
                 description="read write google sheets extension"
                 id="gui.extension.rwgoogle.description"
             />
@@ -514,27 +514,27 @@ export default [
         extensionId: 'knnAlgorithm',
         iconURL: knnalgorithmImage,
         insetIconURL: knnalgorithmInsetImage,
-	collaborator: 'wwj718 summercar',
+    collaborator: 'wwj718 summercar',
         description: (
            <FormattedMessage
                defaultMessage="knn algorithm."
                description="Description for the 'knn algorithm' extension"
-	       id="gui.extension.knnalgorithm.description"
+           id="gui.extension.knnalgorithm.description"
            />
         ),
         internetConnectionRequired: true,        
         featured: true,
         helpLink: 'https://github.com/CodeLabClub/scratch3_knn'
    },*/
-   {
+    {
         name: 'Web Serial Arduino',
         extensionId: 'webserialArduino',
         collaborator: "estea chen",
         iconURL: webserialArduinoImage,
         insetIconURL: webserialArduinoInsetIconURL,
-	description: (
+        description: (
             <FormattedMessage
-                defaultMessage="WebSerialArduino chrome only"
+                defaultMessage="Connect Arudino and Google Chrome using Web Serial API."
                 description="Web serial for the Arduino extension"
                 id="gui.extension.WebSerialArduino.description"
             />
@@ -547,18 +547,18 @@ export default [
 
     },
     {
-        name: 'Webserial ESP-8266',
+        name: 'Web Serial ESP-8266',
         extensionId: 'webserialEsp',
         collaborator: "estea chen",
         iconURL: webserialEsp8266Image,
         insetIconURL: webserialEsp8266InsetIconURL,
         description: (
-        	<FormattedMessage
-            	defaultMessage="Webserial ESP-8266"
-            	description="Webserial ESP-8266 extension"
-            	id="gui.extension.WebserialEsp.description"
-        	/>
-    	),
+            <FormattedMessage
+                defaultMessage="Connect ESP-8266 and Google Chrome with Web Serial API."
+                description="Webserial ESP-8266 extension"
+                id="gui.extension.WebserialEsp.description"
+            />
+        ),
         featured: true,
         disabled: false,
         internetConnectionRequired: true,
@@ -574,12 +574,12 @@ export default [
         iconURL: webserialEsp32Image,
         insetIconURL: webserialEsp32InsetIconURL,
         description: (
-        	<FormattedMessage
-            	defaultMessage="Webserial ESP-32"
-            	description="Webserial ESP-32 extension"
-            	id="gui.extension.WebserialEsp32.description"
-        	/>
-    	),
+            <FormattedMessage
+                defaultMessage="Webserial ESP-32"
+                description="Webserial ESP-32 extension"
+                id="gui.extension.WebserialEsp32.description"
+            />
+        ),
         featured: true,
         disabled: false,
         internetConnectionRequired: true,
@@ -594,12 +594,12 @@ export default [
         iconURL: mqttImage,
         insetIconURL: mqttInsetIconURL,
         description: (
-        	<FormattedMessage
-            	defaultMessage="MQTT"
-            	description="MQTT extension"
-            	id="gui.extension.Mqtt.description"
-        	/>
-    	),
+            <FormattedMessage
+                defaultMessage="Use MQTT for data transfer."
+                description="MQTT extension"
+                id="gui.extension.Mqtt.description"
+            />
+        ),
         featured: true,
         disabled: false,
         internetConnectionRequired: true,
@@ -615,7 +615,7 @@ export default [
         insetIconURL: ml2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage='ML2Scratch Blocks.'
+                defaultMessage='Machine learning for Scratch'
                 description='ML2Scratch Blocks.'
                 id='gui.extension.ml2scratchblocks.description'
             />
@@ -633,7 +633,7 @@ export default [
         insetIconURL: posenet2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage='PoseNet2Scratch Blocks.'
+                defaultMessage='Pose detection for Scratch'
                 description='PoseNet2Scratch Blocks.'
                 id='gui.extension.posenet2scratchblocks.description'
             />
@@ -651,7 +651,7 @@ export default [
         insetIconURL: tm2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage='画像や音声を学習させよう。'
+                defaultMessage='Machine learning for images and sound'
                 description='画像や音声を学習させよう。'
                 id='gui.extension.tm2scratchblocks.description'
             />
