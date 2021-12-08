@@ -285,7 +285,7 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      pinMode(atoi(inputPin),INPUT);
+      //pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));
