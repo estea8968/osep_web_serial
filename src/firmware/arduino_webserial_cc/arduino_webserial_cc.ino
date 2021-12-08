@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/2 estea chen
+ * 更新日期110/12/8 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
