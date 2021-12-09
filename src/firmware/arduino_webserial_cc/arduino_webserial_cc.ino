@@ -1,5 +1,5 @@
 /*
- * 更新日期110/11/24 estea chen
+ * 更新日期110/12/8 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -7,6 +7,10 @@
 //ws2812
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
+//PMS5003T
+//#include "Adafruit_PM25AQI.h"
+//Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
@@ -68,6 +72,101 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
+
+    /*
+    if(strcmp(commandString, "pm") == 0){
+      //if (! aqi.begin_I2C()) {
+      //  Serial.println(",Could not find PM 2.5 sensor!, ");  
+      //}
+      int pms = atoi(inputValue);
+      PM25_AQI_Data data;
+      if (! aqi.read(&data)) {
+        Serial.println(",Could not read from AQI, ");
+      }else{
+        if(pms ==1){
+          Serial.print(data.pm10_standard);  
+        }else if (pms ==2){
+          Serial.print(data.pm25_standard);  
+        }else if(pms ==3){
+          Serial.println(data.pm100_standard);  
+        }
+        delay(100);        
+      }
+      
+    }*/
+
+    
+
+    //ws2812_shu
+    if(strcmp(commandString, "sh") == 0){
+      int r = 0;
+      int g = 0;
+      int b = 0;
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      char *bb ;
+      int i = 0;
+      int sp;
+      bb = strtok(inputValue, ",");
+      led_value[i] = atoi(bb);
+      Serial.println(led_value[i]);
+      i++;
+      while( bb != NULL){
+        bb = strtok(NULL, ",");
+        led_value[i] = atoi(bb);
+        //Serial.println(led_value[i]);
+        i++;
+      }
+      Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+      pixels.begin();
+      for ( i=0;i<24;i++){
+        if (led_value[i] > 0){
+            sp = led_value[i]-1;
+          i++;
+          if( led_value[i] == 0) {
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = 0;
+          }else if( led_value[i] == 1){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 2){
+            i++;
+            r = 0;
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 3){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 4){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 5){
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 6){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = led_value[i];
+          }
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));
+        }else{
+          i++;
+          i++;
+        }
+      }
+      pixels.show(); 
+      
+    }
     
     //ws2812
     if(strcmp(commandString, "ws") == 0){
@@ -164,10 +263,12 @@ void loop()
     }
     //tone
     if(strcmp(commandString, "tonePlay") == 0){
-      tone(atoi(inputPin), atoi(inputValue),inputTime);
-      delay(inputTime);
+      int tonePin = atoi(inputPin);
+      int delayTime = atoi(inputTime)-3;
+      tone(tonePin, atoi(inputValue),delayTime);
+      delay(delayTime);
       noTone(atoi(inputPin));
-      delay(10);
+      delay(2);
     }
     //伺服馬達
     if(strcmp(commandString, "servoWrite") == 0){
@@ -184,7 +285,7 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      pinMode(atoi(inputPin),INPUT);
+      //pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));
