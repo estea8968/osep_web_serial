@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/8 estea chen
+ * 更新日期110/12/12 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -129,30 +129,35 @@ void loop()
             b = 0;
           }else if( led_value[i] == 1){
             i++;
-            r = 0;
+            r = led_value[i]*3;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 2){
             i++;
-            r = 0;
-            g = 0;
-            b = led_value[i];
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
           }else if( led_value[i] == 3){
             i++;
-            r = led_value[i];
+            r = 0;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 4){
             i++;
             r = 0;
-            g = led_value[i];
+            g = 0;
             b = led_value[i];
           }else if( led_value[i] == 5){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 6){
             i++;
             r = led_value[i];
             g = 0;
             b = led_value[i];
-          }else if( led_value[i] == 6){
+          }else if( led_value[i] == 7){
             i++;
             r = led_value[i];
             g = led_value[i];
