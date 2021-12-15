@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>avrgirl test2</title>
+    <title>avrgirl test1</title>
     <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Cabin+Sketch|Fugaz+One|Itim|Sacramento&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -41,11 +41,16 @@
     </div>
     <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
     <script>
-    
       function handleSubmit(e) {
         e.preventDefault();
 	let filecontents;
         const file = fileInput.files[0];
+        //const hex_file = 'hex/arduino_webserial_cc.ino.hex';
+        //'text/x-hex'
+        //const hex_data =fetch(hex_file,{method:'get'}).then(response => response.text());
+        //console.log('hex_data:',hex_data);
+        //var file = new Blob([hex_data], {type : 'application/octet-stream'});
+        
         console.log ('file:',file);
         const reader = new FileReader();
         const board = boardType.value;
@@ -73,6 +78,7 @@
        };
        
         reader.readAsArrayBuffer(file);
+        //reader.readAsDataURL('arduino_webserial_cc.ino.hex');
       }
 
       const uploadForm = document.getElementById('uploadForm');
@@ -89,9 +95,9 @@
       fileButton.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
+        //if (file) fileName.textContent = 'arduino_webserial_cc.ino.hex';
         if (file) fileName.textContent = file.name;
       });
-      
     </script>
   </body>
 </html>
