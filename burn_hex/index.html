@@ -44,8 +44,15 @@
       function handleSubmit(e) {
         e.preventDefault();
 	let filecontents;
-        const file = fileInput.files[0];
-        console.log (file);
+        //const file = fileInput.files[0];
+        const cors_url = 'https://cors-anywhere.herokuapp.com/';
+        const hex_file = 'hex/arduino_webserial_cc.ino.hex';
+        //'text/x-hex'
+        const hex_data =fetch(hex_file,{method:'get'}).then(response => response.text());
+        console.log('hex_data:',hex_data);
+        var file = new Blob([hex_data], {type : 'text/x-hex'});
+        
+        console.log ('file:',file);
         const reader = new FileReader();
         const board = boardType.value;
 
@@ -70,6 +77,7 @@
 					});
 
        };
+       
         reader.readAsArrayBuffer(file);
         //reader.readAsDataURL('arduino_webserial_cc.ino.hex');
       }
@@ -88,8 +96,8 @@
       fileButton.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        if (file) fileName.textContent = 'arduino_webserial_cc.ino.hex';
-        //if (file) fileName.textContent = file.name;
+        //if (file) fileName.textContent = 'arduino_webserial_cc.ino.hex';
+        if (file) fileName.textContent = file.name;
       });
     </script>
   </body>
