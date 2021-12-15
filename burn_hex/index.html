@@ -43,17 +43,8 @@
     <script>
       function handleSubmit(e) {
         e.preventDefault();
-        
-	//const hex =fetch('http://127.0.0.1:8601/static/hex/arduino_webserial_cc.ino.hex',{method:'get'});
-	const hex = 'arduino_webserial_cc.ino.hex';
-        var pp = document.createElement('a');
-	pp.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(hex));
-	pp.setAttribute('download', 'hex.hex');
-	
-	console.log (pp);
 	let filecontents;
-        //const file = fileInput.files[0];
-        const file = pp;
+        const file = fileInput.files[0];
         console.log (file);
         const reader = new FileReader();
         const board = boardType.value;
