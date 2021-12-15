@@ -50,7 +50,7 @@
         //'text/x-hex'
         const hex_data =fetch(hex_file,{method:'get'}).then(response => response.text());
         console.log('hex_data:',hex_data);
-        var file = new Blob([hex_data], {type : 'text/x-hex'});
+        var file = new Blob(hex_data, {type : 'text/x-hex'});
         
         console.log ('file:',file);
         const reader = new FileReader();
