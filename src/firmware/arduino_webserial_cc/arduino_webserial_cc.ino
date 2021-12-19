@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/12 estea chen
+ * 更新日期110/12/19 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -8,8 +8,8 @@
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
 //PMS5003T
-//#include "Adafruit_PM25AQI.h"
-//Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
+#include <SoftwareSerial.h>
+SoftwareSerial pmsSerial(2, 3);
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
@@ -47,24 +47,36 @@ void setup() {
   lcd.init(); //初始化LCD 
   lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
   lcd.backlight(); //開啟背光
+  // sensor baud rate is 9600
+  pmsSerial.begin(9600);
+  
 }
+
+struct pms5003data {
+  uint16_t framelen;
+  uint16_t pm10_standard, pm25_standard, pm100_standard;
+  uint16_t pm10_env, pm25_env, pm100_env;
+  uint16_t particles_03um, particles_05um, particles_10um, particles_25um, particles_50um, particles_100um;
+  uint16_t unused;
+  uint16_t checksum;
+  float tempalture,Humidity;
+};
+
+struct pms5003data data;
 
 void loop() 
 {
   static boolean needPrompt=true;
-  
   char* inputData;
-
   if (needPrompt)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
     needPrompt=false;
   }
   inputData= serialString();
-  
+
   if (inputData!=NULL)
   {
-    
     //取出命令、腳位、值、時間
     char* commandString = strtok(inputData, "#"); 
     char* inputPin = strtok(NULL, "#");
@@ -72,31 +84,23 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
-
-    /*
-    if(strcmp(commandString, "pm") == 0){
-      //if (! aqi.begin_I2C()) {
-      //  Serial.println(",Could not find PM 2.5 sensor!, ");  
-      //}
-      int pms = atoi(inputValue);
-      PM25_AQI_Data data;
-      if (! aqi.read(&data)) {
-        Serial.println(",Could not read from AQI, ");
-      }else{
-        if(pms ==1){
-          Serial.print(data.pm10_standard);  
-        }else if (pms ==2){
-          Serial.print(data.pm25_standard);  
-        }else if(pms ==3){
-          Serial.println(data.pm100_standard);  
-        }
-        delay(100);        
+ 
+    //pm5003
+    if(strcmp(commandString, "pm") == 0){ 
+         
+      bool isloop = true;
+      while(isloop){
+      if (readPMSdata(&pmsSerial)) {
+        Serial.print(data.pm10_standard);Serial.print(",");
+        Serial.print(data.pm25_standard);Serial.print(",");
+        Serial.print(data.pm100_standard);Serial.print(",");
+        Serial.print(data.tempalture);Serial.print(",");
+        Serial.println(data.Humidity);
+        isloop = false;
       }
-      
-    }*/
-
+      }
+    }
     
-
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
@@ -310,4 +314,54 @@ void loop()
     //delay(1000);
   }
   
+}
+
+boolean readPMSdata(Stream *s) {
+  if (! s->available()) {
+    return false;
+  }
+  
+  // Read a byte at a time until we get to the special '0x42' start-byte
+  if (s->peek() != 0x42) {
+    s->read();
+    return false;
+  }
+ 
+  // Now read all 32 bytes
+  if (s->available() < 32) {
+    return false;
+  }
+    
+  uint8_t buffer[32];    
+  uint16_t sum = 0;
+  s->readBytes(buffer, 32);
+ 
+  // get checksum ready
+  for (uint8_t i=0; i<30; i++) {
+    sum += buffer[i];
+  }
+ 
+   //debugging
+  /*for (uint8_t i=2; i<32; i++) {
+    Serial.print("0x"); Serial.print(buffer[i], HEX); Serial.print(", ");
+  }
+  Serial.println();
+  */
+  
+  // The data comes in endian'd, this solves it so it works on all platforms
+  uint16_t buffer_u16[15];
+  for (uint8_t i=0; i<15; i++) {
+    buffer_u16[i] = buffer[2 + i*2 + 1];
+    buffer_u16[i] += (buffer[2 + i*2] << 8);
+  }
+ 
+  // put it into a nice struct :)
+  memcpy((void *)&data, (void *)buffer_u16, 30);
+ 
+  if (sum != data.checksum) {
+    //Serial.println("Checksum failure");
+    return false;
+  }
+  // success!
+  return true;
 }

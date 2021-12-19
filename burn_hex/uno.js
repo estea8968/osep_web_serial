@@ -1,4 +1,4 @@
-var Avrgirl = require('./');
+var Avrgirl = require('../../');
 
 var avrgirl = new Avrgirl({
   board: 'uno',
