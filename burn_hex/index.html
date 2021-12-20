@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>avrgirl test2</title>
+    <title>avrgirl test</title>
     <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Cabin+Sketch|Fugaz+One|Itim|Sacramento&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -41,12 +41,11 @@
     </div>
     <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
     <script>
-    
       function handleSubmit(e) {
         e.preventDefault();
-	let filecontents;
+
+				let filecontents;
         const file = fileInput.files[0];
-        console.log ('file:',file);
         const reader = new FileReader();
         const board = boardType.value;
 
@@ -71,7 +70,6 @@
 					});
 
        };
-       
         reader.readAsArrayBuffer(file);
       }
 
@@ -91,7 +89,6 @@
         const file = event.target.files[0];
         if (file) fileName.textContent = file.name;
       });
-      
     </script>
   </body>
 </html>
