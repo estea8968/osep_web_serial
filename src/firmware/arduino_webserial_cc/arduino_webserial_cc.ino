@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/19 estea chen
+ * 更新日期110/12/22 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -15,6 +15,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
+//PMS5003T
+static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
+static float HCHO,Temperature,Humidity;
 
 char* serialString()
 {
@@ -47,22 +50,12 @@ void setup() {
   lcd.init(); //初始化LCD 
   lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
   lcd.backlight(); //開啟背光
-  // sensor baud rate is 9600
+  // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
   
 }
 
-struct pms5003data {
-  uint16_t framelen;
-  uint16_t pm10_standard, pm25_standard, pm100_standard;
-  uint16_t pm10_env, pm25_env, pm100_env;
-  uint16_t particles_03um, particles_05um, particles_10um, particles_25um, particles_50um, particles_100um;
-  uint16_t unused;
-  uint16_t checksum;
-  float tempalture,Humidity;
-};
 
-struct pms5003data data;
 
 void loop() 
 {
@@ -88,17 +81,19 @@ void loop()
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
          
-      bool isloop = true;
-      while(isloop){
-      if (readPMSdata(&pmsSerial)) {
-        Serial.print(data.pm10_standard);Serial.print(",");
-        Serial.print(data.pm25_standard);Serial.print(",");
-        Serial.print(data.pm100_standard);Serial.print(",");
-        Serial.print(data.tempalture);Serial.print(",");
-        Serial.println(data.Humidity);
-        isloop = false;
-      }
-      }
+      //bool isloop = true;
+      while(pmsSerial.available())
+        {
+      //if (pmsSerial.available()) {
+        getG5(pmsSerial.read());
+        }
+        Serial.print(pm_cf_10);Serial.print(",");
+        Serial.print(pm_cf_25);Serial.print(",");
+        Serial.print(pm_cf_100);Serial.print(",");
+        Serial.print(Temperature);Serial.print(",");
+        Serial.println(Humidity);
+        //isloop = false;
+      
     }
     
     //ws2812_shu
@@ -316,52 +311,39 @@ void loop()
   
 }
 
-boolean readPMSdata(Stream *s) {
-  if (! s->available()) {
-    return false;
+
+void getG5(unsigned char ucData)//取G5的值
+{
+  static unsigned int ucRxBuffer[250];
+  static unsigned int ucRxCnt = 0;
+  ucRxBuffer[ucRxCnt++] = ucData;
+  if (ucRxBuffer[0] != 0x42 && ucRxBuffer[1] != 0x4D)//数据头判断
+  {
+    ucRxCnt = 0;
+    return;
   }
-  
-  // Read a byte at a time until we get to the special '0x42' start-byte
-  if (s->peek() != 0x42) {
-    s->read();
-    return false;
+
+  if (ucRxCnt > 38)//数据位判断//G5S为32，G5ST为38
+
+  {
+       pm_cf_10=(int)ucRxBuffer[4] * 256 + (int)ucRxBuffer[5];      //大气环境下PM2.5浓度计算        
+       pm_cf_25=(int)ucRxBuffer[6] * 256 + (int)ucRxBuffer[7];
+       pm_cf_100=(int)ucRxBuffer[8] * 256 + (int)ucRxBuffer[9];
+       pm_at_10=(int)ucRxBuffer[10] * 256 + (int)ucRxBuffer[11];               
+       pm_at_25=(int)ucRxBuffer[12] * 256 + (int)ucRxBuffer[13];
+       pm_at_100=(int)ucRxBuffer[14] * 256 + (int)ucRxBuffer[15];
+       particulate03=(int)ucRxBuffer[16] * 256 + (int)ucRxBuffer[17];
+       particulate05=(int)ucRxBuffer[18] * 256 + (int)ucRxBuffer[19];
+       particulate10=(int)ucRxBuffer[20] * 256 + (int)ucRxBuffer[21];
+       particulate25=(int)ucRxBuffer[22] * 256 + (int)ucRxBuffer[23];
+       Temperature = ((int)ucRxBuffer[24] * 256 + (int)ucRxBuffer[25])/10;
+       Humidity = ((int)ucRxBuffer[26] * 256 + (int)ucRxBuffer[27])/10;
+    if (pm_cf_25 >  999)//如果PM2.5数值>1000，返回重新计算
+    {
+      ucRxCnt = 0;
+      return;
+    }
+    ucRxCnt = 0;
+    return;
   }
- 
-  // Now read all 32 bytes
-  if (s->available() < 32) {
-    return false;
-  }
-    
-  uint8_t buffer[32];    
-  uint16_t sum = 0;
-  s->readBytes(buffer, 32);
- 
-  // get checksum ready
-  for (uint8_t i=0; i<30; i++) {
-    sum += buffer[i];
-  }
- 
-   //debugging
-  /*for (uint8_t i=2; i<32; i++) {
-    Serial.print("0x"); Serial.print(buffer[i], HEX); Serial.print(", ");
-  }
-  Serial.println();
-  */
-  
-  // The data comes in endian'd, this solves it so it works on all platforms
-  uint16_t buffer_u16[15];
-  for (uint8_t i=0; i<15; i++) {
-    buffer_u16[i] = buffer[2 + i*2 + 1];
-    buffer_u16[i] += (buffer[2 + i*2] << 8);
-  }
- 
-  // put it into a nice struct :)
-  memcpy((void *)&data, (void *)buffer_u16, 30);
- 
-  if (sum != data.checksum) {
-    //Serial.println("Checksum failure");
-    return false;
-  }
-  // success!
-  return true;
 }
