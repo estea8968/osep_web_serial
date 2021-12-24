@@ -522,13 +522,13 @@ Avr109.prototype._upload = function(file, callback) {
   var data;
 
   try {
-    if (typeof file === 'string') {
-      data = fs.readFileSync(file, {
-        encoding: 'utf8'
-      });
-    } else {
+    // if (typeof file === 'string') {
+    //   data = fs.readFileSync(file, {
+    //     encoding: 'utf8'
+    //   });
+    // } else {
       data = file;
-    }
+    // }
   } catch (error) {
     return callback(error);
   }
@@ -1200,14 +1200,14 @@ var tools = {};
 tools._parseHex = function(file) {
   try {
     var data;
-    if (typeof file === 'string') {
-      data = fs.readFileSync(file, {
-        encoding: 'utf8'
-      });
-    } else {
+    // if (typeof file === 'string') {
+    //   data = fs.readFileSync(file, {
+    //     encoding: 'utf8'
+    //   });
+    // } else {
       // ensure compatibility with browser array buffers
       data = Buffer.from(file);
-    }
+    // }
 
     return intelhex.parse(data).data;
   } catch (error) {
