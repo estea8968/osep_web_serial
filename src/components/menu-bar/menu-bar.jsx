@@ -535,7 +535,7 @@ class MenuBar extends React.Component {
                     <div className={classNames(styles.menuBarItem)}>
                         <MenuSection>
                             <MenuItem>
-                                <a href ='/static/burn_hex/' target='_blank'>
+                                <a href ='./static/burn_hex/index.html' target='_blank'>
                                 <FormattedMessage
                                     defaultMessage="Burn Firmware"
                                     description="Burn Firmware"
