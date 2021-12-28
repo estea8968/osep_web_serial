@@ -1,5 +1,5 @@
 /*
- * 更新日期110/12/8 estea chen
+ * 更新日期110/12/22 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -8,13 +8,16 @@
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
 //PMS5003T
-//#include "Adafruit_PM25AQI.h"
-//Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
+#include <SoftwareSerial.h>
+SoftwareSerial pmsSerial(2, 3);
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
+//PMS5003T
+static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
+static float HCHO,Temperature,Humidity;
 
 char* serialString()
 {
@@ -47,24 +50,26 @@ void setup() {
   lcd.init(); //初始化LCD 
   lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
   lcd.backlight(); //開啟背光
+  // PMS5003T sensor baud rate is 9600
+  pmsSerial.begin(9600);
+  
 }
+
+
 
 void loop() 
 {
   static boolean needPrompt=true;
-  
   char* inputData;
-
   if (needPrompt)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
     needPrompt=false;
   }
   inputData= serialString();
-  
+
   if (inputData!=NULL)
   {
-    
     //取出命令、腳位、值、時間
     char* commandString = strtok(inputData, "#"); 
     char* inputPin = strtok(NULL, "#");
@@ -72,31 +77,25 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
-
-    /*
-    if(strcmp(commandString, "pm") == 0){
-      //if (! aqi.begin_I2C()) {
-      //  Serial.println(",Could not find PM 2.5 sensor!, ");  
-      //}
-      int pms = atoi(inputValue);
-      PM25_AQI_Data data;
-      if (! aqi.read(&data)) {
-        Serial.println(",Could not read from AQI, ");
-      }else{
-        if(pms ==1){
-          Serial.print(data.pm10_standard);  
-        }else if (pms ==2){
-          Serial.print(data.pm25_standard);  
-        }else if(pms ==3){
-          Serial.println(data.pm100_standard);  
+ 
+    //pm5003
+    if(strcmp(commandString, "pm") == 0){ 
+         
+      //bool isloop = true;
+      while(pmsSerial.available())
+        {
+      //if (pmsSerial.available()) {
+        getG5(pmsSerial.read());
         }
-        delay(100);        
-      }
+        Serial.print(pm_cf_10);Serial.print(",");
+        Serial.print(pm_cf_25);Serial.print(",");
+        Serial.print(pm_cf_100);Serial.print(",");
+        Serial.print(Temperature);Serial.print(",");
+        Serial.println(Humidity);
+        //isloop = false;
       
-    }*/
-
+    }
     
-
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
@@ -129,30 +128,35 @@ void loop()
             b = 0;
           }else if( led_value[i] == 1){
             i++;
-            r = 0;
+            r = led_value[i]*3;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 2){
             i++;
-            r = 0;
-            g = 0;
-            b = led_value[i];
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
           }else if( led_value[i] == 3){
             i++;
-            r = led_value[i];
+            r = 0;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 4){
             i++;
             r = 0;
-            g = led_value[i];
+            g = 0;
             b = led_value[i];
           }else if( led_value[i] == 5){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 6){
             i++;
             r = led_value[i];
             g = 0;
             b = led_value[i];
-          }else if( led_value[i] == 6){
+          }else if( led_value[i] == 7){
             i++;
             r = led_value[i];
             g = led_value[i];
@@ -305,4 +309,41 @@ void loop()
     //delay(1000);
   }
   
+}
+
+
+void getG5(unsigned char ucData)//取G5的值
+{
+  static unsigned int ucRxBuffer[250];
+  static unsigned int ucRxCnt = 0;
+  ucRxBuffer[ucRxCnt++] = ucData;
+  if (ucRxBuffer[0] != 0x42 && ucRxBuffer[1] != 0x4D)//数据头判断
+  {
+    ucRxCnt = 0;
+    return;
+  }
+
+  if (ucRxCnt > 38)//数据位判断//G5S为32，G5ST为38
+
+  {
+       pm_cf_10=(int)ucRxBuffer[4] * 256 + (int)ucRxBuffer[5];      //大气环境下PM2.5浓度计算        
+       pm_cf_25=(int)ucRxBuffer[6] * 256 + (int)ucRxBuffer[7];
+       pm_cf_100=(int)ucRxBuffer[8] * 256 + (int)ucRxBuffer[9];
+       pm_at_10=(int)ucRxBuffer[10] * 256 + (int)ucRxBuffer[11];               
+       pm_at_25=(int)ucRxBuffer[12] * 256 + (int)ucRxBuffer[13];
+       pm_at_100=(int)ucRxBuffer[14] * 256 + (int)ucRxBuffer[15];
+       particulate03=(int)ucRxBuffer[16] * 256 + (int)ucRxBuffer[17];
+       particulate05=(int)ucRxBuffer[18] * 256 + (int)ucRxBuffer[19];
+       particulate10=(int)ucRxBuffer[20] * 256 + (int)ucRxBuffer[21];
+       particulate25=(int)ucRxBuffer[22] * 256 + (int)ucRxBuffer[23];
+       Temperature = ((int)ucRxBuffer[24] * 256 + (int)ucRxBuffer[25])/10;
+       Humidity = ((int)ucRxBuffer[26] * 256 + (int)ucRxBuffer[27])/10;
+    if (pm_cf_25 >  999)//如果PM2.5数值>1000，返回重新计算
+    {
+      ucRxCnt = 0;
+      return;
+    }
+    ucRxCnt = 0;
+    return;
+  }
 }

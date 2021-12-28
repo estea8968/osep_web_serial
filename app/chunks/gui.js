@@ -150,6 +150,10 @@ var onClickLogo = function onClickLogo() {
   window.location = 'https://sites.google.com/view/scratch-web-serial-api/';
 };
 
+var onClickFirmware = function onClickFirmware() {
+  window.location = 'https://estea8968.github.io/osep_web_serial/burn_hex/';
+};
+
 var handleTelemetryModalCancel = function handleTelemetryModalCancel() {
   Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])('User canceled telemetry modal');
 };
@@ -208,7 +212,8 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
     showComingSoon: true,
     backpackHost: backpackHost,
     canSave: false,
-    onClickLogo: onClickLogo
+    onClickLogo: onClickLogo,
+    onClickFirmware: onClickFirmware
   }), appTarget);
 });
 

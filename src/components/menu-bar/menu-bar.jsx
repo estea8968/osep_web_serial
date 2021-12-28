@@ -526,10 +526,25 @@ class MenuBar extends React.Component {
                                             )}
                                         </MenuItem>
                                     )}</TurboMode>
+                                    
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
                     </div>
+                    
+                    <div className={classNames(styles.menuBarItem)}>
+                        <MenuSection>
+                            <MenuItem>
+                                <a href ='./static/burn_hex/index.html' target='_blank'>
+                                <FormattedMessage
+                                    defaultMessage="Burn Firmware"
+                                    description="Burn Firmware"
+                                    id="gui.menuBar.burnFirmware"
+                                 />
+                                </a>
+                                </MenuItem>    
+                        </MenuSection>        
+                        </div>
                     <Divider className={classNames(styles.divider)} />
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
@@ -823,7 +838,8 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     userOwnsProject: PropTypes.bool,
     username: PropTypes.string,
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    onClickFirmware: PropTypes.func
 };
 
 MenuBar.defaultProps = {
@@ -873,7 +889,8 @@ const mapDispatchToProps = dispatch => ({
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),
     onClickSaveAsCopy: () => dispatch(saveProjectAsCopy()),
-    onSeeCommunity: () => dispatch(setPlayer(true))
+    onSeeCommunity: () => dispatch(setPlayer(true)),
+    onClickFirmware: () => dispatch(firmwareMenuOpen())
 });
 
 export default compose(
