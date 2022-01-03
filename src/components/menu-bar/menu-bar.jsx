@@ -532,19 +532,25 @@ class MenuBar extends React.Component {
                         </div>
                     </div>
                     
-                    <div className={classNames(styles.menuBarItem)}>
-                        <MenuSection>
-                            <MenuItem>
-                                <a href ='./static/burn_hex/index.html' target='_blank'>
-                                <FormattedMessage
-                                    defaultMessage="Burn Firmware"
-                                    description="Burn Firmware"
-                                    id="gui.menuBar.burnFirmware"
-                                 />
-                                </a>
-                                </MenuItem>    
-                        </MenuSection>        
-                        </div>
+                    <Divider className={classNames(styles.divider)} />
+
+                    <div
+                        className={classNames(
+                            styles.menuBarItem,
+                            styles.hoverable
+                        )}
+                        onClick={() => (
+                            window.open('./static/burn_hex/index.html')
+                        )}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Load Firmware"
+                            description="Load Firmware"
+                            id="gui.menuBar.burnFirmware"
+                        />
+                    </div>
+
+                    <Divider className={classNames(styles.divider)} />
                     <Divider className={classNames(styles.divider)} />
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
