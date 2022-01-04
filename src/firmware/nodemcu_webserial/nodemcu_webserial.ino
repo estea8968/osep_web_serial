@@ -1,4 +1,4 @@
-/*update 110/11/01 
+/*update 111/01/05 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -68,9 +68,9 @@ void setup() {
   u8g2.begin();
   u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
   //ws2812
-  //#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
-  //  clock_prescale_set(clock_div_1);
-  //#endif
+  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+    clock_prescale_set(clock_div_1);
+  #endif
   //qrcode
   display.init();
   display.display();
@@ -100,6 +100,84 @@ void loop() {
       //取出第4個值
       char* inputTime =strtok(NULL, "#");
       //Serial.println(inputTime);
+
+      //ws2812_shu
+    if(strcmp(commandString, "sh") == 0){
+      int r = 0;
+      int g = 0;
+      int b = 0;
+      char * led_value[]={"","","","","","","","","","","","","","","","","","","","","","","",""};
+      char * bb ="";
+      int i = 0;
+      int sp;
+      bb = strtok(inputValue, ",");
+      led_value[i] = bb;
+      Serial.println(led_value[i]);
+      i++;
+      
+      while( bb!= NULL ){
+        bb = strtok(NULL, ",");
+        led_value[i] = bb;
+        Serial.println(led_value[i]);
+        i++;        
+      }
+      
+      Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+      pixels.begin();
+      for ( i=0;i<24;i++){
+        if (led_value[i] > 0){
+            sp = atoi(led_value[i])-1;
+          i++;
+          if( atoi(led_value[i]) == 0) {
+            i++;
+            r = atoi(led_value[i]);
+            g = 0;
+            b = 0;
+          }else if( atoi(led_value[i]) == 1){
+            i++;
+            r = atoi(led_value[i])*3;
+            g = atoi(led_value[i]);
+            b = 0;
+          }else if( atoi(led_value[i]) == 2){
+            i++;
+            r = atoi(led_value[i]);
+            g = atoi(led_value[i]);
+            b = 0;
+          }else if( atoi(led_value[i]) == 3){
+            i++;
+            r = 0;
+            g = atoi(led_value[i]);
+            b = 0;
+          }else if( atoi(led_value[i]) == 4){
+            i++;
+            r = 0;
+            g = 0;
+            b = atoi(led_value[i]);
+          }else if( atoi(led_value[i]) == 5){
+            i++;
+            r = 0;
+            g = atoi(led_value[i]);
+            b = atoi(led_value[i]);
+          }else if( atoi(led_value[i]) == 6){
+            i++;
+            r = atoi(led_value[i]);
+            g = 0;
+            b = atoi(led_value[i]);
+          }else if( atoi(led_value[i]) == 7){
+            i++;
+            r = atoi(led_value[i]);
+            g = atoi(led_value[i]);
+            b = atoi(led_value[i]);
+          }
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));
+        }else{
+          i++;
+          i++;
+        }
+      }
+      pixels.show(); 
+      
+    }
       
       //ws2812
       if(strcmp(commandString, "ws") == 0){
