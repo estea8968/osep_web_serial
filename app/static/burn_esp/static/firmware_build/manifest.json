@@ -1,6 +1,6 @@
 {
-  "name": "ESP Firmware",
-  "version": "2021.12.0-dev",
+  "name": "ESP 韌體",
+  "version": "v:111.01.05",
   "home_assistant_domain": "esphome",
   "builds": [
     {
