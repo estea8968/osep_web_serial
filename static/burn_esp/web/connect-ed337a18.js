@@ -311,7 +311,7 @@ const e=window.ShadowRoot&&(void 0===window.ShadyCSS||window.ShadyCSS.nativeShad
               />
             </svg>
           </td>
-          <td>${this._info.firmware}&nbsp;${this._info.version}</td>
+          <td>${this._info.firmware}&nbsp;${this._info.chipFamily}&nbsp;${this._info.version}</td>
         </tr>
         <tr>
           <td>
@@ -417,7 +417,7 @@ const e=window.ShadowRoot&&(void 0===window.ShadyCSS||window.ShadyCSS.nativeShad
           @click=${()=>{this._installState=void 0,this._state="DASHBOARD"}}
         ></ewt-button>
       `}else{t=void 0;const r=!this._wasProvisioned&&(void 0!==this._client.nextUrl||"home_assistant_domain"in this._manifest);i=r,e=I`
-        ${Ca("🎉","Device connected to the network!")}
+        ${Ca("🎉","設備連線上網路!")}
         ${r?I`
               <div class="dashboard-buttons">
                 ${void 0===this._client.nextUrl?"":I`
@@ -482,14 +482,14 @@ const e=window.ShadowRoot&&(void 0===window.ShadyCSS||window.ShadyCSS.nativeShad
         <ewt-button
           class="danger"
           slot="primaryAction"
-          label="Reset data"
+          label="重設資料"
           @click=${this._confirmInstall}
         ></ewt-button>
       `;else if(this._installConfirmed)if(this._installState&&"initializing"!==this._installState.state&&"manifest"!==this._installState.state&&"preparing"!==this._installState.state)if("erasing"===this._installState.state)e=this._renderProgress("抹除中"),i=!0;else if("writing"===this._installState.state||"finished"===this._installState.state&&void 0===this._client){let t,r;"finished"===this._installState.state?r="包裝起來":this._installState.details.percentage<4?r="安裝中":t=this._installState.details.percentage,e=this._renderProgress(I`
           ${r?I`${r}<br />`:""}
           <br />
           這將會需要
-          ${"ESP8266"===this._installState.chipFamily?"幾分鐘":"2 minutes"}.<br />
+          ${"ESP8266"===this._installState.chipFamily?"幾分鐘":"2 分鐘"}.<br />
           保持此頁面可以防止速度變慢
         `,t),i=!0}else if("finished"===this._installState.state){t=void 0;const i=null!==this._client;e=I`
         ${Ca("🎉","燒錄完成!")}
@@ -507,7 +507,7 @@ const e=window.ShadowRoot&&(void 0===window.ShadyCSS||window.ShadyCSS.nativeShad
         ></ewt-button>
       `);else e=this._renderProgress("準備安裝"),i=!0;else{const t=r?"update to":"install";e=I`
         ${r?I`你的設備正執行
-              ${this._info.firmware}&nbsp;${this._info.version}.<br /><br />`:""}
+              ${this._info.firmware}}&nbsp;${this._info.version}.<br /><br />`:""}
         ${this._manifest.name}&nbsp;${this._manifest.version}?
         ${this._installErase?"你的設備上的資料將會刪除":""}
         <ewt-button

@@ -545,7 +545,7 @@ export default [
         helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
 
     },
-    /*
+    
     {
         name: 'Webserial ESP-32',
         extensionId: 'webserialEsp32',
@@ -565,7 +565,7 @@ export default [
         bluetoothRequired: false,
         helpLink: 'https://ys-fang.github.io/OSEP/app/'
 
-    },*/
+    },
     {
         name: 'MQTT',
         extensionId: 'mqtt',
