@@ -1,18 +1,26 @@
 /*
- * 更新日期110/12/22 estea chen
+ * 更新日期111/01/20 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
 //ws2812
 #include <Adafruit_NeoPixel.h>
+//max7219
+#include <MD_Parola.h>
+#include <MD_MAX72xx.h>
+#include <SPI.h>
+
 //PMS5003T
 #include <SoftwareSerial.h>
 SoftwareSerial pmsSerial(2, 3);
 
+//max7219
+
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
+
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
 static float HCHO,Temperature,Humidity;
@@ -20,7 +28,7 @@ static float HCHO,Temperature,Humidity;
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
-  static char str[52]; // For strings of max length=20
+  static char str[64]; // For strings of max length=20
   if (!Serial.available()) return NULL;
   delay(16); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
@@ -73,10 +81,29 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
- 
+
+    //max7219
+    if(strcmp(commandString, "max") == 0){
+      char* max_devices = strtok(inputPin, ",");
+      char* cs_pin = strtok(NULL, ",");
+      char* clk_pin = strtok(NULL, ",");
+      char* data_pin = strtok(NULL, ",");
+      #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+      #define MAX_DEVICES atoi(max_devices)
+      #define CS_PIN atoi(cs_pin)
+      #define DATA_PIN atoi(data_pin)
+      #define CLK_PIN atoi(clk_pin)
+      MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+      myDisplay.begin();
+      // Set the intensity (brightness) of the display (0-15):
+      myDisplay.setIntensity(0);
+      // Clear the display:
+      myDisplay.displayClear();
+      myDisplay.print(inputValue);
+    }
+      
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
-         
       //bool isloop = true;
       while(pmsSerial.available())
         {
@@ -97,7 +124,7 @@ void loop()
       int r = 0;
       int g = 0;
       int b = 0;
-      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
       char *bb ;
       int i = 0;
       int sp;
@@ -108,12 +135,11 @@ void loop()
       while( bb != NULL){
         bb = strtok(NULL, ",");
         led_value[i] = atoi(bb);
-        //Serial.println(led_value[i]);
         i++;
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
-      for ( i=0;i<24;i++){
+      for ( i=0;i<32;i++){
         if (led_value[i] > 0){
             sp = led_value[i]-1;
           i++;
