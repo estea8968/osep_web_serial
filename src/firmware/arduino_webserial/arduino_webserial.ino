@@ -99,6 +99,8 @@ void loop()
       myDisplay.setIntensity(0);
       // Clear the display:
       myDisplay.displayClear();
+      myDisplay.setTextAlignment(PA_CENTER);
+      //myDisplay.displayText(inputValue, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       myDisplay.print(inputValue);
     }
       
