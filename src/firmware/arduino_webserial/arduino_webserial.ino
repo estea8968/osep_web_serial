@@ -1,5 +1,5 @@
 /*
- * 更新日期111/01/20 estea chen
+ * 更新日期111/01/24 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -7,15 +7,13 @@
 //ws2812
 #include <Adafruit_NeoPixel.h>
 //max7219
-#include <MD_Parola.h>
-#include <MD_MAX72xx.h>
-#include <SPI.h>
+//#include <MD_Parola.h>
+//#include "MD_MAX72xx.h"
+//#include <SPI.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
 SoftwareSerial pmsSerial(2, 3);
-
-//max7219
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
@@ -83,7 +81,7 @@ void loop()
     char* inputTime = strtok(NULL, "#");
 
     //max7219
-    if(strcmp(commandString, "max") == 0){
+    /*if(strcmp(commandString, "max") == 0){
       char* max_devices = strtok(inputPin, ",");
       char* cs_pin = strtok(NULL, ",");
       char* clk_pin = strtok(NULL, ",");
@@ -102,7 +100,7 @@ void loop()
       myDisplay.setTextAlignment(PA_CENTER);
       //myDisplay.displayText(inputValue, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       myDisplay.print(inputValue);
-    }
+    }*/
       
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
