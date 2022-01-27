@@ -1,4 +1,4 @@
-/*update 111/01/05 
+/*update 111/01/27 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -21,7 +21,17 @@ estea chen estea8968@gmail.com
 //#ifdef __AVR__
 // #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 //#endif
-
+//max7219
+#include <LedControl.h>
+#include <MD_Parola.h>
+#include <MD_MAX72xx.h>
+#include <SPI.h>
+//LedControl lc=LedControl(0,5,4,1);
+LedControl lc=LedControl(D3,D2,D1,1);
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+//MD_Parola maDisplay=MD_Parola(HARDWARE_TYPE, D3,D1,D2,1);
+MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, D2, 1);
+//ws2812
 #define NUMPIXELS 12 // Popular NeoPixel ring size
 //Adafruit_NeoPixel pixels(NUMPIXELS, 5, NEO_GRB + NEO_KHZ800);
 
@@ -35,6 +45,7 @@ Servo myservo;  // create servo object to control a servo
 //qrcode
 SSD1306  display(0x3c, D2, D1);
 QRcode qrcode (&display);
+//max7219
 
 char* serialString()
 {
@@ -74,6 +85,13 @@ void setup() {
   //qrcode
   display.init();
   display.display();
+  //max7219
+  maDisplay.begin();
+  // Set the intensity (brightness) of the display (0-15):
+  maDisplay.setIntensity(0);
+  // Clear the display:
+  maDisplay.displayClear();
+  maDisplay.setTextAlignment(PA_CENTER);  
 }
 
 void loop() {
@@ -101,7 +119,52 @@ void loop() {
       char* inputTime =strtok(NULL, "#");
       //Serial.println(inputTime);
 
-      //ws2812_shu
+    //max7219
+    if(strcmp(commandString, "maset") == 0){
+      //Serial.println(atoi(inputPin));
+      char* data_pin = strtok(inputPin, ",");
+      char* cs_pin = strtok(NULL, ",");
+      char* clk_pin = strtok(NULL, ",");
+      char* max_devices = strtok(NULL, ",");
+      //LedControl(int dataPin, int clkPin, int csPin, int numDevices);
+      //LedControl lc=LedControl(D3,D2,D1,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      //LedControl lc=LedControl(0,4,5,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      lc=LedControl(atoi(data_pin),atoi(cs_pin),atoi(clk_pin),atoi(max_devices));  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      lc.shutdown(0,false);  // 關閉省電模式
+      lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
+      lc.clearDisplay(0);    // 清除螢幕
+    }
+    
+    if(strcmp(commandString, "mashow") == 0){
+      char* devices = strtok(inputPin, ",");
+      char* row = strtok(NULL, ",");
+      char* col = strtok(NULL, ",");
+      char* onoff = strtok(NULL, ",");
+      //lc.setLed(0,row,col,1); // 將Led的列,行設定為亮
+      lc.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
+    }
+    if(strcmp(commandString, "max") == 0){
+      char* data_pin = strtok(inputPin, ",");
+      char* cs_pin = strtok(NULL, ",");
+      char* clk_pin = strtok(NULL, ",");
+      char* max_devices = strtok(NULL, ",");
+      #define MAX_DEVICES atoi(max_devices)
+      #define CS_PIN atoi(cs_pin)
+      #define DATA_PIN atoi(data_pin)
+      #define CLK_PIN atoi(clk_pin)
+      #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+      //MD_Parola 
+      //maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CS_PIN,CLK_PIN, MAX_DEVICES);
+      MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CS_PIN, CLK_PIN,  MAX_DEVICES);
+      maDisplay.begin();
+      // Set the intensity (brightness) of the display (0-15):
+      maDisplay.setIntensity(0);
+      // Clear the display:
+      maDisplay.displayClear();
+      maDisplay.setTextAlignment(PA_CENTER);
+      maDisplay.print(inputValue);
+    }
+    //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
       int g = 0;
@@ -112,13 +175,12 @@ void loop() {
       int sp;
       bb = strtok(inputValue, ",");
       led_value[i] = bb;
-      Serial.println(led_value[i]);
-      i++;
-      
+      //Serial.println(led_value[i]);
+      i++; 
       while( bb!= NULL ){
         bb = strtok(NULL, ",");
         led_value[i] = bb;
-        Serial.println(led_value[i]);
+        //Serial.println(led_value[i]);
         i++;        
       }
       
@@ -367,5 +429,5 @@ void loop() {
       
      }
     //delay(10);
-    
+
   }
