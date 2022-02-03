@@ -1,4 +1,4 @@
-/*update 111/01/27 
+/*update 111/02/03 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -127,9 +127,9 @@ void loop() {
       char* clk_pin = strtok(NULL, ",");
       char* max_devices = strtok(NULL, ",");
       //LedControl(int dataPin, int clkPin, int csPin, int numDevices);
-      //LedControl lc=LedControl(D3,D2,D1,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
-      //LedControl lc=LedControl(0,4,5,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
-      lc=LedControl(atoi(data_pin),atoi(cs_pin),atoi(clk_pin),atoi(max_devices));  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      //LedControl lc=LedControl(D3,D1,D2,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      //LedControl lc=LedControl(0,5,4,1);  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      lc=LedControl(atoi(data_pin),atoi(clk_pin),atoi(cs_pin),atoi(max_devices));  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
       lc.shutdown(0,false);  // 關閉省電模式
       lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
       lc.clearDisplay(0);    // 清除螢幕
@@ -143,6 +143,12 @@ void loop() {
       //lc.setLed(0,row,col,1); // 將Led的列,行設定為亮
       lc.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
     }
+    if(strcmp(commandString, "maclear") == 0){
+      lc.clearDisplay(0); 
+    }
+    if(strcmp(commandString, "marow") == 0){
+      lc.setRow(atoi(inputPin),atoi(inputValue),atoi(inputTime));
+    }
     if(strcmp(commandString, "max") == 0){
       char* data_pin = strtok(inputPin, ",");
       char* cs_pin = strtok(NULL, ",");
@@ -155,7 +161,7 @@ void loop() {
       #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
       //MD_Parola 
       //maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CS_PIN,CLK_PIN, MAX_DEVICES);
-      MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CS_PIN, CLK_PIN,  MAX_DEVICES);
+      MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN,CLK_PIN, CS_PIN, MAX_DEVICES);
       maDisplay.begin();
       // Set the intensity (brightness) of the display (0-15):
       maDisplay.setIntensity(0);

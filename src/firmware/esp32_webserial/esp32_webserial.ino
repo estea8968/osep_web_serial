@@ -1,5 +1,5 @@
 /*
- * 111/01/18
+ * 111/02/02
  */
 //#include<WiFi.h>
 //#include <Servo.h>
@@ -14,6 +14,11 @@
 //qrcode
 #include "SSD1306.h"
 #include <qrcode.h>
+//max7219
+#include <MD_Parola.h>
+#include <MD_MAX72xx.h>
+#include <SPI.h>
+#include <LedControl.h>
 
 //ws2812
 #include <Adafruit_NeoPixel.h>
@@ -26,6 +31,11 @@
 
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //oled end
+//max7219
+LedControl lc=LedControl(16,18,17,1);
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+//MD_Parola maDisplay=MD_Parola(HARDWARE_TYPE, D3,D1,D2,1);
+MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, 16,17,18,1);
 
 //pwm
 // setting PWM properties
@@ -82,7 +92,7 @@ void setup() {
   //gpio 15-19 25 26 ok
   //wifi
   //WiFi.mode(WIFI_STA); //設置WiFi模式
-  
+
   //ws2812
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
   clock_prescale_set(clock_div_1);
@@ -92,6 +102,16 @@ void setup() {
   //qrcode
   //display.init();
   //display.display();
+  //max7219
+  maDisplay.begin();
+  // Set the intensity (brightness) of the display (0-15):
+  //maDisplay.setIntensity(0);
+  // Clear the display:
+  //maDisplay.displayClear();
+  //maDisplay.setTextAlignment(PA_CENTER);
+  lc.shutdown(0,false);  // 關閉省電模式
+  lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
+  lc.clearDisplay(0);    // 清除螢幕
 }
 //tone
 const int PIN = 16;
@@ -141,7 +161,58 @@ void loop() {
       //取出第4個值
       char* inputTime =strtok(NULL, "#");
       //Serial.println(inputTime);
-
+      
+      if(strcmp(commandString, "maset") == 0){
+      //Serial.println(atoi(inputPin));
+      char* data_pin = strtok(inputPin, ",");
+      char* cs_pin = strtok(NULL, ",");
+      char* clk_pin = strtok(NULL, ",");
+      char* max_devices = strtok(NULL, ",");
+      //LedControl(int dataPin, int clkPin, int csPin, int numDevices);
+      lc=LedControl(atoi(data_pin),atoi(clk_pin),atoi(cs_pin),atoi(max_devices));  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
+      lc.shutdown(0,false);  // 關閉省電模式
+      lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
+      lc.clearDisplay(0);    // 清除螢幕
+    }
+    
+    if(strcmp(commandString, "mashow") == 0){
+      char* devices = strtok(inputPin, ",");
+      char* row = strtok(NULL, ",");
+      char* col = strtok(NULL, ",");
+      char* onoff = strtok(NULL, ",");
+      //lc.setLed(0,row,col,1); // 將Led的列,行設定為亮
+      Serial.println(col);
+      lc.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
+    }
+    if(strcmp(commandString, "maclear") == 0){
+      lc.clearDisplay(0); 
+    }
+    if(strcmp(commandString, "marow") == 0){
+      lc.setRow(atoi(inputPin),atoi(inputValue),atoi(inputTime));
+    }
+      if(strcmp(commandString, "max") == 0){
+      char* data_pin = strtok(inputPin, ",");
+      char* cs_pin = strtok(NULL, ",");
+      char* clk_pin = strtok(NULL, ",");
+      char* max_devices = strtok(NULL, ",");
+      #define MAX_DEVICES atoi(max_devices)
+      #define CS_PIN atoi(cs_pin)
+      #define DATA_PIN atoi(data_pin)
+      #define CLK_PIN atoi(clk_pin)
+      #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+      Serial.println(CLK_PIN);
+      //MD_Parola 
+      //maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CS_PIN,CLK_PIN, MAX_DEVICES);
+      MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN,  MAX_DEVICES);
+      maDisplay.begin();
+      // Set the intensity (brightness) of the display (0-15):
+      maDisplay.setIntensity(0);
+      // Clear the display:
+      maDisplay.displayClear();
+      maDisplay.setTextAlignment(PA_CENTER);
+      Serial.println(inputValue);
+      maDisplay.print(inputValue);
+    }
       if(strcmp(commandString, "sh") == 0){
       int r = 0;
       int g = 0;
