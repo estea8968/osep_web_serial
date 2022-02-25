@@ -9,14 +9,15 @@
   <div class="main">
       <div class="wrapper">
         <div class="bot">
-          <h1>Upload-o-matic上傳韌體</h1>
-          <p>Choose a program to upload to an arduino</p>
+          <h1>Upload-o-matic 上傳韌體</h1>
+          <p>選擇 Arduino 開發板</p>
 
           <form id="uploadForm"> 
-            <label>Board:
+            <label>開發板：
               <select id="boardType">
                 <option value="uno">Uno</option>
                 <option value="nano">Nano</option>
+                <option value="picoboard">Picoboard</option>
               </select>
             </label>
 
@@ -28,7 +29,7 @@
               </div>
             </label-->
 
-            <button type="submit" id="uploadBtn">Upload!</button>
+            <button type="submit" id="uploadBtn">上傳</button>
           </form>
         </div>
         <div class="board">
@@ -42,20 +43,24 @@
     </div>
     <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
     <script src="js/uno_hex.js" charset="UTF-8"></script>
+    <script src="js/picoboard_hex.js" charset="UTF-8"></script>
     <script src="js/nano_hex.js" charset="UTF-8"></script>
+    
     <script>
       function handleSubmit(e) {
         e.preventDefault();
 	
         const board = boardType.value;
+        console.log('board:',board);
 	if (board =='uno'){
 	   hexStr = unoHex;
 	}else if(board == 'nano'){
 	   hexStr = nanoHex;
-	}else if(board == 'nodemcu'){
-	   hexStr = nodemcuHex;
+	}else if(board == 'picoboard'){
+	   hexStr = picoboardHex;
 	}
-	
+	console.log(hexStr);
+	//console.log('board:',board);
         let avrgirl = new AvrgirlArduino({
           board: board,
           debug: true

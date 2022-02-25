@@ -191,6 +191,17 @@ var boards = [
     protocol: 'stk500v1'
   },
   {
+    name: 'picoboard',
+    baud: 115200,
+    signature: Buffer.from([0x1e, 0x95, 0x0f]),
+    pageSize: 128,
+    numPages: 256,
+    timeout: 400,
+    productId: ['0x0043', '0x7523', '0x0001', '0xea60', '0x6015'],
+    productPage: 'https://store.arduino.cc/arduino-picoboard',
+    protocol: 'stk500v1'
+  },
+  {
     name: 'micro',
     baud: 57600,
     signature: Buffer.from([0x43, 0x41, 0x54, 0x45, 0x52, 0x49, 0x4e]),
@@ -248,7 +259,8 @@ var boards = [
   },
   {
     name: 'nano',
-    baud: 57600,
+    baud: 115200,
+    //baud: 57600,
     signature: Buffer.from([0x1e, 0x95, 0x0f]),
     pageSize: 128,
     numPages: 256,

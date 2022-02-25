@@ -72,8 +72,14 @@ import webserialEsp8266InsetIconURL from './webserialEsp8266/webserialEsp-small.
 import webserialEsp32Image from './webserialEsp32/webserialEsp32.png';
 import webserialEsp32InsetIconURL from './webserialEsp32/webserialEsp-small.png';
 
+import webserialPicoboardImage from './webserialPicoboard/webserialPicoboard.svg';
+import webserialPicoboardInsetIconURL from './webserialPicoboard/webserialPicoboard-small.png';
+
 import mqttImage from './mqtt/mqtt.png';
 import mqttInsetIconURL from './mqtt/mqtt-small.png';
+
+import linenotifyImage from './linenotify/linenotify.svg';
+import linenotifyInsetIconURL from './linenotify/linenotify_small.svg';
 
 import ml2scratchIconURL from './ml2scratch/ml2scratch.png';
 import ml2scratchInsetIconURL from './ml2scratch/ml2scratch-small.png';
@@ -545,11 +551,10 @@ export default [
         helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
 
     },
-    /*
     {
         name: 'Webserial ESP-32',
         extensionId: 'webserialEsp32',
-        collaborator: "Mr. Y's Lab,estea chen",
+        collaborator: "estea chen",
         iconURL: webserialEsp32Image,
         insetIconURL: webserialEsp32InsetIconURL,
         description: (
@@ -563,9 +568,29 @@ export default [
         disabled: false,
         internetConnectionRequired: true,
         bluetoothRequired: false,
+        helpLink: 'https://sites.google.com/view/scratch-web-serial-api/'
+
+    },
+    {
+        name: 'WebSerial Picoboard',
+        extensionId: 'webserialPicoboard',
+        collaborator: "estea chen",
+        iconURL: webserialPicoboardImage,
+        insetIconURL: webserialPicoboardInsetIconURL,
+        description: (
+        	<FormattedMessage
+            	defaultMessage="WebSerial Picoboard"
+            	description="WebSerial Picoboard extension"
+            	id="gui.extension.WebSerialPcoboard.description"
+        	/>
+    	),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
         helpLink: 'https://ys-fang.github.io/OSEP/app/'
 
-    },*/
+    },
     {
         name: 'MQTT',
         extensionId: 'mqtt',
@@ -577,6 +602,28 @@ export default [
                 defaultMessage="Use MQTT for data transfer."
                 description="MQTT extension"
                 id="gui.extension.Mqtt.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        //helpLink: ''
+
+    },
+    {
+        name: 'LineNotify',
+        extensionId: 'linenotify',
+        collaborator: "estea chen",
+        iconURL: linenotifyImage,
+        insetIconURL: linenotifyInsetIconURL,
+        description: (
+
+            <FormattedMessage
+                defaultMessage="Use Line Notify send message."
+                description="Line Notify extension"
+                id="gui.extension.linenotify.description"
+
             />
         ),
         featured: true,
