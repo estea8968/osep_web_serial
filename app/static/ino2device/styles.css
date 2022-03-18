@@ -1,0 +1,31 @@
+.btn_seach{
+    text-align: center;
+    font-size: 3vw;
+    border-radius: 8px;
+    background-color:#FFCC99
+    
+}
+.btn_fa{
+    border-radius: 4px;
+    text-align: center;
+    font-size: 3vw;
+    background-color:#ffffff
+    
+}
+
+.btn_sun{
+    border-radius: 4px;
+    text-align: center;
+    font-size: 3vw;
+    background-color:#CCE5FF
+    
+}
+.btn_self{
+    border-radius: 8px;
+    font-size: 3vw;
+    text-align: center;
+    background-color:#ee99ff
+}
+p{
+    font-size: 3vw
+}
