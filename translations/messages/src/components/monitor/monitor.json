@@ -28,5 +28,10 @@
     "id": "gui.monitor.contextMenu.export",
     "description": "Menu item to export from list monitors",
     "defaultMessage": "export"
+  },
+  {
+    "id": "gui.monitor.contextMenu.hide",
+    "description": "Menu item to hide the monitor",
+    "defaultMessage": "hide"
   }
 ]

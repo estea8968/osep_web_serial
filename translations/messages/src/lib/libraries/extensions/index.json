@@ -105,31 +105,6 @@
     "defaultMessage": "Connecting"
   },
   {
-    "id": "gui.extension.OneGPIOArduino.description",
-    "description": "Onegpio for the Arduino extension",
-    "defaultMessage": "OneGPIOArduino"
-  },
-  {
-    "id": "gui.extension.OneGPIOEsp.description",
-    "description": "OneGpio ESP-8266 extension",
-    "defaultMessage": "OneGpio ESP-8266"
-  },
-  {
-    "id": "gui.extension.OneGPIOPicoboard.description",
-    "description": "OneGpio Picoboard extension",
-    "defaultMessage": "OneGpio Picoboard"
-  },
-  {
-    "id": "gui.extension.OneGPIOCpx.description",
-    "description": "OneGpio Playground Express extension",
-    "defaultMessage": "OneGpio Playground Express"
-  },
-  {
-    "id": "gui.extension.OneGPIORpi.description",
-    "description": "OneGpio Raspberry Pi extension",
-    "defaultMessage": "OneGpio Raspberry Pi"
-  },
-  {
     "id": "gui.extension.gasojson.description",
     "description": "Fetch JSON extension",
     "defaultMessage": "Fetch JSON."
@@ -147,36 +122,66 @@
   {
     "id": "gui.extension.gasothingspeak.description",
     "description": "ThingSpeak extension",
-    "defaultMessage": "ThingSpeak"
+    "defaultMessage": "Send data to ThingSpeak."
   },
   {
     "id": "gui.extension.voicetotext.description",
-    "description": "Voice To Text extension",
-    "defaultMessage": "VoiceToText"
+    "description": "Speech To Text extension",
+    "defaultMessage": "Convert speech to text."
   },
   {
     "id": "gui.extension.urltxt.description",
     "description": "get url text data extension",
-    "defaultMessage": "urlTXT"
+    "defaultMessage": "Read and write text files and open a URL."
   },
   {
     "id": "gui.extension.rwgoogle.description",
     "description": "read write google sheets extension",
-    "defaultMessage": "rwGoogle"
-  },
-  {
-    "id": "gui.extension.knnalgorithm.description",
-    "description": "Description for the 'knn algorithm' extension",
-    "defaultMessage": "knn algorithm."
+    "defaultMessage": "Read and write Google Sheets and Google Forms."
   },
   {
     "id": "gui.extension.WebSerialArduino.description",
     "description": "Web serial for the Arduino extension",
-    "defaultMessage": "WebSerialArduino chrome only"
+    "defaultMessage": "Connect Arudino and Google Chrome using Web Serial API."
+  },
+  {
+    "id": "gui.extension.WebserialEsp.description",
+    "description": "Webserial ESP-8266 extension",
+    "defaultMessage": "Connect ESP-8266 and Google Chrome with Web Serial API."
+  },
+  {
+    "id": "gui.extension.WebserialEsp32.description",
+    "description": "Webserial ESP-32 extension",
+    "defaultMessage": "Webserial ESP-32"
   },
   {
     "id": "gui.extension.WebSerialPcoboard.description",
     "description": "WebSerial Picoboard extension",
     "defaultMessage": "WebSerial Picoboard"
+  },
+  {
+    "id": "gui.extension.Mqtt.description",
+    "description": "MQTT extension",
+    "defaultMessage": "Use MQTT for data transfer."
+  },
+  {
+    "id": "gui.extension.linenotify.description",
+    "description": "Line Notify extension",
+    "defaultMessage": "Use Line Notify send message."
+  },
+  {
+    "id": "gui.extension.ml2scratchblocks.description",
+    "description": "ML2Scratch Blocks.",
+    "defaultMessage": "Machine learning for Scratch"
+  },
+  {
+    "id": "gui.extension.posenet2scratchblocks.description",
+    "description": "PoseNet2Scratch Blocks.",
+    "defaultMessage": "Pose detection for Scratch"
+  },
+  {
+    "id": "gui.extension.tm2scratchblocks.description",
+    "description": "画像や音声を学習させよう。",
+    "defaultMessage": "Machine learning for images and sound"
   }
 ]

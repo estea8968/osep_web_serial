@@ -1,18 +1,11 @@
 /*
- * 更新日期110/12/3 estea chen
+ * 更新日期110/12/22 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
 //ws2812
 #include <Adafruit_NeoPixel.h>
-//#include <LiquidCrystal_I2C.h>
-//LiquidCrystal_I2C lcd(0x27, 16, 2); 
- 
-//PMS5003T
-//#include "Adafruit_PM25AQI.h"
-//Adafruit_PM25AQI aqi = Adafruit_PM25AQI();
-
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
@@ -43,34 +36,27 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
-  
-  //ws2812
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
     clock_prescale_set(clock_div_1);
   #endif
-  
-  /*
-  lcd.init(); //初始化LCD 
-  lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
-  lcd.backlight(); //開啟背光*/
+ 
 }
+
+
 
 void loop() 
 {
   static boolean needPrompt=true;
-  
   char* inputData;
-
   if (needPrompt)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
     needPrompt=false;
   }
   inputData= serialString();
-  
+
   if (inputData!=NULL)
   {
-    
     //取出命令、腳位、值、時間
     char* commandString = strtok(inputData, "#"); 
     char* inputPin = strtok(NULL, "#");
@@ -78,31 +64,7 @@ void loop()
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
-
-    /*
-    if(strcmp(commandString, "pm") == 0){
-      //if (! aqi.begin_I2C()) {
-      //  Serial.println(",Could not find PM 2.5 sensor!, ");  
-      //}
-      int pms = atoi(inputValue);
-      PM25_AQI_Data data;
-      if (! aqi.read(&data)) {
-        Serial.println(",Could not read from AQI, ");
-      }else{
-        if(pms ==1){
-          Serial.print(data.pm10_standard);  
-        }else if (pms ==2){
-          Serial.print(data.pm25_standard);  
-        }else if(pms ==3){
-          Serial.println(data.pm100_standard);  
-        }
-        delay(100);        
-      }
-      
-    }*/
-
-    
-
+ 
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
@@ -135,30 +97,35 @@ void loop()
             b = 0;
           }else if( led_value[i] == 1){
             i++;
-            r = 0;
+            r = led_value[i]*3;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 2){
             i++;
-            r = 0;
-            g = 0;
-            b = led_value[i];
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
           }else if( led_value[i] == 3){
             i++;
-            r = led_value[i];
+            r = 0;
             g = led_value[i];
             b = 0;
           }else if( led_value[i] == 4){
             i++;
             r = 0;
-            g = led_value[i];
+            g = 0;
             b = led_value[i];
           }else if( led_value[i] == 5){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 6){
             i++;
             r = led_value[i];
             g = 0;
             b = led_value[i];
-          }else if( led_value[i] == 6){
+          }else if( led_value[i] == 7){
             i++;
             r = led_value[i];
             g = led_value[i];
@@ -214,22 +181,6 @@ void loop()
         }
         pixels.show(); 
       }
-    //lcd 16x2
-    //format: l#string#row
-    /*
-    if(strcmp(commandString, "l") == 0) {
-      if(strcmp(inputPin, "clear") == 0) {
-          lcd.clear();
-      }else{
-          Serial.println(inputPin);
-          if(atoi(inputValue) == 0){
-            lcd.setCursor(0,0);
-          }else{
-            lcd.setCursor(0,1);
-          }
-          lcd.print(inputPin);  
-      }
-    }*/
       
     //超音波
     if(strcmp(commandString, "HC-SR04")== 0){
@@ -292,7 +243,7 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      pinMode(atoi(inputPin),INPUT);
+      //pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));

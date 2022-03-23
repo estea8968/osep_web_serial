@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "tại đây",
     "developers.title": "Scratch dành cho Lập trình viên",
-    "developers.introLinkText": "Scratch Team tại MIT",
+    "developers.introLinkText": "Nhóm Scratch",
     "developers.intro": "Tại trang này bạn sẽ tìm thấy thông tin về chương trình mã nguồn mở và được duy trì bởi {introLink}, cũng như những suy nghĩ của chúng tôi về việc tìm ra cách tốt nhất để thiêt kế chương trình tạo ra kinh nghiệm học tập tốt nhất cho trẻ em.",
     "developers.projectsTitle": "Các chương trình",
     "developers.principlesTitle": "Những nguyên tắc",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Sự khác nhau giữa Blockly và Mảnh ghép Scratch?",
     "developers.faqDifferencesBody": "Mảnh ghép Scratch được phát triển trên nền tảng mã nguồn của Blockly, và được thiết kế chi tiết với những nguyên tắc phát triển riêng của nhóm để hỗ trợ cho các trải nghiệm sự sáng tạo.",
     "developers.faqCollabTitle": "Tôi mong muốn được hợp tác cùng nhóm Scratch. Tôi có thể liên lạc bằng cách nào?",
-    "developers.faqCollabBody": "Bạn có thể liên lạc với chúng tôi thông qua {githubLink} hoặc gửi email đến {emailLink} Chúng tôi mong nhận được phản hồi từ bạn!"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }

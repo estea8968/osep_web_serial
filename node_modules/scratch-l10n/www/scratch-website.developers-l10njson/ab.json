@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "абра",
     "developers.title": "Scratch, аԥҵаҩцәа рзы",
-    "developers.introLinkText": "Scratch акоманда  MIT аҟынтәи ",
+    "developers.introLinkText": "Scratch Акоманда",
     "developers.intro": "On this page, you’ll find information about open source projects created and maintained by the {introLink}, as well as our thoughts on best practices for designing learning experiences for children.",
     "developers.projectsTitle": "Апроектқәа",
     "developers.principlesTitle": "Апринципқәа",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Еиԥшымзаарас ирымоузеи аблокқәа Blockly -и Scratch -и?",
     "developers.faqDifferencesBody": " Scratch аблокқәа раԥҵара шьаҭас иамоуп Blockly акод.",
     "developers.faqCollabTitle": "Сара сазыхиоуп аусеицура. Сҽышԥашәымаздари?",
-    "developers.faqCollabBody": "You can reach us over on {githubLink} or you can send an email to {emailLink}. We look forward to hearing from you!"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }

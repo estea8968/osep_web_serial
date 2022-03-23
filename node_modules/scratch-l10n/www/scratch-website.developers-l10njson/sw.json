@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "hapa",
     "developers.title": "Scratch ya Wasanidi Programu",
-    "developers.introLinkText": "Kikoa cha Scratch huko MIT",
+    "developers.introLinkText": "Timu ya Scratch",
     "developers.intro": "Kwenye ukurasa huu, utapata habari kuhusu miradi wazi iliyoundwa na kudumishwa na {introLink}, na pia mawazo yetu juu ya mazoea bora ya kubuni uzoefu wa kujifunza kwa watoto.",
     "developers.projectsTitle": "Miradi",
     "developers.principlesTitle": "Kanuni",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Kuna tofauti gani kati ya Blockly  na Bloki za Scratch?",
     "developers.faqDifferencesBody": "Bloku za scratch hujengwa juu ya msingi wa Blockly, na imeundwa mahsusi na kanuni zetu kwa maarifa ili kusaidia  ujuzi wa kujifunzaji kwa ubunifu.",
     "developers.faqCollabTitle": "Ningependa kushirikiana. Je! Ninaweza kuwasiliana vipi?",
-    "developers.faqCollabBody": "Unaweza kutufikia kupitia {githubLink} au unaweza kutuma barua pepe kwa anwani {emailLink}. Tunatarajia kupata mawasiliano kutoka kwako!"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }
