@@ -107,6 +107,9 @@ const translationMap = {
     },
     'ja-Hira': {
         'gui.extension.microbitMore.description': `マイクロビットのすべてのきのうであそぶ。 (${version})`
+    },
+    'zh-tw':{
+        'gui.extension.microbitMore.description': `玩轉micro:bit所有功能. (${version})`
     }
 };
 
@@ -717,13 +720,20 @@ const extensions = [
     collaborator: 'Yengawa Lab',
     iconURL: microbitMoreIconURL,
     insetIconURL: microbitMoreInsetIconURL,
-    get description () {
+    description: (
+            <FormattedMessage
+                defaultMessage= 'Play with all functions of micro:bit.'
+                description= "Description for the 'Microbit More' extension"
+                id= 'gui.extension.microbitMore.description'
+            />
+        ),
+    /*get description () {
         return formatMessage({
             defaultMessage: 'Play with all functions of micro:bit.',
             description: "Description for the 'Microbit More' extension",
             id: 'gui.extension.microbitMore.description'
         });
-    },
+    },*/
     featured: true,
     disabled: false,
     bluetoothRequired: true,
