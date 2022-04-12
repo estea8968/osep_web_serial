@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "hier",
     "developers.title": "Scratch voor ontwikkelaars",
-    "developers.introLinkText": "MIT Scratch Team",
+    "developers.introLinkText": "Scratch-team",
     "developers.intro": "Op deze pagina staat informatie over open source projecten gecreéerd en onderhouden door {introLink}, en onze ideeën over de beste voorbeelden voor het ontwerpen en bouwen van leerervaringen voor kinderen.",
     "developers.projectsTitle": "Projecten",
     "developers.principlesTitle": "Principes",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Wat is het verschil tussen Blockly en Scratch Blocks?",
     "developers.faqDifferencesBody": "Scratch Blocks bouwt op de codebasis van Blockly en is specifiek ontworpen met onze principes in gedachten om creatieve leerervaringen te ondersteunen.",
     "developers.faqCollabTitle": "Ik zou graag willen meewerken. Hoe kom ik in contact?",
-    "developers.faqCollabBody": "Je kan ons bereiken op {githubLink} of een email sturen naar {emailLink}. We kijken uit naar jouw reactie!"
+    "developers.faqCollabBody": "je kunt ons bereiken op {githubLink} of op onze {contactUsLink} pagina. We horen graag van je!"
 }

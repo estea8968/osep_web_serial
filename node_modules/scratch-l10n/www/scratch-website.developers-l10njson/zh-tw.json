@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "此處",
     "developers.title": "致開發者",
-    "developers.introLinkText": "Scratch Team at MIT",
+    "developers.introLinkText": "Scratch 團隊",
     "developers.intro": "你可以從此頁面瞭解由 {introLink} 所創建及維護的開源項目的相關資訊，以及我們對於為孩童設計學習體驗的最佳做法的想法。",
     "developers.projectsTitle": "專案",
     "developers.principlesTitle": "策略",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Blockly 和 Scratch Blocks 有什麼差別？",
     "developers.faqDifferencesBody": "Scratch Blocks 在 Blockly 的基礎上建置，設計中注入我們對創造性學習體驗的理念。",
     "developers.faqCollabTitle": "我想尋求合作，有聯繫的管道嗎？",
-    "developers.faqCollabBody": "你可以在 {githubLink} 上聯繫到我們，或者，你也可以透過信箱 {emailLink} 來聯絡。我們期待您的回音！"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }

@@ -5,6 +5,8 @@
     "messages.activityStudios": "Aktivita ve studiích",
     "messages.activityForums": "Aktivita ve fórech",
     "messages.becomeManagerText": "{username} tě povýšil na správce pro studio {studio}",
+    "messages.becomeHostText": "{usernameOrScratchTeam}z vás udělal hostitele studia {studio}. Jako hostitel máte nyní možnost upravit název studia, miniaturu a popis. Běž pozdravit do studia!",
+    "messages.becomeHostScratchTeam": "Člen Scratch Teamu",
     "messages.curatorInviteText": "{actorLink} ti nabízí funkci správce pro studio {studioLink}. Navštiv {tabLink} tohoto studia pro souhlas s nabídkou",
     "messages.curatorTabText": "karta správce",
     "messages.favoriteText": "{profileLink} doporučuje tvůj projekt {projectLink}",

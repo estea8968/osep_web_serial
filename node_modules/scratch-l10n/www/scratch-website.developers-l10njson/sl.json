@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "tu",
     "developers.title": "Scratch za razvijalce",
-    "developers.introLinkText": "MIT Scratch ekipa",
+    "developers.introLinkText": "Scratch ekipa",
     "developers.intro": "Na tej strani boste našli informacije o odprtokodnih projektih, ki jih vodi   {introLink}, prav tako tudi naše ideje o najboljšem načinu načrtovanja učne izkušnje učencev.",
     "developers.projectsTitle": "Projekti",
     "developers.principlesTitle": "Principi",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Kakšna je razlika med Blockly in Scratch Bloki?",
     "developers.faqDifferencesBody": "Scratch Bloki temeljijo na Blockly kodi in so namensko načrtovani z upoštevanjem naših načel, ki podpirajo kreativne učne izkušnje.",
     "developers.faqCollabTitle": "Rad bi sodeloval. Kako naj stopim v stik z vami?",
-    "developers.faqCollabBody": "V stik z nami lahko stopite preko {githubLink} ali pa nam pošljete e-pošto na {emailLink}. Veselimo se vašega sporočila."
+    "developers.faqCollabBody": "Z nami lahko stopiš v stik na {githubLink} ali preko naše strani {contactUsLink}. Veselimo se tvojega sporočila!"
 }

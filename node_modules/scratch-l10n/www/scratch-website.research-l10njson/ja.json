@@ -1,9 +1,9 @@
 {
     "research.title": "Scratchに関する研究",
-    "research.conductors": "Scratchに関する研究 は、MITのScratchチームのメンバーに加え、次の研究者によって行われています。：（敬称略）ペンシルバニア大学教育大学院大学の Yasmin Kafai、ハーバード大学教育大学院 のKaren Brennan、ワシントン大学のBenjamin Mako Hill、マイクロソフトリサーチ のAndrés Monroy Hernández、カリフォルニア大学アーバイン校 の伊藤瑞子、Crystle Martin、チャールストン大学のQuinn Burke、ユタ州立大学 のDeborah Fields、インディアナ大学の Kylie Peppler",
-    "research.privacy": "みなさんのScratchプロジェクトの共有状況、オンラインコミュニティへの参加状況を調べることで、我々は「人々がScratchをどのように使い、学ぶのか」についての研究を行っています。Scratchサイト上で公に共有されたすべてのプロジェクト、コメント、その他のマテリアルは、この研究に関する分析、プレゼンテーション資料、論文、および報告書で取り上げられる可能性があります。個人を特定できる情報が共有されることはありません。 (ご不明な点がございましたら、{contactLink} フォームを使って、お問い合わせください。)",
+    "research.conductors": "Scratchの研究は、Scratch財団チームによって行われています。プロジェクトを共有したり、Scratchオンラインコミュニティに参加することで、人々がどのようにScratchを使って学ぶのかを私たちが理解するのに役立ちます。Scratchサイトで公開されたプロジェクト、コメント、その他の教材には、研究分析、プレゼン資料、レポートが含まれる場合があります。個人を特定できる情報を共有することは決してありません。詳細については、{ethicsCodeLink}をお読みください。(不明点がございましたら、 {contactLink}フォームをご利用ください。)",
+    "research.collaborators": "これまでの共同研究者には、MITのライフロング・キンダーカーテン・グループ、ペンシルバニア大学教育大学院のYasmin Kafai氏、ハーバード大学教育大学院のKaren Brennan氏、ワシントン大学のBenjamin Mako Hill氏、MicrosoftリサーチのAndrés Monroy Hernandez氏、カリフォルニア大学アーバイン校のMimi Ito氏とCrystle Martin氏、チャールストン大学のQuinn Burke氏、ユタ州立大学のDeborah Fields氏、インディアナ大学のKylie Peppler氏などがいます。以下に、ScratchとScratchオンラインコミュニティに関する研究論文、プレゼン資料、論文の抜粋と、Scratchを支援するために授与された全米科学財団の助成金のリストを掲載します。",
+    "research.ethicsCodeLinkText": "Scratch財団の研究倫理規定",
     "research.contactLinkText": "連絡先",
-    "research.intro": "以下に、ScratchとScratchオンラインコミュニティに関する研究報告書、プレゼンテーション資料、論文をいくつか掲載します。また、Scratchを支援するために贈られたアメリカ国立科学財団（NSF）の助成金リストを掲載します。",
     "research.papers": "研究論文とプレゼンテーション資料",
     "research.grants": "アメリカ国立科学財団（NSF）助成金"
 }

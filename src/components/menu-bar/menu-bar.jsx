@@ -526,12 +526,10 @@ class MenuBar extends React.Component {
                                             )}
                                         </MenuItem>
                                     )}</TurboMode>
-                                    
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
                     </div>
-                    
                     <Divider className={classNames(styles.divider)} />
                     <div
                         className={classNames(
@@ -563,9 +561,7 @@ class MenuBar extends React.Component {
                             id="gui.menuBar.burnFirmware_e"
                             />
                     </div>
-
-                    <Divider className={classNames(styles.divider)} />
-                    <Divider className={classNames(styles.divider)} />
+                    
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -858,8 +854,7 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     userOwnsProject: PropTypes.bool,
     username: PropTypes.string,
-    vm: PropTypes.instanceOf(VM).isRequired,
-    onClickFirmware: PropTypes.func
+    vm: PropTypes.instanceOf(VM).isRequired
 };
 
 MenuBar.defaultProps = {
@@ -909,8 +904,7 @@ const mapDispatchToProps = dispatch => ({
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),
     onClickSaveAsCopy: () => dispatch(saveProjectAsCopy()),
-    onSeeCommunity: () => dispatch(setPlayer(true)),
-    onClickFirmware: () => dispatch(firmwareMenuOpen())
+    onSeeCommunity: () => dispatch(setPlayer(true))
 });
 
 export default compose(

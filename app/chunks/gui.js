@@ -212,8 +212,7 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
     showComingSoon: true,
     backpackHost: backpackHost,
     canSave: false,
-    onClickLogo: onClickLogo,
-    onClickFirmware: onClickFirmware
+    onClickLogo: onClickLogo
   }), appTarget);
 });
 

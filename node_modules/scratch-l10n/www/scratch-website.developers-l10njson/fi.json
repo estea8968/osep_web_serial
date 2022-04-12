@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "täällä",
     "developers.title": "Scratch kehittäjille",
-    "developers.introLinkText": "MIT-yliopiston Scratch-tiimin",
+    "developers.introLinkText": "Scratch-tiimi",
     "developers.intro": "Tältä sivulta löydät tietoa {introLink} luomista ja ylläpitämistä avoimen lähdekoodin projekteista. Olemme koonneet tälle sivulle myös parhaimpia tapoja suunnitella lapsille oppimiskokemuksia.",
     "developers.projectsTitle": "Projektit",
     "developers.principlesTitle": "Periaatteet",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Mitä eroa on Blocklylla ja Scratch Blocksilla?",
     "developers.faqDifferencesBody": "Scratch Blocks perustuu Blockly-koodikantaan ja on erityisesti suunniteltu periaatteitamme ajatellen tukemaan luovia oppimiskokemuksia.",
     "developers.faqCollabTitle": "Haluaisin tehdä yhteistyötä. Mistä löydän yhteystiedot?",
-    "developers.faqCollabBody": "Voit tavoittaa meidät {githubLink}issa tai voit lähettää sähköpostia osoitteeseen {emailLink}. Odotamme viestiäsi!"
+    "developers.faqCollabBody": "Voit tavoittaa meidät {githubLink}issa tai {contactUsLink}-sivullamme. Odotamme yhteydenottoasi!"
 }
