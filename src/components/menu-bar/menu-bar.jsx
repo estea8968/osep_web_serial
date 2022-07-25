@@ -532,6 +532,37 @@ class MenuBar extends React.Component {
                     </div>
                     <Divider className={classNames(styles.divider)} />
                     <div
+                        className={classNames(
+                            styles.menuBarItem,
+                            styles.hoverable
+                        )}
+                        onClick={() => (
+                            window.open('./static/burn_hex/')
+                        )}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Load Firmware A"
+                            description="Load Firmware Arduino"
+                            id="gui.menuBar.burnFirmware_a"
+                            />
+                    </div>
+                    <div
+                        className={classNames(
+                            styles.menuBarItem,
+                            styles.hoverable
+                        )}
+                        onClick={() => (
+                            window.open('./static/burn_esp/')
+                        )}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Load Firmware E"
+                            description="Load Firmware esp"
+                            id="gui.menuBar.burnFirmware_e"
+                            />
+                    </div>
+                    
+                    <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
                         onClick={this.props.onOpenTipLibrary}

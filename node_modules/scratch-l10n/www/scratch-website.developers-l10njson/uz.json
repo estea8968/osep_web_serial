@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "bu yerda",
     "developers.title": "Dasturchilar uchun Scratch",
-    "developers.introLinkText": "MIT Scratch jamoasi",
+    "developers.introLinkText": "Scratch Team",
     "developers.intro": "Ushbu sahifada {introLink} tomonidan yaratilgan va takomillashtirilgan ochiq kodli loyihalar haqida ma’lumot olishingiz mumkin. Shuningdek, bolalarni o‘qitish bo‘yicha eng yaxshi tajribalar haqida ham bilib oling.",
     "developers.projectsTitle": "Loyihalar",
     "developers.principlesTitle": "Tartiblar",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Blockly va Scratch bloklari orasida qanday farq bor?",
     "developers.faqDifferencesBody": "Scratch bloklari Blockly bazasiga asoslangan va kreativ ta’lim tajribalariga ko‘ra maxsus dizayn qilingan va takomillashtirilgan.",
     "developers.faqCollabTitle": "Sizlar bilan hamkorlik qilishga qiziqib qoldim. Qanday bog‘lansam bo‘ladi?",
-    "developers.faqCollabBody": "Biz bilan {githubLink} sahifasi orqali bog‘lansangiz bo‘ladi yoki {emailLink} manziliga xat yuboring. Sizdan xabarni orziqib kutamiz!"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }

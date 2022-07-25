@@ -1,7 +1,7 @@
 {
     "developers.hereLinkText": "тук",
     "developers.title": "Scratch за разработчици",
-    "developers.introLinkText": "екипа на Scratch към Масачузетския технологичен институт",
+    "developers.introLinkText": "Екипа на Scratch",
     "developers.intro": "На тази страница ще откриете информация относно проектите с отворен код създадени и поддържани от {introLink}, както и мненията ни относно добрите практики за създаване на образователни преживявания за деца.",
     "developers.projectsTitle": "Проекти",
     "developers.principlesTitle": "Принципи",
@@ -56,5 +56,5 @@
     "developers.faqDifferencesTitle": "Каква е разликата между „Blockly“ и „Scratch блокчета“?",
     "developers.faqDifferencesBody": "„Scratch блокчета“ надгражда кода на „Blockly“, както и е специално проектиран да спазва нашите принципи, така че да поддържа създаването на изобретателни обучителни преживявания.",
     "developers.faqCollabTitle": "Искам да помогна. Как да се свържа с Вас?",
-    "developers.faqCollabBody": "Можете да се свържете с нас в {githubLink} или чрез е-писмо до {emailLink}. Ще се радваме да осъществим връзка!"
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
 }

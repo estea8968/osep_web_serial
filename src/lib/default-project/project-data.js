@@ -74,19 +74,19 @@ const projectData = translateFunction => {
                 currentCostume: 0,
                 costumes: [
                     {
-                        assetId: 'b7853f557e4426412e64bb3da6531a99',
+                        assetId: 'bcf454acf82e4504149f7ffe07081dbc',
                         name: translator(messages.costume, {index: 1}),
                         bitmapResolution: 1,
-                        md5ext: 'b7853f557e4426412e64bb3da6531a99.svg',
+                        md5ext: 'bcf454acf82e4504149f7ffe07081dbc.svg',
                         dataFormat: 'svg',
                         rotationCenterX: 48,
                         rotationCenterY: 50
                     },
                     {
-                        assetId: 'e6ddc55a6ddd9cc9d84fe0b4c21e016f',
+                        assetId: '0fb9be3e8397c983338cb71dc84d0b25',
                         name: translator(messages.costume, {index: 2}),
                         bitmapResolution: 1,
-                        md5ext: 'e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg',
+                        md5ext: '0fb9be3e8397c983338cb71dc84d0b25.svg',
                         dataFormat: 'svg',
                         rotationCenterX: 46,
                         rotationCenterY: 53
@@ -105,52 +105,13 @@ const projectData = translateFunction => {
                 ],
                 volume: 100,
                 visible: true,
-                x: -50,
-                y: -20,
+                x: 0,
+                y: 0,
                 size: 100,
                 direction: 90,
                 draggable: false,
                 rotationStyle: 'all around'
-            },
-            /*{
-                isStage: false,
-                name: translator(messages.sprite, {index: 1}),
-                variables: {},
-                lists: {},
-                broadcasts: {},
-                blocks: {},
-                currentCostume: 0,
-                costumes: [
-                    {
-                        assetId: 'b81aab0acaa208c7521833d32fda4b1d',
-                        name: translator(messages.costume, {index: 1}),
-                        bitmapResolution: 1,
-                        md5ext: 'b81aab0acaa208c7521833d32fda4b1d.svg',
-                        dataFormat: 'svg',
-                        rotationCenterX: 48,
-                        rotationCenterY: 50
-                    }
-                ],
-                sounds: [
-                    {
-                        assetId: '83c36d806dc92327b9e7049a565c6bff',
-                        name: translator(messages.meow),
-                        dataFormat: 'wav',
-                        format: '',
-                        rate: 22050,
-                        sampleCount: 18688,
-                        md5ext: '83c36d806dc92327b9e7049a565c6bff.wav'
-                    }
-                ],
-                volume: 100,
-                visible: true,
-                x: 50,
-                y: 0,
-                size: 90,
-                direction: 90,
-                draggable: false,
-                rotationStyle: 'all around'
-            }*/
+            }
         ],
         meta: {
             semver: '3.0.0',

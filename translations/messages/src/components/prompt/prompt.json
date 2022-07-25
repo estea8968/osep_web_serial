@@ -20,6 +20,11 @@
     "defaultMessage": "This variable will be available to all sprites."
   },
   {
+    "id": "gui.gui.listPromptAllSpritesMessage",
+    "description": "A message that displays in a list modal when the stage is selected indicating that the list being created will available to all sprites.",
+    "defaultMessage": "This list will be available to all sprites."
+  },
+  {
     "id": "gui.prompt.cancel",
     "description": "Button in prompt for cancelling the dialog",
     "defaultMessage": "Cancel"

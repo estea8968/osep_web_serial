@@ -20,6 +20,11 @@
     "defaultMessage": "Click the green flag to start"
   },
   {
+    "id": "gui.howtos.intro-getting-started-ASL.name",
+    "description": "Name for the 'Getting Started ASL (American Sign Language)' how-to",
+    "defaultMessage": "Getting Started - ASL"
+  },
+  {
     "id": "gui.howtos.animate-a-name.name",
     "description": "Name for the 'Animate a Name' how-to",
     "defaultMessage": "Animate a Name"

@@ -75,6 +75,16 @@
     "defaultMessage": "Turn on Turbo Mode"
   },
   {
+    "id": "gui.menuBar.burnFirmware_a",
+    "description": "Load Firmware Arduino",
+    "defaultMessage": "Load Firmware A"
+  },
+  {
+    "id": "gui.menuBar.burnFirmware_e",
+    "description": "Load Firmware esp",
+    "defaultMessage": "Load Firmware E"
+  },
+  {
     "id": "gui.menuBar.joinScratch",
     "description": "Link for creating a Scratch account",
     "defaultMessage": "Join Scratch"
