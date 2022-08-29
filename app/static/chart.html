@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+    
+    //解析網址
+      var url_data =location.hash;
+      url_data = decodeURI(url_data.substring(1));
+      //console.log(url_data);
+      const url_data_a = url_data.split("#");
+      //console.log(url_data_a); 
+      var options_ary = url_data_a[0].split("/");
+      console.log('options_ary',options_ary);
+
+      if(options_ary[1] =='columnchart' ){
+	google.charts.load('current', {'packages':['bar']});
+      }else{
+ 	google.charts.load("current", {packages:['corechart']});
+      }
+ 	google.charts.setOnLoadCallback(drawChart);             
+            
+      function drawChart() {
+        const url_data_b = url_data_a[1].split("/");
+        var adata = [];
+        for (i=0; i<url_data_b.length;i++){
+            split_ary = url_data_b[i].split(",");
+            
+            if(i>0){
+            	if(options_ary[1] =='barchart' || options_ary[1] =='columnchart' || options_ary[1] =='linechart'){
+            	    for(j=1;j<split_ary.length;j++){
+		    	split_ary[j] = Number(split_ary[j]);
+		    }	
+
+            	}else{
+	            	split_ary[1] = Number(split_ary[1]);
+            	}
+
+            }
+            
+            adata.push(split_ary);	
+        }
+        //加入style
+        if(options_ary[1] =='columnchart' ){
+	    for(i=0;i<adata.length;i++){
+	    	if(i==0){
+	    	  adata[i].push( { role: 'annotation' });
+	    	}else{
+	    	  adata[i].push('');
+	    	}
+	    }        
+        }
+        
+        console.log('adata=',adata);
+	var data = google.visualization.arrayToDataTable(adata);
+                       
+        var options ={};
+        if(options_ary[1] == 'piechart'){
+        	if(options_ary[2] == 'true'){
+		   options_ary[2] = true;	
+		} else{options_ary[2] = false;}
+		options = {
+		  title: options_ary[0],
+		  is3D: options_ary[2],
+		};
+        }
+	if(options_ary[1] =='barchart'){
+		options = {
+		  title: options_ary[0],
+		  bar: {groupWidth: "90%"},
+		};
+	}
+	if(options_ary[1] =='columnchart'){
+	                               
+		options = {
+			title: options_ary[0],
+			//width: 600,
+			//height: 400,
+			bar: {groupWidth: "90%"},
+			legend: { position: "none" },
+	      	};
+		
+	}
+	if(options_ary[1] == 'linechart'){
+		options = {
+		  title: options_ary[0],
+		  //curveType: 'function',
+		  legend: { position: 'bottom' }
+		};
+	}
+	//圓餅圖
+	var chart = null;
+	if(options_ary[1] == 'piechart'){
+           chart = new google.visualization.PieChart(document.getElementById('myChart'));
+	   chart.draw(data, options);
+        }
+	//折線圖
+	if(options_ary[1] =='linechart'){
+	 chart = new google.visualization.LineChart(document.getElementById('myChart'));
+	 chart.draw(data, options);
+	} 
+	//長條圖横
+	if(options_ary[1] =='barchart'){
+	   chart = new google.visualization.BarChart(document.getElementById('myChart'));
+	   chart.draw(data, options);
+	}
+	//直條圖
+	if(options_ary[1] =='columnchart'){
+          var chart = new google.charts.Bar(document.getElementById('myChart'));
+          chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+        
+      }
+    </script>
+  </head>
+  <body>
+    <div id="myChart" style="width: 800px; height: 600px;"></div>
+  </body>
+</html>
