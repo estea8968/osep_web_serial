@@ -2,7 +2,6 @@
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-    
     //解析網址
       var url_data =location.hash;
       url_data = decodeURI(url_data.substring(1));
@@ -61,20 +60,24 @@
 		options = {
 		  title: options_ary[0],
 		  is3D: options_ary[2],
+		  width: 600,
+ 		  height: 400,
 		};
         }
 	if(options_ary[1] =='barchart'){
 		options = {
 		  title: options_ary[0],
 		  bar: {groupWidth: "90%"},
+		  width: 600,
+		  height: 400,
 		};
 	}
 	if(options_ary[1] =='columnchart'){
 	                               
 		options = {
 			title: options_ary[0],
-			//width: 600,
-			//height: 400,
+			width: 600,
+			height: 400,
 			bar: {groupWidth: "90%"},
 			legend: { position: "none" },
 	      	};
@@ -84,6 +87,8 @@
 		options = {
 		  title: options_ary[0],
 		  //curveType: 'function',
+		  width: 600,
+		  height: 400,
 		  legend: { position: 'bottom' }
 		};
 	}
@@ -113,6 +118,6 @@
     </script>
   </head>
   <body>
-    <div id="myChart" style="width: 800px; height: 600px;"></div>
+    <div id="myChart" style="width: 600px; height: 400px;"></div>
   </body>
 </html>
