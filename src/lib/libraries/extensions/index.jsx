@@ -96,6 +96,11 @@ import posenet2scratchInsetIconURL from "./posenet2scratch/posenet2scratch-small
 import tm2scratchIconURL from "./tm2scratch/tm2scratch.png";
 import tm2scratchInsetIconURL from "./tm2scratch/tm2scratch-small.png";
 
+import tmpose2scratchIconURL from './tmpose2scratch/tmpose2scratch.png';
+import tmpose2scratchInsetIconURL from './tmpose2scratch/tmpose2scratch-small.png';
+import qrcodeIconURL from './qrcode/qrcode.png';
+import qrcodeInsetIconURL from './qrcode/qrcode-small.svg';
+
 let formatMessage = (messageData) => messageData.defaultMessage;
 import microbitMoreIconURL from "./microbitMore/entry-icon.png";
 import microbitMoreInsetIconURL from "./microbitMore/inset-icon.svg";
@@ -789,6 +794,78 @@ const extensions = [
     },
     translationMap: translationMap,
   },
+  {
+        name: (
+            <FormattedMessage
+                defaultMessage='QR Code'
+                description='Name for the QR Code extension'
+                id='gui.extension.qrcodeblocks.name'
+            />
+        ),
+        extensionId: 'qrcode',
+        collaborator: 'Sugiura Lab',
+        iconURL: qrcodeIconURL,
+        insetIconURL: qrcodeInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='Scan QR Code.{credit_en}'
+                description='Description for the QR Code extension'
+                values={{
+                    credit_ja:<div style={{fontSize: '0.6em'}}>QRコードは株式会社デンソーウェーブの登録商標です。</div>,
+                    credit_ja_Hira:<div style={{fontSize: '0.6em', lineHeight: '1.3', marginTop: '0.5em'}}>QRコードはかぶしきがいしゃデンソーウェーブのとうろくしょうひょうです。</div>,
+                    credit_en:<div style={{fontSize: '0.6em'}}>QR Code is a registered trademark of DENSO WAVE.</div>
+                }}
+                id='gui.extension.qrcodeblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: false,
+        bluetoothRequired: false,
+        translationMap: {
+          'ja': {
+              'gui.extension.qrcodeblocks.name': 'QRコード',
+              'gui.extension.qrcodeblocks.description': 'QRコードを読み取ります。{credit_ja}'
+          },
+          'ja-Hira': {
+              'gui.extension.qrcodeblocks.name': 'QRコード',
+              'gui.extension.qrcodeblocks.description': 'QRコードをよみとります。{credit_ja_Hira}'
+          }
+        }
+    },
+  {
+        name: 'TMPose2Scratch',
+        extensionId: 'tmpose2scratch',
+        collaborator: 'Tsukurusha, YengawaLab and Google',
+        iconURL: tmpose2scratchIconURL,
+        insetIconURL: tmpose2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='Recognize your own poses.'
+                description='Recognize your own poses.'
+                id='gui.extension.tmpose2scratchblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        translationMap: {
+            'ja': {
+                'gui.extension.tmpose2scratchblocks.description': 'ポーズを学習させよう。'
+            },
+            'ja-Hira': {
+                'gui.extension.tmpose2scratchblocks.description': 'ポーズをがくしゅうさせよう。'
+            },
+            'en': {
+                'gui.extension.tmpose2scratchblocks.description': 'Recognize your own poses.'
+            },
+            'ko': {
+                'gui.extension.tmpose2scratchblocks.description': '나의 몸동작 포즈를 인식해볼까요'
+            }
+        }
+    },
+  
 ];
 export { extensions };
 export default extensions;
