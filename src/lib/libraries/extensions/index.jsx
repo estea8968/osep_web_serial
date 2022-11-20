@@ -107,6 +107,9 @@ import microbitMoreInsetIconURL from "./microbitMore/inset-icon.svg";
 import microbitMoreConnectionIconURL from "./microbitMore/connection-icon.svg";
 import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-icon.svg";
 
+import googleMapImage from "./googleMap/googleMap.png";
+import googleMapInsetIconURL from "./googleMap/googleMap-small.png";
+
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -433,6 +436,25 @@ const extensions = [
     internetConnectionRequired: true,
     useAutoScan: false,
     helpLink: "https://github.com/estea8968/scratch3-internet",
+  },
+  {
+    name: "Google Map",
+    extensionId: "googleMap",
+    collaborator: "TYiC",
+    iconURL: googleMapImage,
+    insetIconURL: googleMapInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Google Map"
+        description="Google Map extension"
+        id="gui.extension.googleMap.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+    //helpLink: "",
   },
   {
     name: "JSON",
