@@ -460,7 +460,7 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "資料處理",
+    name: "數位資料表示與處理",
     extensionId: "dataProcessing",
     collaborator: "TYiC",
     iconURL: dataProcessingImage,
