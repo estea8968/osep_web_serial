@@ -1,5 +1,5 @@
 /*
- * 更新日期111/01/24 estea chen
+ * 更新日期111/12/07 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -252,6 +252,7 @@ void loop()
        pinMode(echoPin, INPUT);             // 讀取 echo 的電位
        duration = pulseIn(echoPin, HIGH);   // 收到高電位時的時間
        cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
+       Serial.print("HC,");
        Serial.println(cm);        
     }
     
