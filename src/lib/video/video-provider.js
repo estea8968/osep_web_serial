@@ -207,7 +207,7 @@ class VideoProvider {
 
         this._singleSetup = requestVideoStream({
             width: {min: 480, ideal: 640},
-            height: {min: 360, ideal: 480}
+            height: {min: 360, ideal: 480},
         })
             .then(stream => {
                 this._video = document.createElement('video');

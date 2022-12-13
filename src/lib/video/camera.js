@@ -12,11 +12,20 @@ const requestStack = [];
 /*add by chen 20221209 end */
 const requestVideoStream = videoDesc => {
     let streamPromise;
+    let video_value ={};
+    const webcamId= `${window.now_webcamId}`;
+    if (webcamId == "user"){
+    	video_value = {facingMode: "user"};
+    } else if ( webcamId == "environment" ){
+    	video_value = {facingMode: "environment"};
+    } else{
+      video_value = {deviceId: webcamId };
+    }    
     if (requestStack.length === 0) {
         streamPromise = getUserMedia({
             audio: false,
-            video:{deviceId: `${window.now_webcamId}`},
-            // video: videoDesc ,video:{facingMode: "user"} ,video:{deviceId: "xxxx" }
+            video: video_value,
+            // video: videoDesc ,video:{facingMode: "user"}, {facingMode: "environment"},video:{deviceId: "xxxx" }
         });
         requestStack.push(streamPromise);
     } else if (requestStack.length > 0) {

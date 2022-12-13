@@ -112,7 +112,8 @@ import microbitMoreIconURL from "./microbitMore/entry-icon.png";
 import microbitMoreInsetIconURL from "./microbitMore/inset-icon.svg";
 import microbitMoreConnectionIconURL from "./microbitMore/connection-icon.svg";
 import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-icon.svg";
-
+import openaiImage from "./openai/openai.png";
+import openaiInsetIconURL from "./openai/openai-small.svg";
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -932,6 +933,27 @@ const extensions = [
           "나의 몸동작 포즈를 인식해볼까요",
       },
     },
+  },
+  {
+    name: "OPENAI",
+    extensionId: "openai",
+    collaborator: "estea,chen",
+    iconURL: openaiImage,
+    insetIconURL: openaiInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Fetch OPENAI."
+        description="Fetch OPENAI extension"
+        id="gui.extension.openai.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    //helpLink: "https://github.com/gasolin/scratch3-internet",
   },
 ];
 export { extensions };
