@@ -953,7 +953,7 @@ const extensions = [
     internetConnectionRequired: true,
     // launchPeripheralConnectionFlow: false,
     useAutoScan: false,
-    //helpLink: "https://github.com/gasolin/scratch3-internet",
+    helpLink: "https://openai.com/",
   },
 ];
 export { extensions };
