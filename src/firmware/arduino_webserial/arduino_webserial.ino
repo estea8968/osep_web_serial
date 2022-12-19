@@ -130,11 +130,11 @@ void loop()
     //lcd
     if(strcmp(commandString, "l") == 0){
       //文字inputPin
-      //第幾行inputValue
-      lcd.setCursor(0, atoi(inputValue));
+      //第幾行inputValue 
       if(strcmp(inputPin, "clear") == 0){
         lcd.clear(); 
       }else{
+        lcd.setCursor(0, atoi(inputValue));
         lcd.print(inputPin);   
       }
       
