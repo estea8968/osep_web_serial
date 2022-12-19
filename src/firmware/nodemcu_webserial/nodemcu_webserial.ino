@@ -1,4 +1,4 @@
-/*update 111/02/03 
+/*update 111/12/19 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -42,6 +42,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
+int PIN = 4 ;
 //qrcode
 SSD1306  display(0x3c, D2, D1);
 QRcode qrcode (&display);
@@ -386,9 +387,19 @@ void loop() {
       
       //伺服馬達
       if(strcmp(commandString, "servoWrite")== 0){
-        myservo.attach(atoi(inputPin)); 
-        myservo.write(atoi(inputValue));
-        delay(10);
+        PIN = atoi(inputPin);
+        myservo.attach(PIN);
+        int s ;//= myservo.read();
+        int e = atoi(inputValue);
+        //int pos;
+          myservo.write(e);
+          delay(200);
+          s = myservo.read();
+          if(s != e ){
+            myservo.write(e);
+            delay(120);
+            }         
+        myservo.detach();
       }
       
       //tone

@@ -52,6 +52,12 @@ import chartInsetIconURL from "./chart/chart-small.png";
 import stockInfoImage from "./stockInfo/stockInfo.png";
 import stockInfoInsetIconURL from "./stockInfo/stockInfo-small.png";
 
+import googleMapImage from "./googleMap/googleMap.png";
+import googleMapInsetIconURL from "./googleMap/googleMap-small.png";
+
+import dataProcessingImage from "./dataProcessing/dataProcessing.png";
+import dataProcessingInsetIconURL from "./dataProcessing/dataProcessing-small.png";
+
 import jsonImage from "./json/json.png";
 import jsonInsetIconURL from "./json/clound-small.png";
 import lassImage from "./lass/lass.png";
@@ -96,12 +102,18 @@ import posenet2scratchInsetIconURL from "./posenet2scratch/posenet2scratch-small
 import tm2scratchIconURL from "./tm2scratch/tm2scratch.png";
 import tm2scratchInsetIconURL from "./tm2scratch/tm2scratch-small.png";
 
+import tmpose2scratchIconURL from "./tmpose2scratch/tmpose2scratch.png";
+import tmpose2scratchInsetIconURL from "./tmpose2scratch/tmpose2scratch-small.png";
+import qrcodeIconURL from "./qrcode/qrcode.png";
+import qrcodeInsetIconURL from "./qrcode/qrcode-small.svg";
+
 let formatMessage = (messageData) => messageData.defaultMessage;
 import microbitMoreIconURL from "./microbitMore/entry-icon.png";
 import microbitMoreInsetIconURL from "./microbitMore/inset-icon.svg";
 import microbitMoreConnectionIconURL from "./microbitMore/connection-icon.svg";
 import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-icon.svg";
-
+import openaiImage from "./openai/openai.png";
+import openaiInsetIconURL from "./openai/openai-small.svg";
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -421,6 +433,44 @@ const extensions = [
         defaultMessage="Stock Infomation"
         description="StockInfo extension"
         id="gui.extension.stockInfo.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+    helpLink: "https://github.com/estea8968/scratch3-internet",
+  },
+  {
+    name: "Google Map",
+    extensionId: "googleMap",
+    collaborator: "TYiC",
+    iconURL: googleMapImage,
+    insetIconURL: googleMapInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Google Map"
+        description="Google Map extension"
+        id="gui.extension.googleMap.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+    helpLink: "https://github.com/estea8968/scratch3-internet",
+  },
+  {
+    name: "數位資料表示與處理",
+    extensionId: "dataProcessing",
+    collaborator: "TYiC",
+    iconURL: dataProcessingImage,
+    insetIconURL: dataProcessingInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Data Processing"
+        description="Data Processing extension"
+        id="gui.extension.dataProcessing.description"
       />
     ),
     featured: true,
@@ -788,6 +838,122 @@ const extensions = [
       formatMessage = formatter;
     },
     translationMap: translationMap,
+  },
+  {
+    name: (
+      <FormattedMessage
+        defaultMessage="QR Code"
+        description="Name for the QR Code extension"
+        id="gui.extension.qrcodeblocks.name"
+      />
+    ),
+    extensionId: "qrcode",
+    collaborator: "Sugiura Lab",
+    iconURL: qrcodeIconURL,
+    insetIconURL: qrcodeInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Scan QR Code.{credit_en}"
+        description="Description for the QR Code extension"
+        values={{
+          credit_ja: (
+            <div style={{ fontSize: "0.6em" }}>
+              QRコードは株式会社デンソーウェーブの登録商標です。
+            </div>
+          ),
+          credit_ja_Hira: (
+            <div
+              style={{
+                fontSize: "0.6em",
+                lineHeight: "1.3",
+                marginTop: "0.5em",
+              }}
+            >
+              QRコードはかぶしきがいしゃデンソーウェーブのとうろくしょうひょうです。
+            </div>
+          ),
+          credit_en: (
+            <div style={{ fontSize: "0.6em" }}>
+              QR Code is a registered trademark of DENSO WAVE.
+            </div>
+          ),
+        }}
+        id="gui.extension.qrcodeblocks.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: false,
+    bluetoothRequired: false,
+    translationMap: {
+      ja: {
+        "gui.extension.qrcodeblocks.name": "QRコード",
+        "gui.extension.qrcodeblocks.description":
+          "QRコードを読み取ります。{credit_ja}",
+      },
+      "ja-Hira": {
+        "gui.extension.qrcodeblocks.name": "QRコード",
+        "gui.extension.qrcodeblocks.description":
+          "QRコードをよみとります。{credit_ja_Hira}",
+      },
+    },
+  },
+  {
+    name: "TMPose2Scratch",
+    extensionId: "tmpose2scratch",
+    collaborator: "Tsukurusha, YengawaLab and Google",
+    iconURL: tmpose2scratchIconURL,
+    insetIconURL: tmpose2scratchInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Recognize your own poses."
+        description="Recognize your own poses."
+        id="gui.extension.tmpose2scratchblocks.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    translationMap: {
+      ja: {
+        "gui.extension.tmpose2scratchblocks.description":
+          "ポーズを学習させよう。",
+      },
+      "ja-Hira": {
+        "gui.extension.tmpose2scratchblocks.description":
+          "ポーズをがくしゅうさせよう。",
+      },
+      en: {
+        "gui.extension.tmpose2scratchblocks.description":
+          "Recognize your own poses.",
+      },
+      ko: {
+        "gui.extension.tmpose2scratchblocks.description":
+          "나의 몸동작 포즈를 인식해볼까요",
+      },
+    },
+  },
+  {
+    name: "OPENAI",
+    extensionId: "openai",
+    collaborator: "estea,chen",
+    iconURL: openaiImage,
+    insetIconURL: openaiInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Fetch OPENAI."
+        description="Fetch OPENAI extension"
+        id="gui.extension.openai.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    helpLink: "https://openai.com/",
   },
 ];
 export { extensions };
