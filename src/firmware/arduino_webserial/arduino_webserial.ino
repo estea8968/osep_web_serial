@@ -1,9 +1,10 @@
 /*
- * 更新日期111/12/07 estea chen
+ * 更新日期111/12/19 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
+#include <LiquidCrystal_I2C.h> // LCD_I2C模組程式庫
 //ws2812
 #include <Adafruit_NeoPixel.h>
 //max7219
@@ -22,6 +23,9 @@ Servo myservo;  // create servo object to control a servo
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
 static float HCHO,Temperature,Humidity;
+
+//LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 char* serialString()
 {
@@ -54,6 +58,10 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
+
+  // 初始化LCD
+  lcd.init();
+  lcd.backlight();
   
 }
 
@@ -116,6 +124,19 @@ void loop()
         Serial.print(Temperature);Serial.print(",");
         Serial.println(Humidity);
         //isloop = false;
+      
+    }
+
+    //lcd
+    if(strcmp(commandString, "l") == 0){
+      //文字inputPin
+      //第幾行inputValue
+      lcd.setCursor(0, atoi(inputValue));
+      if(strcmp(inputPin, "clear") == 0){
+        lcd.clear(); 
+      }else{
+        lcd.print(inputPin);   
+      }
       
     }
     
