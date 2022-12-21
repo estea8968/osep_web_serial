@@ -3,7 +3,7 @@ char* serialString()
 {
   static char str[21]; // For strings of max length=20
   if (!Serial.available()) return NULL;
-  delay(3); // wait for all characters to arrive
+  delay(5); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
   while (Serial.available())
@@ -44,38 +44,47 @@ void loop() {
   
   if (inputData!=NULL)
   {
-  //[1.J4-A1(D15),2J3-A2(D16),3J2-A4(D18),4按鈕D2,J1-A5(D19),6光敏A6(D20),聲音micA3(D17),8滑桿(A0)]
+  //[1.J4-A1(D15),2J3-A2(D16),3J2-A4(D18),4按鈕D2,J1-A5(D19),
+  //6光敏A6(D20),聲音micA3(D17),8滑桿(A0)]
     if(strcmp(inputData, "0") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(0));
+      Serial.print("A0:");
+      Serial.print(analogRead(0));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "1") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(1));
+      Serial.print("A1:");
+      Serial.print(analogRead(1));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "2") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(2));
+      Serial.print("A2:");
+      Serial.print(analogRead(2));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "3") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(3));
+      Serial.print("A3:");
+      Serial.print(analogRead(3));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "4") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(4));
+      Serial.print("A4:");
+      Serial.print(analogRead(4));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "5") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(5));
+      Serial.print("A5:");
+      Serial.print(analogRead(5));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "6") == 0){
-      Serial.print("A:");
-      Serial.println(analogRead(6));
+      Serial.print("A6:");
+      Serial.print(analogRead(6));
+      Serial.println(":p");
     }
     if(strcmp(inputData, "7") == 0){
-      Serial.print("D:");
-      Serial.println(digitalRead(2));
+      Serial.print("D7:");
+      Serial.print(digitalRead(2));
+      Serial.println(":p");
     }
     /*
     if(strcmp(inputData, "8") == 0){
@@ -95,7 +104,7 @@ void loop() {
       Serial.print(",");
       Serial.println(analogRead(0));
     }*/
-    //delay(10);    
+    delay(2);    
     inputData = NULL;
   }
   needPrompt=true;
