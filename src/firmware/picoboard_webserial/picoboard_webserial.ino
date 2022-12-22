@@ -1,4 +1,8 @@
-
+//版本日期 111 12 22 
+const int interval = 10;  // 取樣間隔時間，10ms。
+unsigned int sample;   // 聲音取樣值
+unsigned int amplitude;  // 訊號振幅
+int pin ;
 char* serialString()
 {
   static char str[21]; // For strings of max length=20
@@ -19,7 +23,20 @@ char* serialString()
   return str;
 }
 
-
+int minmaxavg(){
+  unsigned int sigMax = 0;  // 最高峰值
+      unsigned int sigMin = 2000;  // 最低峰值
+      unsigned long now = millis(); // 當前時間
+      while (millis() < now + interval) {
+          sample = analogRead(pin);
+          if (sample < sigMin) {
+            sigMin = sample;
+          } else if (sample > sigMax) {
+            sigMax = sample;
+          }
+        }
+     return (int)(sigMin+sigMax)/2;
+}
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -62,8 +79,10 @@ void loop() {
       Serial.println(":p");
     }
     if(strcmp(inputData, "3") == 0){
+      pin = 3;
+      int m3 = minmaxavg();
       Serial.print("A3:");
-      Serial.print(analogRead(3));
+      Serial.print(m3);
       Serial.println(":p");
     }
     if(strcmp(inputData, "4") == 0){
@@ -77,8 +96,10 @@ void loop() {
       Serial.println(":p");
     }
     if(strcmp(inputData, "6") == 0){
+      pin = 6;
+      int l6 = minmaxavg();
       Serial.print("A6:");
-      Serial.print(analogRead(6));
+      Serial.print(l6);
       Serial.println(":p");
     }
     if(strcmp(inputData, "7") == 0){
