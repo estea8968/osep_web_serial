@@ -7,7 +7,7 @@ static char str[21];
 bool serial_chang = false;
 
 int minmaxavg(){
-  unsigned int sigMax = 0;  // 最高峰值
+      unsigned int sigMax = 0;  // 最高峰值
       unsigned int sigMin = 2000;  // 最低峰值
       unsigned long now = millis(); // 當前時間
       while (millis() < now + interval) {
@@ -24,7 +24,7 @@ int minmaxavg(){
 void serialEvent() {
   //static char str[21]; // For strings of max length=20
   //if (!Serial.available()) return NULL;
-  delay(1); // wait for all characters to arrive
+  delay(2); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
   while (Serial.available())
@@ -45,12 +45,12 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   //啟動D2
-    DDRD  &= ~( 1 << PD2 );     // Clear the PD2 pin and set PD2 (PCINT0 pin) now as input
-    PORTD |= (1 << PD2);        // Set PIN PD2 as INPUT with pull-up enabled
+  DDRD  &= ~( 1 << PD2 );     // Clear the PD2 pin and set PD2 (PCINT0 pin) now as input
+  PORTD |= (1 << PD2);        // Set PIN PD2 as INPUT with pull-up enabled
 
-    EICRA |= (1 << ISC00);      // set INT0 to trigger on ANY logic change
-    EIMSK |= (1 << INT0);       // Turns on INT0
-}
+  EICRA |= (1 << ISC00);      // set INT0 to trigger on ANY logic change
+  EIMSK |= (1 << INT0);       // Turns on INT0
+ }
 
 void loop() {
   char* inputData;
@@ -96,14 +96,18 @@ void loop() {
       }
       if(strcmp(inputData, "6") == 0){
         pin = 6;
-        int l6 = minmaxavg();
+        int l6 = 1023 - minmaxavg();
         Serial.print("A6:");
         Serial.print(l6);
         Serial.println(":p");
       }
       if(strcmp(inputData, "7") == 0){
         Serial.print("D7:");
-        Serial.print(digitalRead(2));
+        if(digitalRead(2)){
+          Serial.print(0);
+        }else{
+          Serial.print(1);
+        }
         Serial.println(":p");
       }
       delay(1);    
