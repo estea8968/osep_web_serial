@@ -1,5 +1,5 @@
 /*
- * 更新日期111/12/19 estea chen
+ * 更新日期111/12/28 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -26,12 +26,13 @@ static float HCHO,Temperature,Humidity;
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+//serialEvent
+static char str[128];
+bool serial_chang = false;
 
-char* serialString()
-{
-  //static char str[21]; // For strings of max length=20
-  static char str[64]; // For strings of max length=20
-  if (!Serial.available()) return NULL;
+void serialEvent() {  
+  //static char str[64]; // For strings of max length=20
+  //if (!Serial.available()) return NULL;
   delay(16); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
@@ -47,7 +48,8 @@ char* serialString()
     //}
   }
   str[count]='\0'; // make it a zero terminated string
-  return str;
+  serial_chang = true;
+  //return str;
 }
 
 void setup() {
@@ -69,15 +71,12 @@ void setup() {
 
 void loop() 
 {
-  static boolean needPrompt=true;
   char* inputData;
-  if (needPrompt)
+  if (serial_chang)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
-    needPrompt=false;
-  }
-  inputData= serialString();
-
+   serial_chang =false;
+   inputData= str;
   if (inputData!=NULL)
   {
     //取出命令、腳位、值、時間
@@ -334,10 +333,10 @@ void loop()
          pinMode(atoi(inputPin),OUTPUT);
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
-    needPrompt=true;
+    //needPrompt=true;
     //delay(1000);
+   }
   }
-  
 }
 
 
