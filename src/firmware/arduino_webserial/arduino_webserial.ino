@@ -1,5 +1,5 @@
 /*
- * 更新日期111/12/28 estea chen
+ * 更新日期111/12/30 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -18,7 +18,7 @@ SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
-#define NUMPIXELS 12 
+#define NUMPIXELS 25 
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -31,24 +31,32 @@ static char str[128];
 bool serial_chang = false;
 
 void serialEvent() {  
-  //static char str[64]; // For strings of max length=20
-  //if (!Serial.available()) return NULL;
-  delay(16); // wait for all characters to arrive
+  //static char str[128]; // For strings of max length=20
+  //一次只能讀64字元需要5微秒
+  delay(5); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
-  byte count=0;
+  int count=0;
   while (Serial.available())
   {
-    char c=Serial.read();
-    //if (c>=32 && count<sizeof(str)-1)
-    //c最大35
-    //if (c>=32 && count<sizeof(str)-1)
-    //{
+    byte c=Serial.read();
       str[count]=c;
       count++;
-    //}
   }
+  //Serial.println(count);
+  Serial.flush();
+  delay(5); // wait for all characters to arrive
+  //memset(str,0,sizeof(str)); // clear str
+//  int count=0;
+  while (Serial.available())
+  {
+    byte c=Serial.read();
+      str[count]=c;
+      count++;
+  }  
   str[count]='\0'; // make it a zero terminated string
   serial_chang = true;
+  //Serial.println(count);
+  Serial.flush();
   //return str;
 }
 
@@ -60,27 +68,26 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
-
   // 初始化LCD
   lcd.init();
   lcd.backlight();
-  
 }
 
 
 
 void loop() 
 {
-  char* inputData;
+  //char* inputData;
   if (serial_chang)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
    serial_chang =false;
-   inputData= str;
-  if (inputData!=NULL)
+   //Serial.println(str);
+   //inputData= str;
+  if (str!=NULL)
   {
     //取出命令、腳位、值、時間
-    char* commandString = strtok(inputData, "#"); 
+    char* commandString = strtok(str, "#"); 
     char* inputPin = strtok(NULL, "#");
     //取出第3個值
     char* inputValue = strtok(NULL, "#");
@@ -144,70 +151,78 @@ void loop()
       int r = 0;
       int g = 0;
       int b = 0;
-      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-      char *bb ;
+      int led_num =75 ;//25顆led
+      int led_value[led_num]={0};
+      char* bb ;
       int i = 0;
-      int sp;
+      int spp;
+      //Serial.println(inputValue);
       bb = strtok(inputValue, ",");
       led_value[i] = atoi(bb);
-      Serial.println(led_value[i]);
+      //Serial.println(led_value[i]);
       i++;
       while( bb != NULL){
         bb = strtok(NULL, ",");
         led_value[i] = atoi(bb);
+        //Serial.println(led_value[i]);
         i++;
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
-      for ( i=0;i<32;i++){
-        if (led_value[i] > 0){
-            sp = led_value[i]-1;
-          i++;
-          if( led_value[i] == 0) {
-            i++;
-            r = led_value[i];
+      for ( int j=0;j<i-1;j++){
+        if (led_value[j] > 0){
+            spp = led_value[j]-1;
+            j++;
+          if( led_value[j] == 0) {
+            j++;
+            r = led_value[j];
             g = 0;
             b = 0;
-          }else if( led_value[i] == 1){
-            i++;
-            r = led_value[i]*3;
-            g = led_value[i];
+          }else if( led_value[j] == 1){
+            j++;
+            r = led_value[j]*3;
+            g = led_value[j];
             b = 0;
-          }else if( led_value[i] == 2){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
+          }else if( led_value[j] == 2){
+            j++;
+            r = led_value[j];
+            g = led_value[j];
             b = 0;
-          }else if( led_value[i] == 3){
-            i++;
+          }else if( led_value[j] == 3){
+            j++;
             r = 0;
-            g = led_value[i];
+            g = led_value[j];
             b = 0;
-          }else if( led_value[i] == 4){
-            i++;
+          }else if( led_value[j] == 4){
+            j++;
             r = 0;
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 5){
-            i++;
+            b = led_value[j];
+          }else if( led_value[j] == 5){
+            j++;
             r = 0;
-            g = led_value[i];
-            b = led_value[i];
-          }else if( led_value[i] == 6){
-            i++;
-            r = led_value[i];
+            g = led_value[j];
+            b = led_value[j];
+          }else if( led_value[j] == 6){
+            j++;
+            r = led_value[j];
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 7){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
-            b = led_value[i];
+            b = led_value[j];
+          }else if( led_value[j] == 7){
+            j++;
+            r = led_value[j];
+            g = led_value[j];
+            b = led_value[j];
+          }else if( led_value[j] == 8){
+            j++;
+            r = 0;
+            g = 0;
+            b = 0;
           }
-          pixels.setPixelColor(sp, pixels.Color(r, g, b));
+          pixels.setPixelColor(spp, pixels.Color(r, g, b));
         }else{
-          i++;
-          i++;
+          j++;
+          j++;
         }
       }
       pixels.show(); 
@@ -249,7 +264,15 @@ void loop()
             sp = "10";
           }else if(inputTime[i] == 'c'){
             sp = "11";
-          }
+          }else if(inputTime[i] == 'd'){
+            sp = "12";
+          }else if(inputTime[i] == 'e'){
+            sp = "13";
+          }else if(inputTime[i] == 'f'){
+            sp = "14";
+          }else if(inputTime[i] == 'g'){
+            sp = "15";
+          }          
           pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
         }
         pixels.show(); 
