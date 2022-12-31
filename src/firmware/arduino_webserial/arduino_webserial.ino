@@ -27,7 +27,7 @@ static float HCHO,Temperature,Humidity;
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 //serialEvent
-static char str[128];
+static char str[192];
 bool serial_chang = false;
 
 void serialEvent() {  
