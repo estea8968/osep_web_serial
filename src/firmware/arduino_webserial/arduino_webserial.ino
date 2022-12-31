@@ -1,5 +1,5 @@
 /*
- * 更新日期111/12/30 estea chen
+ * 更新日期111/12/31 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -47,6 +47,14 @@ void serialEvent() {
   delay(5); // wait for all characters to arrive
   //memset(str,0,sizeof(str)); // clear str
 //  int count=0;
+  while (Serial.available())
+  {
+    byte c=Serial.read();
+      str[count]=c;
+      count++;
+  }  
+  Serial.flush();
+  delay(5); // wait for all characters to arrive
   while (Serial.available())
   {
     byte c=Serial.read();
@@ -145,12 +153,15 @@ void loop()
       }
       
     }
+
     
     //ws2812_shu
+    
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
       int g = 0;
       int b = 0;
+      int w = 0;
       int led_num =75 ;//25顆led
       int led_value[led_num]={0};
       char* bb ;
@@ -169,10 +180,20 @@ void loop()
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
+      pixels.setBrightness(100);
       for ( int j=0;j<i-1;j++){
         if (led_value[j] > 0){
             spp = led_value[j]-1;
             j++;
+            //int rgb_num = atoi(led_value[j]);
+            r = (int)(led_value[j]/100);
+            g = (int)((led_value[j]-r*100)/10);
+            b = (int)(led_value[j]-r*100-g*10);
+            //j++;
+            //w = led_value[j];
+            //Serial.println(w);
+            //Serial.println(acolor[0]);
+          /*  
           if( led_value[j] == 0) {
             j++;
             r = led_value[j];
@@ -218,8 +239,10 @@ void loop()
             r = 0;
             g = 0;
             b = 0;
-          }
+          }*/
+          //pixels.setBrightness(w);
           pixels.setPixelColor(spp, pixels.Color(r, g, b));
+          
         }else{
           j++;
           j++;
