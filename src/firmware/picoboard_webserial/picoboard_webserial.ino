@@ -1,9 +1,9 @@
-//版本日期 111 12 27 
+//版本日期 112 01 09 
 const int interval = 10;  // 取樣間隔時間，10ms。
 unsigned int sample;   // 聲音取樣值
 unsigned int amplitude;  // 訊號振幅
 int pin ;
-static char str[21];
+static char str[10];
 bool serial_chang = false;
 
 int minmaxavg(){
@@ -24,17 +24,17 @@ int minmaxavg(){
 void serialEvent() {
   //static char str[21]; // For strings of max length=20
   //if (!Serial.available()) return NULL;
-  delay(2); // wait for all characters to arrive
+  delay(1); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
   while (Serial.available())
   {
     char c=Serial.read();
-    if (c>=32 && count<sizeof(str)-1)
-    {
+    //if (c>=32 && count<sizeof(str)-1)
+    //{
       str[count]=c;
       count++;
-    }
+    //}
   }
   str[count]='\0'; // make it a zero terminated string
   serial_chang = true;
@@ -110,7 +110,7 @@ void loop() {
         }
         Serial.println(":p");
       }
-      delay(1);    
+      //delay(1);    
       inputData = NULL;
     }
   }
