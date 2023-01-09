@@ -42,7 +42,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
-int PIN = 4 ;
+
 //qrcode
 SSD1306  display(0x3c, D2, D1);
 QRcode qrcode (&display);
@@ -387,19 +387,11 @@ void loop() {
       
       //伺服馬達
       if(strcmp(commandString, "servoWrite")== 0){
-        PIN = atoi(inputPin);
-        myservo.attach(PIN);
-        int s ;//= myservo.read();
-        int e = atoi(inputValue);
-        //int pos;
-          myservo.write(e);
-          delay(200);
-          s = myservo.read();
-          if(s != e ){
-            myservo.write(e);
-            delay(120);
-            }         
         myservo.detach();
+        myservo.attach(atoi(inputPin),544,2400);
+        int e = atoi(inputValue);
+          myservo.write(e);
+          delay(15);
       }
       
       //tone

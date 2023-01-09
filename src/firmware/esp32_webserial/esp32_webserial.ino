@@ -49,8 +49,8 @@ DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
 // Published values for SG90 servos; adjust if needed
-int minUs = 1000;
-int maxUs = 2000;
+int minUs = 700;
+int maxUs = 2500;
 //qrcode
 SSD1306 display(0x3c, 21, 22);
 QRcode qrcode (&display);
