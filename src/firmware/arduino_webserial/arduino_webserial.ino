@@ -66,6 +66,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   //max7219
+  digitalWrite(10,0);
   //leddisplay.shutdown(0, false);  // 關閉省電模式
   //leddisplay.setIntensity(0, 5); // 設定亮度為 5 (介於0~15之間)
 }
