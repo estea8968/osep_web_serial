@@ -17,7 +17,8 @@
               <select id="boardType">
                 <option value="uno">Uno</option>
                 <!--<option value="leonardo">leonardo</option>-->
-                <option value="nano">Nano</option>
+                <option value="mega">mega</option>
+                <option value="nano">Nano</option>                
                 <option value="picoboard">Picoboard</option>
               </select>
             </label>
@@ -44,6 +45,7 @@
     </div>
     <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
     <script src="js/uno_hex.js" charset="UTF-8"></script>
+    <script src="js/mega_hex.js" charset="UTF-8"></script>
     <script src="js/picoboard_hex.js" charset="UTF-8"></script>
     <!--<script src="js/leonardo_hex.js" charset="UTF-8"></script>-->
     <script src="js/nano_hex.js" charset="UTF-8"></script>
@@ -62,9 +64,11 @@
 	   hexStr = nanoHex;
 	}else if(board == 'picoboard'){
 	   hexStr = picoboardHex;
+	}else if(board =='mega'){
+	   hexStr = megaHex;
 	}
 	console.log(hexStr);
-	//console.log('board:',board);
+	console.log('board:',board);
         let avrgirl = new AvrgirlArduino({
           board: board,
           debug: true
