@@ -12,7 +12,7 @@
     "project.comments.header": "Kommentare",
     "project.comments.toggleOff": "Kommentarfunktion aus",
     "project.comments.toggleOn": "Kommentarfunktion ein",
-    "project.comments.turnedOff": "Es tut uns leid, die Kommentarfunktion wurde für dieses Projekt deaktiviert.",
+    "project.comments.turnedOff": "Kommentare wurden für dieses Projekt deaktiviert.",
     "project.comments.turnedOffGlobally": "Projektkommentare sind auf Scratch deaktiviert, aber keine Sorge, deine Kommentare sind gespeichert und werden bald zurück sein.",
     "project.share.notShared": "Dieses Projekt ist nicht öffentlich — so kannst nur du es sehen. Klicke auf Veröffentlichen, um es jeden sehen zu lassen!",
     "project.share.sharedLong": "Gratulation zur Veröffentlichung deines Projektes! Andere Scratcher können es nun ausprobieren, kommentieren und remixen.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Siehe Daten",
     "project.usernameBlockAlert": "Dieses Projekt kann mittels des Blocks “Benutzername” erkennen, wer es gerade verwendet. Wenn du deine Identität verbergen möchtest, melde dich ab, bevor du das Projekt verwendest.",
     "project.inappropriateUpdate": "Hmm... Wir haben hier ein Wort entdeckt, das nicht sehr schön ist. Ändere es bitte, wir wollen doch respektvoll miteinander umgehen.",
-    "project.mutedAddToStudio": "Du wirst {inDuration} wieder zu Studios hinzufügen können."
+    "project.mutedAddToStudio": "Du wirst {inDuration} wieder zu Studios hinzufügen können.",
+    "project.cloudDataAndVideoAlert": "Cloadvariablen wurden aus Datenschutzgründen deaktiviert, weil das Projekt Videoerkennungsblöcke enthält."
 }

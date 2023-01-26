@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Force and Acceleration sensor",
+    "gdxfor.deviceNameShort": "sensor",
     "gdxfor.headerText": "The {gdxforLink} sensor is a powerful scientific tool that unlocks new ways to connect the physical world to your Scratch projects. Measure force as you push and pull, and interact by shaking, spinning, free falling and more.",
     "gdxfor.gettingStarted": "Почетни кораци",
     "gdxfor.connectingGdxfor": "Connecting Force & Acceleration sensor to Scratch",
@@ -14,7 +16,7 @@
     "gdxfor.starterProjects": "Почетнички пројекти",
     "gdxfor.troubleshootingTitle": "Решавање проблема",
     "gdxfor.checkOSVersionTitle": "Увери се да је твој оперативни систем сагласан са Скрач везом",
-    "gdxfor.checkOSVersionText": "The minimum operating system versions are listed at the top of this page. See instructions for checking your version of {winOSVersionLink} or {macOSVersionLink}.",
+    "gdxfor.checkOSVersionText": "Најниже верзије оперативног система су исписане на врху ове стране. Погледај инструкције за проверу верзије твог {winOSVersionLink} или {macOSVersionLink}.",
     "gdxfor.winOSVersionLinkText": "Виндоус",
     "gdxfor.macOSVersionLinkText": "Mac OS",
     "gdxfor.closeScratchCopiesTitle": "Затвори друге копије Скрача",

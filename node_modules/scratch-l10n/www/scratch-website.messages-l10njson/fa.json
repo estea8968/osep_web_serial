@@ -5,9 +5,9 @@
     "messages.activityStudios": "فعالیت‌های هنرگاه",
     "messages.activityForums": "فعالیت‌های انجمن",
     "messages.becomeManagerText": "{username}شما را به مدیر هنرگاه {studio} ارتقا داد ",
-    "messages.becomeHostText": "{usernameOrScratchTeam} شما را میزبان استودیو کرد {studio}.  به عنوان میزبان، اکنون می توانید عنوان، تصویر کوچک و توضیحات استودیو را ویرایش کنید.  برو تو استودیو سلام کن!",
-    "messages.becomeHostScratchTeam": "عضو تیم اسکرچ",
-    "messages.curatorInviteText": "{actorLink}شما را دعوت کرده تا سرپرست هنرگاه {studioLink} شوید. برای پذیرفتن دعوت، {tabLink}را در هنرگاه ببینید.",
+    "messages.becomeHostText": "{usernameOrScratchTeam} شما را میزبان هنرگاه{studio} کرده است.  به عنوان میزبان، هم اکنون می‌توانید عنوان، تصویرک و توضیحات هنرگاه را ویرایش کنید. برو به هنرگاه و سلامی کن!",
+    "messages.becomeHostScratchTeam": "عضوی از تیم اسکرچ",
+    "messages.curatorInviteText": "{actorLink}شما را دعوت کرده تا سرپرست هنرگاه {studioLink} شوید. برای پذیرفتن دعوت، {tabLink} را در هنرگاه ببینید.",
     "messages.curatorTabText": "نمای سرپرست",
     "messages.favoriteText": "{profileLink} به پروژه‌ی {projectLink} شما، علاقه‌مند شد",
     "messages.filterBy": "فیلتر با",
@@ -26,7 +26,7 @@
     "messages.scratchTeamTitle": "پیام‌هایی از تیم اسکرچ",
     "messages.studioActivityText": "امروز در {studioLink} فعالیت‌های جدیدی انجام شد",
     "messages.studioCommentReply": "{profileLink} به دیدگاه شما در {commentLink} پاسخ داد ",
-    "messages.userJoinText": "به اسکرچ خوش آمدید! پس از این‌که پروژه‌هایی را ساختید و دیدگاه‌هایی ارسال کردید، در مورد آن‌ها در اینجا پیام‌هایی دریافت خواهید کرد. به {exploreLink} یا {makeProjectLink} بروید.",
-    "messages.userJoinMakeProject": "یک پروژه بساز",
+    "messages.userJoinText": "به اسکرچ خوش آمدید! پس از این‌که پروژه‌هایی را ساختید و دیدگاه‌هایی ارسال کردید، در مورد آن‌ها اینجا پیام‌هایی خواهید دید. بروید به {exploreLink} و یا {makeProjectLink}.",
+    "messages.userJoinMakeProject": "پروژه‌ای بسازید",
     "messages.requestError": "ای وای! به نظر می‌رسد مشکلی در دریافت برخی از پیام‌های شما وجود دارد. لطفا این صفحه رو مجدد بارگیری کنید."
 }

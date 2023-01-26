@@ -12,7 +12,7 @@
     "project.comments.header": "Kommentarer",
     "project.comments.toggleOff": "Kommentarer er slået fra",
     "project.comments.toggleOn": "Kommentarer er slået til",
-    "project.comments.turnedOff": "Desværre, kommentarerer er blevet slået fra for dette projekt.",
+    "project.comments.turnedOff": "Commenting for this project has been turned off.",
     "project.comments.turnedOffGlobally": "Kommentarer til projekter er slået fra på hele Scratch, men vær ikke bekymret, dine kommentarer er gemt og vil snart kunne ses igen.",
     "project.share.notShared": "Dette projekt er ikke delt  —  så det er kun dig, som kan se det. Klik på del for at lade alle andre se det!",
     "project.share.sharedLong": "Tillykke. Du har delt dit projekt. Nu kan andre mennesker prøve det, kommentere og remixe det.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Se data",
     "project.usernameBlockAlert": "Dette projekt kan afsløre hvem som bruger det, gennem \"brugernavn\"-brikken. For at skjule din identitet, log af inden du prøver projektet.",
     "project.inappropriateUpdate": "Hmmm...vores dårlige ord detektor tænker at der er et problem med din tekst. Du bedes ændre den og huske at være respektfuld.",
-    "project.mutedAddToStudio": "Du vil igen kunne tilføje til samlinger {inDuration}."
+    "project.mutedAddToStudio": "Du vil igen kunne tilføje til samlinger {inDuration}.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }

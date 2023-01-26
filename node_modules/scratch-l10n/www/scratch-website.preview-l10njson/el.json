@@ -12,7 +12,7 @@
     "project.comments.header": "Σχόλια",
     "project.comments.toggleOff": "Ανενεργός σχολιασμός",
     "project.comments.toggleOn": "Ενεργός σχολιασμός",
-    "project.comments.turnedOff": "Λυπούμαστε, η ανάρτηση σχολίων έχει απενεργοποιηθεί για αυτό το έργο.",
+    "project.comments.turnedOff": "Commenting for this project has been turned off.",
     "project.comments.turnedOffGlobally": "Project comments across Scratch are turned off, but don't worry, your comments are saved and will be back soon.",
     "project.share.notShared": "Το έργο δεν είναι σε κοινή χρήση — έτσι μόνο εσείς μπορείτε να το δείτε. Πατήστε \"μοιραστείτε\" για να επιτρέψτε σε όλους να το βλέπουν!",
     "project.share.sharedLong": "Συγχαρητήρια που μοιραστήκατε το έργο σας! Άλλοι μπορούν τώρα να το δοκιμάσουν, να γράψουν σχόλια, και να το αναμείξουν.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Δες Δεδομένα",
     "project.usernameBlockAlert": "Αυτό το έργο μπορεί να ανιχνεύσει ποιος το χρησιμοποιεί, μέσα από την εντολή \"όνομα χρήστη\". Για να διατηρήσετε την ανωνυμία σας, αποσυνδεθείτε πριν το χρησιμοποιήσετε.",
     "project.inappropriateUpdate": "Χμ... ο ανιχνευτής κακών λέξεων πιστεύει πως υπάρχει κάποιο πρόβλημα με το κείμενό σας. Παρακαλώ αλλάξτε το και θυμηθείτε να δείχνετε σεβασμό.",
-    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}."
+    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }

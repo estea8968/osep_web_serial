@@ -12,7 +12,7 @@
     "project.comments.header": "Commenti",
     "project.comments.toggleOff": "Abilita i commenti",
     "project.comments.toggleOn": "Disattiva i commenti",
-    "project.comments.turnedOff": "Siamo spiacenti, ma l'invio di commenti è stato disabilitato per questo progetto.",
+    "project.comments.turnedOff": "L'invio di commenti è stato disabilitato per questo progetto.",
     "project.comments.turnedOffGlobally": "I commenti sono al momento disabilitati. Non di preoccupare, sono salvati e torneranno presto.",
     "project.share.notShared": "Questo progetto non è condiviso -- solo tu puoi vederlo per ora. Clicca condivi per farlo vedere a tutti!",
     "project.share.sharedLong": "Congratulazioni per aver condiviso il tuo progetto! Gli altri utenti potranno ora provarlo, lasciare commenti e remixarlo.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Mostra i Dati",
     "project.usernameBlockAlert": "Questo progetto può individuare chi lo sta usando, attraverso il blocco \"username\". Se non vuoi rivelare la tua identità, esci prima di usare il progetto.",
     "project.inappropriateUpdate": "Uhmm... il rilevatore di parole irrispettose ritiene che ci sia un problema nel tuo testo. Ti preghiamo di cambiarlo ricordando di essere rispettoso.",
-    "project.mutedAddToStudio": "Potrai inserire nuovamente nelle gallerie {inDuration}."
+    "project.mutedAddToStudio": "Potrai inserire nuovamente nelle gallerie {inDuration}.",
+    "project.cloudDataAndVideoAlert": "Per ragioni di privaicy le variabili cloud sono state disabilitate in questo progetto perché contiene blocchi che controllano la webcam."
 }

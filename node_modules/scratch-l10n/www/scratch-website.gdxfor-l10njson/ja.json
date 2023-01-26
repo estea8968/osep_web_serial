@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Force & Acceleration センサー",
+    "gdxfor.deviceNameShort": "センサー",
     "gdxfor.headerText": "{gdxforLink}センサーは理科で使えるパワフルなツールで、物理的な世界をScratchプロジェクトにつなげる新たな道を切り開きます。 押したり引いたりするときの力を測定でき、振ったり、回転したり、自由落下させたりすることで作用します。",
     "gdxfor.gettingStarted": "さあ、始めましょう",
     "gdxfor.connectingGdxfor": "Force & Acceleration sensorを接続中",
@@ -16,7 +18,7 @@
     "gdxfor.checkOSVersionTitle": "OSがScratch Linkに対応していることを確認してください。",
     "gdxfor.checkOSVersionText": "最低限のOSバージョンはページの上部にあります。バージョンの確認方法はそれぞれ{winOSVersionLink}や{macOSVersionLink}をご覧下さい。",
     "gdxfor.winOSVersionLinkText": "Windows",
-    "gdxfor.macOSVersionLinkText": "Mac OS",
+    "gdxfor.macOSVersionLinkText": "macOS",
     "gdxfor.closeScratchCopiesTitle": "開いている他のScratchを閉じる",
     "gdxfor.closeScratchCopiesText": "1つのScratchのみが同時にForce & Acceleration sensorと接続できます。他のブラウザーのタブでScratchを開いている場合、そのブラウザを閉じて、リトライしてください。 ",
     "gdxfor.otherComputerConnectedTitle": "必ず他のコンピューターがセンサーに接続しないようにします。",

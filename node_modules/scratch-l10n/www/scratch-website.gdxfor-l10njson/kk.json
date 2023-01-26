@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Force and Acceleration sensor",
+    "gdxfor.deviceNameShort": "sensor",
     "gdxfor.headerText": "Датчик {gdxforLink} физикалық әлемді Scratch жобаларымен байланыстырудың жаңа жолдарын ашатын қуатты ғылыми құрал. Итергенде және тартқанда күш өлшеңіз, және шайқау, айналдыру, еркін құлау және тағы басқалар арқылы өзара әрекеттесіңіз.",
     "gdxfor.gettingStarted": "Неден бастауға болады",
     "gdxfor.connectingGdxfor": "Күш пен үдеу датчигін Scratch-қа қосу",
@@ -16,7 +18,7 @@
     "gdxfor.checkOSVersionTitle": "Сіздің операциялық жүйеңіз Scratch Link-пен үйлесімді екеніне көз жеткізіңіз",
     "gdxfor.checkOSVersionText": "Операциялық жүйенің минималды нұсқалары осы беттің жоғарғы жағында келтірілген. Немесе нұсқаны тексеру үшін қараңыз {winOSVersionLink}немесе {macOSVersionLink}.",
     "gdxfor.winOSVersionLinkText": "Windows",
-    "gdxfor.macOSVersionLinkText": "Mac OS",
+    "gdxfor.macOSVersionLinkText": "macOS",
     "gdxfor.closeScratchCopiesTitle": "Scratch-тің басқа көшірмелерін жабу",
     "gdxfor.closeScratchCopiesText": "Бір уақытта Scratch-тің тек бір данасы күш пен үдеу сенсорымен қосыла алады. Егер сізде Scratch басқа шолғыш қойындыларында ашық болса, оны жауып, қайталап көріңіз.",
     "gdxfor.otherComputerConnectedTitle": "Сенсорға басқа компьютер қосылмағанына көз жеткізіңіз",
