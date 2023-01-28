@@ -1,0 +1,166 @@
+const ArgumentType = require("../../extension-support/argument-type");
+const BlockType = require("../../extension-support/block-type");
+const msg = require("./translation");
+const formatMessage = require("format-message");
+
+const menuIconURI =
+    " data:image/png;base64,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";
+const blockIconURI =
+    "data:image/png;base64,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";
+
+const defaultId = "default";
+
+let theLocale = null;
+
+var speechText = "";
+
+var recognition = new webkitSpeechRecognition();
+
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = "cmn-Hant-TW";
+
+recognition.onresult = function (event) {
+    var resultIndex = event.resultIndex;
+    var length = event.results[resultIndex].length - 1;
+    var isFinal = event.results[resultIndex].isFinal;
+
+    if (isFinal) speechText = event.results[resultIndex][length].transcript;
+};
+
+addEventListener;
+
+class voicetoTEXT {
+    constructor(runtime) {
+        theLocale = this._setLocale();
+        this.runtime = runtime;
+        // communication related
+        this.comm = runtime.ioDevices.comm;
+        this.session = null;
+        this.runtime.registerPeripheralExtension("voicetoTEXT", this);
+        // session callbacks
+        this.reporter = null;
+        this.onmessage = this.onmessage.bind(this);
+        this.onclose = this.onclose.bind(this);
+        this.write = this.write.bind(this);
+        // string op
+        this.decoder = new TextDecoder();
+        this.lineBuffer = "";
+    }
+
+    onclose() {
+        this.session = null;
+    }
+
+    write(data, parser = null) {
+        if (this.session) {
+            return new Promise((resolve) => {
+                if (parser) {
+                    this.reporter = {
+                        parser,
+                        resolve,
+                    };
+                }
+                this.session.write(data);
+            });
+        }
+    }
+
+    onmessage(data) {
+        const dataStr = this.decoder.decode(data);
+        this.lineBuffer += dataStr;
+        if (this.lineBuffer.indexOf("\n") !== -1) {
+            const lines = this.lineBuffer.split("\n");
+            this.lineBuffer = lines.pop();
+            for (const l of lines) {
+                if (this.reporter) {
+                    const { parser, resolve } = this.reporter;
+                    resolve(parser(l));
+                }
+            }
+        }
+    }
+
+    scan() {
+        this.comm.getDeviceList().then((result) => {
+            this.runtime.emit(
+                this.runtime.constructor.PERIPHERAL_LIST_UPDATE,
+                result
+            );
+        });
+    }
+
+    _setLocale() {
+        let nowLocale = "";
+        switch (formatMessage.setup().locale) {
+            case "zh-tw":
+                nowLocale = "zh-tw";
+                break;
+            default:
+                nowLocale = "en";
+                break;
+        }
+        return nowLocale;
+    }
+
+    getInfo() {
+        theLocale = this._setLocale();
+
+        return {
+            id: "voicetoTEXT",
+            name: msg.name[theLocale],
+            color1: "#595a5c",
+            color2: "#595a5c",
+            menuIconURI: menuIconURI,
+            blockIconURI: blockIconURI,
+            blocks: [
+                {
+                    opcode: "beginVoice",
+                    blockType: BlockType.COMMAND,
+                    text: msg.beginVoice[theLocale],
+                },
+                {
+                    opcode: "pauseVoice",
+                    blockType: BlockType.COMMAND,
+                    text: msg.pauseVoice[theLocale],
+                },
+                {
+                    opcode: "nullTEXT",
+                    blockType: BlockType.COMMAND,
+                    text: msg.nullTEXT[theLocale],
+                },
+                {
+                    opcode: "voicetoTEXT",
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        id: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "id",
+                        },
+                    },
+                    text: msg.voicetoTEXT[theLocale],
+                },
+            ],
+        };
+    }
+
+    beginVoice() {
+        recognition.abort();
+        speechText = "";
+        recognition.start();
+    }
+
+    pauseVoice() {
+        recognition.abort();
+    }
+
+    nullTEXT() {
+        return (speechText = "");
+    }
+
+    voicetoTEXT() {
+        return speechText;
+    }
+}
+
+module.exports = voicetoTEXT;

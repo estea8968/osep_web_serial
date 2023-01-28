@@ -1,0 +1,308 @@
+const ArgumentType = require('../../extension-support/argument-type');
+const BlockType = require('../../extension-support/block-type');
+const msg = require('./translation');
+const formatMessage = require('format-message');
+//async add estea
+const ml5 = require('ml5');
+//require('babel-polyfill');
+//end
+
+const menuIconURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAASCAYAAAApH5ymAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOpQAADqUBKmWIAgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAUMSURBVEiJzdZvbNXlFQfwz739w/+WIoQKpuoGGIbM0ts6gjMTo1kwIf6LbtPpMicxW0i2mCVm0YXFZK/wBVkWGH+bumRpJOgaSawSkLAwk3bXlrKYCfXWwoAiLWDvbW1p73324v4K917Lspc7yUme3/N8n/N8z3nOOc+P/3OJFYxX4OcYxF/Qh0fxk+h7Eg9jGL14F19gHn6FAwh4/CZnleME2qLv72EjctFZs/EgyvB7/K2U4L777/fTVIpz5zyID++6yydVVVZ2dvr7qlW+feut5sKlS/T0+HcIfl1T49FEwo8++kjnyIi3GhpsXbBgeoaffeZyX58NqEkkvFVTo2o6XCqlP5WSwFDh/J5USnj9dQEPYOGuXUY6OwUkDxyQC0EIQRgaEg4dEuJx3Y2NToyPCytWuIDfHj+exxTqlSvCyZPCwYMC/hqP29nbK5w583VsCMLWrQJ+ORX2KQmZDNksUdhnj42JDw/nFzMZTp+mv5/581m3jhdfdHdHh4FslhBU4FIyKTc6Kr5kCTNm0NdHCHR38+STzJrlO+vXSy9cyKuv8thjVFZy7715TCZDV5dJfF4a2V09PcKWLQK+i2Xbthk/fDgfwZYWubY2ASdx4tgxYedOYfVq6dFRYflyA1ggn69fbNsmHD0q4J94p67OlaEh4bnnhB07hOPHr6/tX7rUcDotNDUJ6MYfp9IvPn22yCnOz0LpxJ/On6cqn0FxiMVM4iqewQ8rK41G+NN4/MwZf+7uZsMG7rmHZNIkfoenKit9CmVlhvEENssXXBHBUrIT8bhcNA4F83fgqcWLGR0lFnMtIjgeOQZHZswwUmJvSzIp3djIihU0NzuLtyEel4bycsNIFW66GcEy+bYyJQFuuYWXX7a+rc36pia6uuTicZmI4EQBPpbNFuU3XNm+3ecLFtDbS1eXgQKHpgKQLdlTZKSsZD4dj18nGeC++/Kay9HRwe7dTtfXu4zbSuzWTkyYWXrYxIRsLpcvBMwoXY8KLVZAuChquWyWWD7zbsNIebmQy90g2NVFa2v+al95hfFxLQXGCwnNyeWKHIaazZvdOTpKfT11dZbIF5WIlBCUk++10xEcS6eZMwcsw6qKCrOiNhPg7FmefVY2leL550Fd5PX1XIykIoSv5fRvEgnVR48yOMhLL6nFjwt5hKCS4uZdeMX9mQxLl4IG1NXWKh8chBuH53L6urp8s7FRrKzM6qh6ZbOq8DNcxJwScm6/3cNr1rBjh4mZM5WvWyeGh/CHbFZ1QQSLrr7Qy8N9fSbXrqWhwYaNGz3T1ERPD/Jv5ZR0tra6sGwZjzxizeSk+bBypcWJhD2JhHcXLrRTcZt6YNMm37p8mYMHJY8cca6+nuXLNaAmm71+1VmKiq2I4D/27dNbVUV7u7LmZpUjI+zd6xz2F+C+fP99HadO8fTTZo+P+0ZFBXv30t6e1xdeUB1CEcEfrF2r8uOPmZjwyZtv+tfgIJs2WYpfRC1KPG5MyftbSDAkk1reeMPk4CAXLvDaa3JXr2rD4PnzDAyA/hBsf+891xYtIpNReeIEqdQN7e/31cWLvrx4MW+4utodc+eyf79raB0bc+qDD6itBQ9NTuo/dYp02ldcb/DTSgx70C//Fu6Tbz934xIGcGeEbcZZJHEIHfg00ha04kI03o1zOBbtnYf2aP87WI2eCPc/yRzMKplbie9Pg/tvsqhgPN1P2Dw3f27BfwA/lBpLuIDHRgAAAABJRU5ErkJggg==';
+const blockIconURI = '';
+
+const defaultId = 'default';
+let theLocale = null;
+//import * as fs from 'file-system'; 
+//var afs = require('fs');
+//console.log(fs);
+class urlTXT {
+    constructor (runtime) {
+        theLocale = this._setLocale();
+        this.runtime = runtime;
+        // communication related
+        this.comm = runtime.ioDevices.comm;
+        this.session = null;
+        this.runtime.registerPeripheralExtension('urlTXT', this);
+        // session callbacks
+        this.reporter = null;
+        this.onmessage = this.onmessage.bind(this);
+        this.onclose = this.onclose.bind(this);
+        this.write = this.write.bind(this);
+        // string op
+        this.decoder = new TextDecoder();
+        this.lineBuffer = '';
+	this.txt = {};
+	this.txtlenght = {};
+
+        this.emptyObj = {
+            VALUE: {}
+        };
+    }
+
+    onclose () {
+        this.session = null;
+    }
+
+    write (data, parser = null) {
+        if (this.session) {
+            return new Promise(resolve => {
+                if (parser) {
+                    this.reporter = {
+                        parser,
+                        resolve
+                    };
+                }
+                this.session.write(data);
+            });
+        }
+    }
+
+    onmessage (data) {
+        const dataStr = this.decoder.decode(data);
+        this.lineBuffer += dataStr;
+        if (this.lineBuffer.indexOf('\n') !== -1){
+            const lines = this.lineBuffer.split('\n');
+            this.lineBuffer = lines.pop();
+            for (const l of lines) {
+                if (this.reporter) {
+                    const {parser, resolve} = this.reporter;
+                    resolve(parser(l));
+                }
+            }
+        }
+    }
+
+
+    scan () {
+        this.comm.getDeviceList().then(result => {
+            this.runtime.emit(this.runtime.constructor.PERIPHERAL_LIST_UPDATE, result);
+        });
+    }
+
+    _setLocale () {
+        let nowLocale = 'zh-tw';
+        switch (formatMessage.setup().locale) {
+        case 'zh-tw':
+            nowLocale = 'zh-tw';
+            break;
+        default:
+            nowLocale = 'en';
+            break;
+        }
+        return nowLocale;
+    }
+
+    getInfo () {
+        theLocale = this._setLocale();
+
+        return {
+            id: 'urlTXT',
+            name: msg.name[theLocale],
+            color1: '#612505',
+            color2: '#612505',
+            menuIconURI: menuIconURI,
+            blockIconURI: blockIconURI,
+            blocks: [
+		{
+                    opcode: 'readtextFILE',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        url: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'http://127.0.0.0:8601/FILE.txt'
+                        }
+		    },
+		    text:msg.readtextFILE[theLocale]
+                },
+                /*{
+                    opcode: 'readtextFILE2',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        url: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'http://127.0.0.0:8601/FILE.txt'
+                        }
+		    },
+		    text:msg.readtextFILE2[theLocale]
+                },*/        
+		{
+                    opcode: 'writetextFILE',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        url: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'a.txt'
+                        },
+                        textdata1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                        textdata2: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                        textdata3: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                        textdata4: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                        textdata5: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        }
+		    },
+		    text:msg.writetextFILE[theLocale]
+                },
+                {
+                    opcode: 'readFromTEXT',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        id: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        }
+                    },
+                    text: msg.readFromTEXT[theLocale]
+                },
+                {
+                    opcode: 'textLENGHT',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        id: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        }
+                    },
+                    text: msg.textLENGHT[theLocale]
+                },
+		{
+                    opcode: 'readtxtDATA',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        variable: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'data'
+                        },
+                        n: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '1'
+                        }
+                    },
+                    text: msg.readtxtDATA[theLocale]
+                },
+                {
+                    opcode: 'openURL',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        url: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'https://'
+                        }
+                    },
+                    text: msg.openURL[theLocale]
+                },
+            ]
+        };
+    }
+
+    isTxtFetched () {
+        return this.txt.fetched;
+    }
+
+    istextLENGHTFetched () {
+        return this.txtlenght.fetched;
+    }
+
+
+    async readtextFILE (args) {
+	const file = args.url;
+		
+	this.txt.data = fetch(file,{method:'get'}).then(response => response.text());
+	this.txt.fetched = true;
+    }
+
+    /*async readtextFILE2 (args) {
+        const file = args.url;
+        //const cors_url = 'https://cors-anywhere.herokuapp.com/';
+        //const cors_url ='';
+        let cors_url = 'https://script.google.com/macros/s/AKfycbytuWUv5HWk5-JzDd5eHZwkj9L8uvetrTNTUmnZ3h3boKER7PD-MZtI07cA1OvI9UDs/exec';
+        this.txt.data = await fetch(cors_url+file,{method:'get'}).then(response => response.text());
+        this.txt.fetched = true;
+        }*/
+
+    readtxtDATA (args) {
+        const variable = args.variable || this.emptyObj;
+        const n = args.n;
+        try {
+	    const parsed = variable.split('\n');
+	    this.txtlenght.fetched = true;
+	    this.txtlenght.data = parsed.length-1;
+            const data = parsed[n - 1];
+            return typeof data === 'string' ? data : txt.stringify(data);
+        } catch (err) {
+            return `Error: ${err}`;
+        }
+    }
+
+
+    readFromTEXT () {
+        if (this.isTxtFetched()) {
+            console.log('return ', this.txt.data);
+            return this.txt.data;
+        }
+        return msg.readFromTEXTErr[theLocale];
+    }
+
+    googlecolumnTEXT(args){
+	const variable = args.variable || this.emptyObj;
+        const n = args.n;
+	const column = "gsx$" + args.column;
+        try {
+	    const parsed = JSON.parse(variable);
+            var data = parsed[n - 1];
+            data = JSON.stringify(data);
+            const a_parsed = JSON.parse(data);
+            var a_data = a_parsed[column];
+	    a_data = JSON.stringify(a_data);
+	    const t_parsed = JSON.parse(a_data);
+	    var t_data = t_parsed["$t"];
+            return typeof t_data === 'string' ? t_data : JSON.stringify(t_data);
+         }catch (err){
+	    return `Error: ${err}`;	
+	}
+    }
+
+    textLENGHT () {
+        if (this.istextLENGHTFetched()) {
+            console.log('return ', this.txtlenght.data);
+            return this.txtlenght.data;
+        }
+        return msg.textLENGHTErr[theLocale];
+    }
+
+    openURL (args) {
+	const url = args.url;
+	var openurl = window.open(url);
+    }
+
+    writetextFILE (args) {
+	const fileName = args.url;
+	const fileData = args.textdata1+'\n'+args.textdata2+'\n'+args.textdata3+'\n'+args.textdata4+'\n'+args.textdata5;
+	console.log(fileName,fileData);
+	function fileDownload() {
+	    //var fileContents = JSON.stringify(filedata, null, 2);
+	    var pp = document.createElement('a');
+	    pp.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileData));
+	    pp.setAttribute('download', fileName);
+	    pp.click();
+	  }
+	  setTimeout(function() {
+	    fileDownload()
+	  }, 500);
+    }    
+}
+
+module.exports = urlTXT;

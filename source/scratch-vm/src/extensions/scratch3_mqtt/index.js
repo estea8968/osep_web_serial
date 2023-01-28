@@ -1,0 +1,271 @@
+/*
+This is the Scratch 3 extension to remotely control an
+MQTT
+ */
+// Boiler plate from the Scratch Team
+
+const ArgumentType = require('../../extension-support/argument-type');
+const BlockType = require('../../extension-support/block-type');
+const formatMessage = require('format-message');
+const msg = require('./translation');
+
+// mqtt Modes
+let mqtt = require('mqtt');
+const { locale } = require('core-js');
+
+require('sweetalert');
+//async await estea
+const ml5 = require('ml5');
+//require('babel-polyfill');
+
+
+let the_locale = null;
+//old_message
+let old_message ;
+
+//mqtt message
+let mqtt_message = msg.disconnect[the_locale];
+let client = {};
+let clientId;
+//let mqtt_topic = msg.mqtt_topic[the_locale];
+let topic = '';
+let mqtt_topic;
+class Scratch3Mqtt {
+    constructor(runtime) {
+        the_locale = this._setLocale();
+        this.runtime = runtime;
+    }
+
+    getInfo() {
+        the_locale = this._setLocale();
+        return {
+            id: 'mqtt',
+            color1: '#003D79', //'#0C5986',
+            color2: '#34B0F7',
+            name: 'MQTT',
+            blockIconURI: 'data:image/png;base64,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',
+            blocks: [
+                {
+                    opcode: 'connect_mqtt',
+                    blockType: BlockType.COMMAND,
+                    text: msg.ContentPort[the_locale],
+                    arguments: {
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'wss://broker.emqx.io:8084/mqtt',
+                            //defaultValue: 'ws://broker.emqx.io:8083/mqtt,wss://broker.emqx.io:8084/mqtt'
+                        },
+                        USR: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' ',
+                        },
+                        PWS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' ',
+                        }
+                    },
+
+                },
+                {
+                    opcode: 'connect_off',
+                    blockType: BlockType.COMMAND,
+                    text: msg.Content_off[the_locale],
+                },
+                {
+                    opcode: 'subscribe_topic',
+                    blockType: BlockType.COMMAND,
+                    text: msg.Subscribe_Topic[the_locale],
+                    arguments: {
+                        TOPIC: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'osep',
+                        }
+                    },
+
+                },
+                {
+                    opcode: 'publish_topic',
+                    blockType: BlockType.COMMAND,
+                    text: msg.Publish_Topic[the_locale],
+                    arguments: {
+                        TOPIC: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'osep',
+                        },
+                        PUBLISH: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Hello osep',
+                        }
+                    },
+                },
+                {
+                    opcode: 'mqtt_msg',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormDmqttMsg[the_locale],
+                    arguments: {
+                        id: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        }
+                    }
+                },
+                {
+                    opcode: 'mqtt_tpc',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormDmqttTopic[the_locale],
+                    arguments: {
+                        TOPIC: {
+                            type: ArgumentType.STRING,
+                            defaultValue: topic
+                        }
+                    }
+                },
+            ],
+
+        };
+    }
+
+    // command blocks
+    mqtt_tpc(args) {
+        return mqtt_topic;
+    }
+    mqtt_msg(args) {
+        return mqtt_message;
+    }
+    async connect_off(args) {
+        mqtt_message = msg.disconnect[the_locale];
+        mqtt_topic ='';
+        client.end();
+        client = {};
+    }
+
+    async connect_mqtt(args) {
+        //https://www.emqx.com/zh/blog/connect-to-mqtt-broker-with-websocket
+        //clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
+        clientId = 'mqttx_' + Math.random().toString(16).substr(2, 8);
+        console.log(clientId);
+        let url = args.URL;
+        let usr = args.USR;
+        let pws = args.PWS;
+        let options = {};
+        if (usr == ' ') {
+            options = {
+                keepalive: 30,
+                clientId: clientId,
+                protocolId: 'MQTT',
+                protocolVersion: 4,
+                clean: true,
+                reconnectPeriod: 1000,
+                connectTimeout: 30 * 1000,
+                will: {
+                    topic: 'WillMsg',
+                    payload: 'Connection Closed abnormally..!',
+                    qos: 0,
+                    retain: false
+                },
+                ejectUnauthorized: false
+            }
+        } else {
+            options = {
+                keepalive: 30,
+                usr,
+                pws,
+                username: usr,
+                password: pws,
+                clientId: clientId,
+                protocolId: 'MQTT',
+                protocolVersion: 4,
+                clean: true,
+                reconnectPeriod: 1000,
+                connectTimeout: 30 * 1000,
+                will: {
+                    topic: 'WillMsg',
+                    payload: 'Connection Closed abnormally..!',
+                    qos: 0,
+                    retain: false
+                },
+                rejectUnauthorized: false
+            }
+        }
+
+        client = mqtt.connect(url, options);
+        client.on('error', function (err) {
+            mqtt_message = err;
+            alert(err);
+            client.end();
+        });
+
+        client.on('connect', function () {
+            console.log('client connected:' + clientId)
+            mqtt_message = msg.isconnect[the_locale];
+            //client.subscribe('osep', { qos: 0 })
+            //client.publish('osep', 'wss secure connection demo...!', { qos: 0, retain: false })
+        })
+        
+        client.on('message', function (topic, message, packet) {
+          //mqtt_message = message.toString() + '\nOn topic:= ' + topic; 
+          if(old_message != message.toString() ){
+            mqtt_message = message.toString();
+            old_message = mqtt_message;
+          }
+          mqtt_topic =  topic;
+          console.log('Received Message:= ' + mqtt_message);
+        })
+
+        client.on('close', function () {
+            mqtt_message = msg.disconnect[the_locale];
+            console.log(clientId + ' disconnected');
+        })
+    }
+
+    async publish_topic(args) {
+        const topic = args.TOPIC;
+        const publish_string = args.PUBLISH;
+        if (JSON.stringify(client) == '{}') {
+            alert('not connect!');
+        } else {
+            client.publish(topic, publish_string, { qos: 0, retain: false });
+            //mqtt_message = topic + ':' + publish_string;
+            mqtt_message = publish_string;
+            mqtt_topic = topic;
+            console.log('topic,publish_string', topic + ',' + publish_string);
+        }
+
+    }
+
+    async subscribe_topic(args) {
+        /*if (!client.connected) {
+            console.log('客戶端未連線')
+            return
+        }*/
+        const topic = args.TOPIC;
+        if (JSON.stringify(client) == '{}') {
+            alert('not connect!');
+        } else {
+            client.subscribe(topic, { qos: 0 });
+            mqtt_topic = topic;
+            //mqtt_message = topic;
+        }
+
+    }
+
+    // end of block handlers
+
+    _setLocale() {
+        let now_locale = '';
+        switch (formatMessage.setup().locale) {
+            case 'zh-tw':
+                now_locale = 'zh-tw';
+                break;
+            default:
+                now_locale = 'en';
+                break;
+        }
+        return now_locale;
+    }
+
+    // helpers
+
+}
+
+module.exports = Scratch3Mqtt;

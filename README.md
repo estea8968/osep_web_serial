@@ -23,6 +23,7 @@ Running the project requires Node.js to be installed.
 ## Running
 Open a Command Prompt or Terminal in the repository and run:
 ```bash
+export NODE_OPTIONS=--openssl-legacy-provider
 npm start
 ```
 Then go to [http://localhost:8601/](http://localhost:8601/) - the playground outputs the default GUI component
