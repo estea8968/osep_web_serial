@@ -102,7 +102,7 @@ class chart {
                     arguments: {
                         title: {
                             type: ArgumentType.STRING,
-                            defaultValue: '圖表標題'
+                            defaultValue: msg.chartTitle[theLocale]
                         },
                     },
                     text: msg.showChartTitle[theLocale]
@@ -113,11 +113,11 @@ class chart {
                     arguments: {
                         X_axis: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'X軸標題'
+                            defaultValue: msg.XAxis[theLocale]
                         },
                         Y_axis: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'Y軸標題'
+                            defaultValue: msg.YAxis[theLocale]
                         }
                     },
                     text: msg.showAxisTitle[theLocale]
@@ -128,12 +128,12 @@ class chart {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: '資料'
+                            defaultValue: msg.ChartData[theLocale],
                         },
                         chart: {
                             type: ArgumentType.STRING,
                             menu: 'chartSelectField',
-                            defaultValue: '折線圖'
+                            defaultValue: msg.LineChart[theLocale],
                         },
                     },
                     text: msg.showChart[theLocale]
@@ -142,7 +142,28 @@ class chart {
             menus: {
                 chartSelectField: {
                     acceptReporters: true,
-                    items: ["折線圖", "長條圖", "圓餅圖", "環形圖", "雷達圖"],
+                    items: [
+                        {
+                            text: msg.LineChart[theLocale],
+                            value: '折線圖'
+                        },
+                        {
+                            text: msg.BarChart[theLocale],
+                            value: '長條圖'
+                        },
+                        {
+                            text: msg.PieChart[theLocale],
+                            value: '圓餅圖'
+                        },
+                        {
+                            text: msg.DonutChart[theLocale],
+                            value: '環形圖'
+                        },
+                        {
+                            text: msg.RadarChart[theLocale],
+                            value: '雷達圖'
+                        },
+                    ],
                 },
             }
         };
@@ -333,7 +354,7 @@ class chart {
         openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
         openWindow.document.write('animation:{ duration:0, }},};');
         openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
-        
+
         openWindow.document.close();
     }
 
@@ -384,7 +405,7 @@ class chart {
         openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
         openWindow.document.write('animation:{ duration:0, }},};');
         openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
-        
+
         openWindow.document.close();
     }
 
@@ -432,7 +453,7 @@ class chart {
         openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
         openWindow.document.write('animation:{ duration:0, }},};');
         openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
-        
+
         openWindow.document.close();
     }
 }

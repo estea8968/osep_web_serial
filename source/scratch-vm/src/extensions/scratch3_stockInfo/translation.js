@@ -1,6 +1,6 @@
 export const title = {
-    'en': 'Stock Information',
-    'zh-tw': '股票資訊'
+    'en': 'TAIEX',
+    'zh-tw': '台股資訊'
 };
 
 export const instantInfo = {

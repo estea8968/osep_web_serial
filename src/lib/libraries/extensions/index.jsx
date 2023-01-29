@@ -404,15 +404,21 @@ const extensions = [
     helpLink: "https://scratch.mit.edu/vernier",
   },
   {
-    name: "圖表",
+    name: (
+      <FormattedMessage
+        defaultMessage="Chart"
+        description="Chart extension"
+        id="gui.extension.chart.title"
+      />
+    ),
     extensionId: "chart",
     collaborator: "TYiC",
     iconURL: chartImage,
     insetIconURL: chartInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Chart"
-        description="Chart extension"
+        defaultMessage="Make charts to visualize data."
+        description="Make charts to visualize data."
         id="gui.extension.chart.description"
       />
     ),
@@ -423,15 +429,21 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "股票資訊",
+    name: (
+      <FormattedMessage
+        defaultMessage="TAIEX"
+        description="TAIEX extension"
+        id="gui.extension.TAIEX.title"
+      />
+    ),
     extensionId: "stockInfo",
     collaborator: "TYiC",
     iconURL: stockInfoImage,
     insetIconURL: stockInfoInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Stock Infomation"
-        description="StockInfo extension"
+        defaultMessage="Information about Taiwan Capitalization Weighted Stock Index (TAXIE)."
+        description="Information about Taiwan Capitalization Weighted Stock Index (TAXIE)."
         id="gui.extension.stockInfo.description"
       />
     ),
@@ -442,15 +454,15 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "Google Map",
+    name: "Google Maps",
     extensionId: "googleMap",
-    collaborator: "TYiC",
+    collaborator: "Champierre, TYiC",
     iconURL: googleMapImage,
     insetIconURL: googleMapInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Google Map"
-        description="Google Map extension"
+        defaultMessage="Display geographic location using the latitude and longitude coordinates (Experimental)."
+        description="Display geographic location using the latitude and longitude coordinates (Experimental)."
         id="gui.extension.googleMap.description"
       />
     ),
@@ -461,15 +473,21 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "數位資料表示與處理",
+    name:(
+      <FormattedMessage
+        defaultMessage="Data Processing"
+        description="Data Processing extension"
+        id="gui.extension.dataProcessing.title"
+      />
+    ),
     extensionId: "dataProcessing",
     collaborator: "TYiC",
     iconURL: dataProcessingImage,
     insetIconURL: dataProcessingInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Data Processing"
-        description="Data Processing extension"
+        defaultMessage="Number system conversion and string manipulation."
+        description="Number system conversion and string manipulation."
         id="gui.extension.dataProcessing.description"
       />
     ),

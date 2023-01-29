@@ -97,7 +97,7 @@ class googleMap {
                     arguments: {
                         label: {
                             type: ArgumentType.STRING,
-                            defaultValue: '佛光大學'
+                            defaultValue: msg.tmpLabel[theLocale]
                         },
                         lat: {
                             type: ArgumentType.STRING,
@@ -123,7 +123,7 @@ class googleMap {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: '名稱,經度,緯度,備註'
+                            defaultValue: msg.tmpData[theLocale]
                         },
                     },
                     text: msg.recordMarker2[theLocale]

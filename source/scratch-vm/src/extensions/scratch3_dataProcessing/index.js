@@ -95,7 +95,7 @@ class dataProcessing {
                         before: {
                             type: ArgumentType.STRING,
                             menu: 'selectYear',
-                            defaultValue: '二進制'
+                            defaultValue: msg.Binary[theLocale]
                         },
                         data: {
                             type: ArgumentType.STRING,
@@ -104,7 +104,7 @@ class dataProcessing {
                         after: {
                             type: ArgumentType.STRING,
                             menu: 'selectYear',
-                            defaultValue: '十進制'
+                            defaultValue: msg.Decimal[theLocale],
                         },
                     },
                     text: msg.conversion[theLocale]
@@ -116,7 +116,7 @@ class dataProcessing {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data'
+                            defaultValue: 'text'
                         },
                         start: {
                             type: ArgumentType.STRING,
@@ -124,72 +124,23 @@ class dataProcessing {
                         },
                         finish: {
                             type: ArgumentType.STRING,
-                            defaultValue: '1'
+                            defaultValue: '2'
                         },
                     },
                     text: msg.substring[theLocale]
                 },
-                {
-                    opcode: 'split',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        data: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'data'
-                        },
-                        separator: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'a'
-                        },
-                        number: {
-                            type: ArgumentType.STRING,
-                            defaultValue: '1'
-                        },
-                    },
-                    text: msg.split[theLocale]
-                },
-                {
-                    opcode: 'search',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        text: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'a'
-                        },
-                        data: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'data'
-                        },
-                    },
-                    text: msg.search[theLocale]
-                },
                 "---",
-                {
-                    opcode: 'includes',
-                    blockType: BlockType.BOOLEAN,
-                    arguments: {
-                        data: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'data'
-                        },
-                        text: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'text'
-                        },
-                    },
-                    text: msg.includes[theLocale]
-                },
                 {
                     opcode: 'startsWith',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data'
+                            defaultValue: 'text'
                         },
                         text: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'd'
+                            defaultValue: 't'
                         },
                     },
                     text: msg.startsWith[theLocale]
@@ -200,11 +151,11 @@ class dataProcessing {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data'
+                            defaultValue: 'text'
                         },
                         text: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'a'
+                            defaultValue: 'd'
                         },
                     },
                     text: msg.endsWith[theLocale]
@@ -216,15 +167,15 @@ class dataProcessing {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data'
+                            defaultValue: 'text'
                         },
                         originalText: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'd'
+                            defaultValue: 't'
                         },
                         replaceText: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'text'
+                            defaultValue: 'a'
                         },
                     },
                     text: msg.replace[theLocale]
@@ -235,7 +186,7 @@ class dataProcessing {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data'
+                            defaultValue: 'text'
                         },
                         number: {
                             type: ArgumentType.STRING,
@@ -244,14 +195,24 @@ class dataProcessing {
                     },
                     text: msg.repeat[theLocale]
                 },
-                "---",
+                {
+                    opcode: 'trim',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        data: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' text  '
+                        },
+                    },
+                    text: msg.trim[theLocale]
+                },
                 {
                     opcode: 'uppercase',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'Hello World!'
+                            defaultValue: 'text'
                         },
                     },
                     text: msg.uppercase[theLocale]
@@ -262,7 +223,7 @@ class dataProcessing {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'Hello World!'
+                            defaultValue: 'TEXT'
                         },
                     },
                     text: msg.lowerCase[theLocale]
@@ -272,7 +233,24 @@ class dataProcessing {
             menus: {
                 selectYear: {
                     acceptReporters: true,
-                    items: ["二進制", "八進制", "十進制", "十六進制"],
+                    items: [
+                        {
+                            text: msg.Binary[theLocale],
+                            value: '二進制'
+                        },
+                        {
+                            text: msg.Octal[theLocale],
+                            value: '八進制'
+                        },
+                        {
+                            text: msg.Decimal[theLocale],
+                            value: '十進制'
+                        },
+                        {
+                            text: msg.Hexadecimal[theLocale],
+                            value: '十六進制'
+                        },
+                    ]
                 },
             }
         };
@@ -308,30 +286,6 @@ class dataProcessing {
         var finish = args.finish;
         var text = data.substring(start - 1, finish);
 
-        return text.toString();
-    }
-
-    split(args) {
-        var data = args.data;
-        var separator = args.separator;
-        var number = args.number < 1 ? 0 : args.number - 1;
-        var text = data.split(separator)[number];
-
-        return text.toString();
-    }
-
-    search(args){
-        var data = args.data;
-        var text = args.text;
-
-        return (data.search(text) + 1).toString();
-    }
-
-    includes(args) {
-        var data = args.data;
-        var text = args.text;
-        var text = data.includes(text) ? true : false;
-
         return text;
     }
 
@@ -355,22 +309,26 @@ class dataProcessing {
         var replaceText = args.replaceText;
         var text = data.replace(originalText, replaceText);
 
-        return text.toString();
+        return text;
     }
 
     repeat(args){
         var data = args.data;
         var number = args.number;
 
-        return data.repeat(number).toString();
+        return data.repeat(number);
+    }
+
+    trim(args){
+        return args.data.trim();
     }
 
     uppercase(args){
-        return args.data.toUpperCase().toString();
+        return args.data.toUpperCase();
     }
 
     lowerCase(args){
-        return args.data.toLowerCase().toString();
+        return args.data.toLowerCase();
     }
     
 }
