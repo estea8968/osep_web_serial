@@ -2,17 +2,13 @@
 #### Scratch GUI is a set of React components that comprise the interface for creating and running Scratch 3.0 projects
 
 ## Installation
-This requires you to have Git and Node.js installed.
 
-In your own node environment/application:
-```bash
-npm install https://github.com/LLK/scratch-gui.git
-```
 If you want to edit/play yourself:
 ```bash
-git clone https://github.com/LLK/scratch-gui.git
-cd scratch-gui
+git clone https://github.com/estea8968/osep_web_serial.git
+cd osep_web_serial
 npm install
+npm run copy
 ```
 
 **You may want to add `--depth=1` to the `git clone` command because there are some [large files in the git repository history](https://github.com/LLK/scratch-gui/issues/5140).**

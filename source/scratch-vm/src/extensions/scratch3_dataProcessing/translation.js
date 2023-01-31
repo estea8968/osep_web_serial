@@ -4,32 +4,32 @@ export const title = {
 };
 
 export const conversion = {
-    'en': 'Convert [before][data] to [after]',
+    'en': 'convert [before][data] to [after]',
     'zh-tw': '[before][data]轉成[after]'
 };
 
 export const Binary = {
-    'en': 'Binary',
+    'en': 'binary',
     'zh-tw': '二進制'
 };
 
 export const Octal = {
-    'en': 'Octal',
+    'en': 'octal',
     'zh-tw': '八進制'
 };
 
 export const Decimal = {
-    'en': 'Decimal',
+    'en': 'decimal',
     'zh-tw': '十進制'
 };
 
 export const Hexadecimal = {
-    'en': 'Hexadecimal',
+    'en': 'hexadecimal',
     'zh-tw': '十六進制'
 };
 
 export const substring = {
-    'en': 'Substring [data] starting pos [start] length [finish]',
+    'en': 'substring [data] pos1 [start] pos2 [finish]',
     'zh-tw': '[data]第[start]到[finish]值'
 };
 
@@ -44,26 +44,26 @@ export const endsWith = {
 };
 
 export const replace = {
-    'en': 'Replace [data] [originalText] with [replaceText]',
+    'en': 'replace [data] [originalText] with [replaceText]',
     'zh-tw': '把[data]內的[originalText]換成[replaceText]'
 };
 
 export const repeat = {
-    'en': 'Repeat [data] [number] times',
+    'en': 'repeat [data] [number] times',
     'zh-tw': '[data]重複[number]次'
 };
 
 export const trim = {
-    'en': 'Trim [data]',
-    'zh-tw': '修剪[data]空白字元'
+    'en': 'trim [data]',
+    'zh-tw': '移除[data]空白字元'
 };
 
 export const uppercase = {
-    'en': 'Uppercase [data]',
+    'en': 'uppercase [data]',
     'zh-tw': '[data]轉成大寫'
 };
 
 export const lowerCase = {
-    'en': 'Lowercase [data]',
+    'en': 'lowercase [data]',
     'zh-tw': '[data]轉成小寫'
 };

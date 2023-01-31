@@ -204,8 +204,6 @@ class googleMap {
     }
 
     recordMarker2(args) {
-        if (args.data == "名稱,經度,緯度,備註") return "請建立 Google 試算表，依序建立名稱,經度,緯度,備註等四個欄位名稱，搭配使用讀寫 Google 試算表擴充功能即可使用此積木";
-
         var data = JSON.parse(args.data);
 
         var width = screen.width / 2;
@@ -222,10 +220,19 @@ class googleMap {
         openGoogleMapWindow.document.write('var markerData = [');
 
         for (var i = 0; i < data.length; i++) {
-            var label = data[i]["名稱"].length ? data[i]["名稱"] : "";
-            var lng = data[i]["經度"].length ? data[i]["經度"] : "";
-            var lat = data[i]["緯度"].length ? data[i]["緯度"] : "";
-            var remark = data[i]["備註"].length ? data[i]["備註"] : "";
+
+            if (data[i]["名稱"]) {
+                var label = data[i]["名稱"];
+                var lng = data[i]["經度"];
+                var lat = data[i]["緯度"];
+                var remark = data[i]["備註"];
+            }
+            if (data[i]["location"]) {
+                var label = data[i]["location"];
+                var lng = data[i]["longitude"];
+                var lat = data[i]["latitude"];
+                var remark = data[i]["descriptions"];
+            }
 
             openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ',remark:"' + remark + '"},');
         }

@@ -14,51 +14,51 @@ export const chartTitle = {
 };
 
 export const showAxisTitle = {
-    'en': 'axis titles: X axis [X_axis] Y axis [Y_axis]',
+    'en': 'axis titles: x axis [X_axis] y axis [Y_axis]',
     'zh-tw': '座標軸標題：X軸[X_axis]Y軸[Y_axis]'
 };
 
 export const XAxis = {
-    'en': 'X axis title',
+    'en': 'x axis title',
     'zh-tw': 'X軸標題'
 }
 
 export const YAxis = {
-    'en': 'Y axis title',
+    'en': 'y axis title',
     'zh-tw': 'Y軸標題'
 }
 
 export const showChart = {
-    'en': 'Read data [data] show [chart]',
+    'en': 'read data [data] show [chart]',
     'zh-tw': '讀取資料[data]顯示[chart]'
 };
 
 export const ChartData = {
-    'en': 'Data',
+    'en': 'data',
     'zh-tw': '資料'
 };
 
 export const LineChart = {
-    'en': 'Line Chart',
+    'en': 'line Chart',
     'zh-tw': '折線圖'
 };
 
 export const BarChart = {
-    'en': 'Bar Chart',
+    'en': 'bar Chart',
     'zh-tw': '長條圖'
 };
 
 export const PieChart = {
-    'en': 'Pie Chart',
+    'en': 'pie Chart',
     'zh-tw': '圓餅圖'
 };
 
 export const DonutChart = {
-    'en': 'Donut Chart',
+    'en': 'donut Chart',
     'zh-tw': '環形圖'
 };
 
 export const RadarChart = {
-    'en': 'Radar Chart',
+    'en': 'radar Chart',
     'zh-tw': '雷達圖'
 };
