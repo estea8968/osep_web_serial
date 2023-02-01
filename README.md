@@ -9,6 +9,9 @@ git clone https://github.com/estea8968/osep_web_serial.git
 cd osep_web_serial
 npm install
 npm run copy
+
+windows system
+npm run copy:win
 ```
 
 **You may want to add `--depth=1` to the `git clone` command because there are some [large files in the git repository history](https://github.com/LLK/scratch-gui/issues/5140).**
