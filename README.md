@@ -25,7 +25,7 @@ Open a Command Prompt or Terminal in the repository and run:
 npm start
 
 windows system
-npm start:win
+npm run start:win
 ```
 Then go to [http://localhost:8601/](http://localhost:8601/) - the playground outputs the default GUI component
 
