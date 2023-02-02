@@ -133,13 +133,8 @@ export const FormWs2812SetPin = {
 };
 
 export const FormWs2812SetNum = {
-    'en': 'WS2812 light #[NUM] color:[color] value:[value]',
-    'zh-tw': 'LED 陣列，亮第[NUM]顆，顏色:[color] 值[value]',
-};
-
-export const FormWs2812SetNum1 = {
-    'en': 'WS2812 light #[NUM] color red:[colorR] green:[colorG] blue:[colorB]',
-    'zh-tw': 'LED 陣列，亮第[NUM]顆，顏色:紅:[colorR]綠:[colorG]藍[colorB]',
+    'en': 'WS2812 light #[NUM] color [RGB] value [VALUE]',
+    'zh-tw': 'LED 陣列，亮第[NUM]顆，顏色:[RGB]，值:[VALUE]',
 };
 
 export const FormWs2812Show = {
@@ -152,14 +147,9 @@ export const Flash_Hex = {
 };
 
 export const FormRGB = {
-    'en': ['red','oringe', 'yellow','green', 'blue',  'cyan', 'purple', 'white','black'],
-    'zh-tw': ['紅','橙', '黃','綠', '藍',  '青', '紫', '白','黑'],
+    'en': ['red','oringe', 'yellow','green', 'blue',  'cyan', 'purple', 'white'],
+    'zh-tw': ['紅','橙', '黃','綠', '藍',  '青', '紫', '白'],
 };
-
-export const FormDisconnect = {
-    'en': 'Arduino dicconnected',
-    'zh-tw': 'Arduino已離線',
-}
 
 export const FormWs2812SetClear = {
     'en': "clear WS2812",
@@ -188,22 +178,7 @@ export const browser_not_support ={
     'zh-tw': ['瀏覽器不支援web serial api']
 };
 
-export const FormMax7219Set = {
-    'en': "max7219 set DIN pin:[DATA_PIN] CS pin[CS_PIN] CLK pin[CLK_PIN] devices[DEVICES]",
-    'zh-tw': "max7219設定  DIN 腳位[DATA_PIN] CS 腳位[CS_PIN] CLK 腳位[CLK_PIN]  片數[DEVICES]"
-};
-
-export const FormMax7219Clear ={
-    'en': "Clear led",
-    'zh-tw':"清除 led",
-};
-
 export const Form7219_show ={
-    'en': "max7219 show HEX value:[TEXT]",
-    'zh-tw': "max7219顯示HEX值:[TEXT]",
-};
-
-export const Max7219_matrix ={
-    'en': "show value: [VALUE]",
-    'zh-tw':"顯示01值 [VALUE]",
+    'en': ['max7219 devices:[DEVICES] CS pin:[CS_PIN] DATA pin:[DATA_PIN] CLK pin:[CLK_PIN] text:[TEXT]'],
+    'zh-tw': ['max7219 串接[DEVICES]個 CS pin:[CS_PIN] DATA pin:[DATA_PIN] CLK pin:[CLK_PIN] 文字:[TEXT]']
 };

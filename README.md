@@ -9,8 +9,9 @@ git clone https://github.com/estea8968/osep_web_serial.git
 cd osep_web_serial
 npm install
 npm run copy
-
+```
 windows system
+```
 npm run copy:win
 ```
 
@@ -23,8 +24,9 @@ Running the project requires Node.js to be installed.
 Open a Command Prompt or Terminal in the repository and run:
 ```bash
 npm start
-
+```
 windows system
+```
 npm run start:win
 ```
 Then go to [http://localhost:8601/](http://localhost:8601/) - the playground outputs the default GUI component
@@ -112,7 +114,10 @@ Note that integration tests require you to first create a build that can be load
 ```bash
 npm run build
 ```
-
+windows system
+```
+npm run build:win
+```
 Then, you can run all integration tests:
 
 ```bash
