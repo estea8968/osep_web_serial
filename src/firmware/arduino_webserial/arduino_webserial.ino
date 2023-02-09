@@ -1,5 +1,5 @@
 /*
- * 更新日期111/12/19 estea chen
+ * 更新日期112/02/09 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -8,9 +8,7 @@
 //ws2812
 #include <Adafruit_NeoPixel.h>
 //max7219
-//#include <MD_Parola.h>
-//#include "MD_MAX72xx.h"
-//#include <SPI.h>
+#include <LedControl.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
@@ -32,7 +30,7 @@ char* serialString()
   //static char str[21]; // For strings of max length=20
   static char str[64]; // For strings of max length=20
   if (!Serial.available()) return NULL;
-  delay(16); // wait for all characters to arrive
+  delay(6); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
   while (Serial.available())
@@ -88,27 +86,38 @@ void loop()
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
 
+    //版本
+    if(strcmp(commandString, "ver") == 0){
+      Serial.println("1120209");
+    }
     //max7219
-    /*if(strcmp(commandString, "max") == 0){
-      char* max_devices = strtok(inputPin, ",");
-      char* cs_pin = strtok(NULL, ",");
-      char* clk_pin = strtok(NULL, ",");
-      char* data_pin = strtok(NULL, ",");
-      #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-      #define MAX_DEVICES atoi(max_devices)
-      #define CS_PIN atoi(cs_pin)
-      #define DATA_PIN atoi(data_pin)
-      #define CLK_PIN atoi(clk_pin)
-      MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
-      myDisplay.begin();
-      // Set the intensity (brightness) of the display (0-15):
-      myDisplay.setIntensity(0);
-      // Clear the display:
-      myDisplay.displayClear();
-      myDisplay.setTextAlignment(PA_CENTER);
-      //myDisplay.displayText(inputValue, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-      myDisplay.print(inputValue);
-    }*/
+    if(strcmp(commandString, "maxshow") == 0){      
+      char* datapin= strtok(inputValue,",");
+      char* clockpin= strtok(NULL,",");
+      char* cspin=strtok(NULL,",");
+      //char* bnum=strtok(NULL,",");
+      LedControl leddisplay = LedControl(atoi(datapin),atoi(clockpin),atoi(cspin),1);
+      leddisplay.clearDisplay(0);    // 清除螢幕
+      leddisplay.shutdown(0, false);  // 關閉省電模式
+      leddisplay.setIntensity(0, 5); // 設定亮度為 5 (介於0~15之間)
+      
+      //LedControl leddisplay = LedControl(12,10,11,1);
+      //把inputPin最後一字元移動到第1字元圖形才會正確
+        char new_str[18];
+        //new_str[0]=inputPin[16];
+        for(int i=0;i<18;i++){
+          new_str[i]=inputPin[i+1];
+          //new_str[i]=inputPin[i];
+        }
+        //new_str[18]='\0';
+        //leddisplayImage(stringToUint_64(new_str));
+        for (int i = 0; i < 8; i++) {
+          byte row = (stringToUint_64(new_str) >> i * 8) & 0xFF;
+          for (int j = 0; j < 8; j++) {
+            leddisplay.setLed(0, i, j, bitRead(row, j));
+          }
+        }
+      }
       
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
@@ -318,7 +327,7 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      //pinMode(atoi(inputPin),INPUT);
+      pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));
@@ -374,5 +383,77 @@ void getG5(unsigned char ucData)//取G5的值
     }
     ucRxCnt = 0;
     return;
+  }
+}
+
+uint64_t stringToUint_64(String value) {
+  int stringLenght = value.length();
+
+  uint64_t uint64Value = 0x0;
+  for(int i = 0; i<=stringLenght-1; i++) {
+    char charValue = value.charAt(i);
+    uint64Value = 0x10 * uint64Value;
+    uint64Value += stringToHexInt(charValue);
+  }
+
+  return uint64Value;
+}
+
+int stringToHexInt(char value) {
+  switch(value) {
+    case '0':
+      return 0;
+      break;
+    case '1':
+      return 0x1;
+      break;
+    case '2':
+      return 0x2;
+      break;
+    case '3':
+      return 0x3;
+      break;
+    case '4':
+      return 0x4;
+      break;
+    case '5':
+      return 0x5;
+      break;
+    case '6':
+      return 0x6;
+      break;
+    case '7':
+      return 0x7;
+      break;
+    case '8':
+      return 0x8;
+      break;
+    case '9':
+      return 0x9;
+      break;
+    case 'A':
+    case 'a':
+      return 0xA;
+      break;
+    case 'B':
+    case 'b':
+      return 0xB;
+      break;
+    case 'C':
+    case 'c':
+      return 0xC;
+      break;
+    case 'D':
+    case 'd':
+      return 0xD;
+      break;
+    case 'E':
+    case 'e':
+      return 0xE;
+      break;
+    case 'F':
+    case 'f':
+      return 0xF;
+      break;
   }
 }

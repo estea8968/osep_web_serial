@@ -49,7 +49,7 @@ let reader;
 //s#pin#1,255$2,255$ 30bites
 let ws2812_pin = '9';
 let send_color_data = '';
-
+let firmware_ver ='';
 // an array to save the current pin mode
 // this is common to all board types since it contains enough
 // entries for all the boards.
@@ -92,6 +92,18 @@ let the_locale = null;
 let pms_array =[0,0,0,0,0];
 
 let theDHTSensorMap = { 0: 'Temperature', 1: 'Humidity' };
+let max7219_config = ['','','',''];
+const max7219_img={
+    smile:'00001c2208140000',
+    sad:'00221c0008220000',
+    love:'00183c7e7e7e2400',
+    right:'0010307e7e301000',
+    left:'00080c7e7e0c0800',
+    up:'001818187e3c1800',
+    down:'00183c7e18181800',
+    o:'0018244242241800',
+    x:'00466c381c366200',    
+}
 
 class Scratch3ArduinoWebSerial {
     constructor(runtime) {
@@ -397,76 +409,96 @@ class Scratch3ArduinoWebSerial {
                             defaultValue: '2',
                         },
                     }
-                },
+                },                
+                /*{
+                    opcode: 'ws2812_set_num1',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812SetNum1[the_locale],
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '1',
+                            menu: 'lednum'
+                        },
+                        colorR: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'10'
+                        },
+                        colorG: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'10'
+                        },
+                        colorB: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'10'
+                        },
+                    }
+                },*/
 
                 {
                     opcode: 'ws2812_show',
                     blockType: BlockType.COMMAND,
                     text: msg.FormWs2812Show[the_locale],
                 },
-                /*
-                {
-                    opcpin.splitode: 'max7219_show',
-                    blockType: BlockType.COMMAND,
-                    text: msg.Form7219_show[the_locale],
-                    arguments:{
-                        DEVICES:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '1',
-                        },
-                        CS_PIN:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '10',
-                            menu:'digital_pins'
-                        },
-                        DATA_PIN:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '11',
-                            menu:'digital_pins'
-                        },
-                        CLK_PIN:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '12',
-                            menu:'digital_pins'
-                        },
-                        TEXT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'A',
-                        },
-                    }
-                },
-                '---',
+                '---',                
                 {
                     opcode: 'max7219_set',
                     blockType: BlockType.COMMAND,
                     text: msg.FormMax7219Set[the_locale],
                     arguments:{
-                        DEVICES:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '1',
-                        },
-                        CS_PIN:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '10',
+                        DATA_PIN:{
+                            type: ArgumentType.STRING,
+                            defaultValue: '12',
                             menu:'digital_pins'
                         },
-                        DATA_PIN:{
-                            type: ArgumentType.NUMBER,
+                        CS_PIN:{
+                            type: ArgumentType.STRING,
                             defaultValue: '11',
                             menu:'digital_pins'
                         },
                         CLK_PIN:{
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '12',
+                            type: ArgumentType.STRING,
+                            defaultValue: '10',
                             menu:'digital_pins'
+                        },                        
+                        /*DEVICES:{
+                            type: ArgumentType.STRING,
+                            defaultValue: '1',
+                        },*/
+                    }
+                },
+                /*{
+                    opcode: 'max7219_clear',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormMax7219Clear[the_locale],
+                },*/
+                {
+                    opcode: 'max7219_show',
+                    blockType: BlockType.COMMAND,
+                    text: msg.Form7219_show[the_locale],
+                    arguments:{
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '0018187e7e181800',
+                        },
+                    }
+                },
+                {
+                    opcode: 'max7219_matrix',
+                    blockType: BlockType.COMMAND,
+                    text: msg.Max7219_matrix[the_locale],
+                    arguments:{
+                        VALUE:{
+                            type: ArgumentType.STRING,
+                            defaultValue:'0000000000011000000110000111111001111110000110000001100000000000',
                         }
                     }
                 },
                 {
-                    opcode: 'max7219_clear',
-                    blockType: BlockType.COMMAND,
-                    text: msg.FormMax7219Clear[the_locale],
-                }*/
+                    opcode: 'firmwareversion',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FirmwareVersion[the_locale],
+                }
                 
             ],
             menus: {
@@ -514,7 +546,7 @@ class Scratch3ArduinoWebSerial {
                 },
                 lednum: {
                     acceptReporters: true,
-                    items: ['1', '2', '3', '4', '5', '6', '7', '8']
+                    items: ['1', '2', '3', '4', '5', '6', '7', '8','9','10','11','12']
                 },
                 pms:{
                     acceptReporters: true,
@@ -526,6 +558,7 @@ class Scratch3ArduinoWebSerial {
     }
 
     // command blocks
+      
     //pwm
     async pwm_write(args) {
         let pin = args['PIN'];
@@ -547,11 +580,7 @@ class Scratch3ArduinoWebSerial {
 
     async tone_on(args, util) {
         let pin = args['PIN'];
-        pin = pin.toString();
-        if(pin.includes('(')){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
+        pin = pin.toString().substring(0,2);
         //pin = parseInt(pin, 10);
         let freq = Number(args['FREQ']);
         if(freq <24){
@@ -590,11 +619,7 @@ class Scratch3ArduinoWebSerial {
 
     async ws2812_write(args) {
         let pin = args['PIN'];
-        pin = pin.toString();
-        if(pin.includes('(')){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
+        pin = pin.toString().substring(0,2);
         let num = args['NUM'];
         let red = args['RED'];
         red = parseInt(red, 10);
@@ -610,17 +635,11 @@ class Scratch3ArduinoWebSerial {
     // move servo
     async servo(args) {
         let pin = args['PIN'];
-        pin = pin.toString();
-        if(pin.includes('(')){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
-        
-        //pin = parseInt(pin, 10);
+        pin = pin.toString().substring(0,2);
         let angle = args['ANGLE'];
         angle = parseInt(angle, 10);
-        let sendData = 'servoWrite#' + pin + '#' + angle;
-        //console.log('sendData:',sendData);
+        let sendData = 'servoWrite#' + pin + '#' + angle+'#';
+        console.log('sendData:',sendData);
         this.serialSend(sendData);
 
     }
@@ -639,6 +658,7 @@ class Scratch3ArduinoWebSerial {
             await port.open({ baudRate: 115200 });
             console.log('port:', port);
         }
+        this.listener();
     }
 
     async serialSend(sendData) {
@@ -656,14 +676,14 @@ class Scratch3ArduinoWebSerial {
             //let uint8array = new TextEncoder().encode();
             let string = new TextDecoder().decode(value.value);
             string = string.split('\r\n');
-            //reader.releaseLock();
+            reader.releaseLock();
             return string[0];
         }catch (error) {
             console.log(error);
-    // Handle |error|...
-        } finally {
-            reader.releaseLock();
-        }    
+        }// finally {
+         //   reader.releaseLock();
+        //}
+        reader.releaseLock();    
 
     }
 
@@ -695,17 +715,11 @@ class Scratch3ArduinoWebSerial {
 
     async digitalWrite(args) {
         let pin = args.PIN;
-        pin = pin.toString();
-        if(pin.includes("(")){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
-        
+        pin = pin.toString().substring(0,2);
         //pin = parseInt(pin, 10);
         let value = args['ON_OFF'];
         //value = parseInt(value, 10);
-        let sendData;
-        sendData = 'digitalWrite#' + pin + '#' + value.toString();
+        let sendData = 'digitalWrite#' + pin + '#' + value.toString();
         /*
         let adata = `
         void setup() {
@@ -726,7 +740,7 @@ class Scratch3ArduinoWebSerial {
         }
         console.log(bytes);*/
         //console.log(intel_hex.parse(adata));
-        
+        console.log(sendData);
         this.serialSend(sendData);
     }
 
@@ -766,12 +780,7 @@ class Scratch3ArduinoWebSerial {
     // 
     async dht11_set(args) {
         //送出pin並取回值
-        let pin = args['PIN'];
-        pin = pin.toString();
-        if(pin.includes('(')){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
+        let pin = args['PIN'].substring(0,2);
         let sendData = 'dht11Set#' + pin;
         console.log('sendData:', sendData);
         this.serialSend(sendData);
@@ -796,7 +805,7 @@ class Scratch3ArduinoWebSerial {
         }
         let sendData = 'dht11Read#8#' + send_th;
         this.serialSend(sendData);
-        await new Promise(resolve => setTimeout(resolve, 16));
+        //await new Promise(resolve => setTimeout(resolve, 16));
         console.log('sendData:', sendData);
         let dht11_return = (await this.serialRead()).split(',');
         if(dht11_return.length === 2 ){
@@ -855,13 +864,7 @@ class Scratch3ArduinoWebSerial {
 
     async digital_read(args) {
         //送出pin並取回值
-        let pin = args['PIN'];
-        pin = pin.toString();
-        if(pin.includes('(')){
-            const pin_arry = pin.split('(');
-            pin = pin_arry[0];
-        }
-        //pin = parseInt(pin, 10);
+        const pin = args['PIN'].substring(0,2);
         let sendData = 'digitalRead#' + pin;
         await this.serialSend(sendData);
         console.log('sendData:', sendData);
@@ -877,12 +880,11 @@ class Scratch3ArduinoWebSerial {
     }
 
     async sonar_read(args) {
-        let trigger_pin = args['TRIGGER_PIN'].split('(');
-        //trigger_pin = parseInt(trigger_pin, 10);
-        sonar_report_pin = trigger_pin[0];
-        let echo_pin = args['ECHO_PIN'].split('(');
+        let trigger_pin = args['TRIGGER_PIN'].substring(0,2);
+        //let trigger_pin = parseInt(trigger_pin, 10);
+        let echo_pin = args['ECHO_PIN'].substring(0,2);
         //echo_pin = parseInt(echo_pin, 10);
-        let sendData = 'HC-SR04#' + trigger_pin[0] + '#' + echo_pin[0];
+        let sendData = 'HC-SR04#' + trigger_pin + '#' + echo_pin;
         console.log('sendData:', sendData);
         this.serialSend(sendData);
         const hc_return =(await this.serialRead()).split(',');
@@ -894,8 +896,16 @@ class Scratch3ArduinoWebSerial {
     }
     //shu
     ws2812_set_pin(args) {
-        let led_pin = args['PIN'].split('(');
-        ws2812_pin = led_pin[0];
+        ws2812_pin = args['PIN'].substring(0, 2);       
+    }
+
+    mapminmax(in_value,min,max){
+        if(in_value<min){
+            in_value=min;
+        }else if(in_value>max){
+            in_value=max;
+        }
+        return in_value;
     }
 
     ws2812_set_num(args) {
@@ -923,6 +933,26 @@ class Scratch3ArduinoWebSerial {
         console.log(send_color_data);
     }
 
+    /*ws2812_set_num1(args) {
+        let led_num = this.mapminmax(parseInt(args.NUM,10),1,25);
+        let r_value = this.mapminmax(parseInt(args.colorR,10),0,255);
+        let g_value = this.mapminmax(parseInt(args.colorG,10),0,255);
+        let b_value = this.mapminmax(parseInt(args.colorB,10),0,255);
+        //let max_value =85;
+        //let color_set = parseInt(args['RGB'].toString,10);
+        //get {r: 1, g: 135, b: 244}
+        //}
+        if((r_value+g_value+b_value)>0){
+            r_value=this.mapminmax(Math.trunc((r_value/(r_value+g_value+b_value))*10),0,9);
+            g_value=this.mapminmax(Math.trunc((g_value/(r_value+g_value+b_value))*10),0,9);
+            b_value=this.mapminmax(Math.trunc((b_value/(r_value+g_value+b_value))*10),0,9);
+        }
+        console.log(r_value,g_value,b_value);
+        const color_set_num=r_value.toString()+g_value.toString()+b_value.toString();       
+        send_color_data = send_color_data + led_num + ',' + color_set_num + ',' ;
+        console.log(send_color_data);
+    }*/
+
     async ws2812_show() {
         const sendData = 'sh#' + ws2812_pin + '#' + send_color_data;
         console.log(sendData);
@@ -933,15 +963,103 @@ class Scratch3ArduinoWebSerial {
         send_color_data = '';
     }
 
-    max7219_show (args){
+    /*max7219_show (args){
         const devices = args['DEVICES'];
         const  cs_pin = args['CS_PIN'];
         const data_pin = args['DATA_PIN'];
         const clk_pin = args['CLK_PIN'];
         const text = args['TEXT'];
-        const sendData = 'max#' +devices + ',' + cs_pin+','+data_pin+','+clk_pin+'#'+text+'#';
+        const sendData = 'max#' +data_pin+','+ clk_pin+','+ cs_pin+','+devices + '#'+text+'#';
         console.log(sendData);
         this.serialSend(sendData);
+    }*/
+    async max7219_clear(){
+        const sendData= 'maxshow#clear';
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+    }
+    async max7219_show(args){
+        let hextext=args.TEXT;
+        switch (hextext) {
+            case 'o':
+                hextext=max7219_img.o;
+                console.log(max7219_img.o)
+                break;
+            case 'x':
+                hextext=max7219_img.x;
+                break;
+            case 'up':
+                hextext=max7219_img.up;
+                break;
+            case 'down':
+                hextext=max7219_img.down;
+                break;    
+            case 'left':
+                hextext=max7219_img.left;
+                break;
+            case 'right':
+                hextext=max7219_img.right;
+                break;    
+            case 'hart':
+                hextext=max7219_img.hart;
+                break;
+            case 'o':
+                hextext=max7219_img.o;
+                break;    
+            case 'sad':
+                hextext=max7219_img.sad;
+                break;
+            case 'smile':
+                hextext=max7219_img.smile;
+                break;
+            default:           
+        }
+        const sendData = "maxshow#0x"+hextext+'#'+max7219_config[0]+','+max7219_config[2]+','+max7219_config[1];
+        //const sendData = "maxshow#"+max7219_config[0]+','+max7219_config[1]+','+max7219_config[2]+"#0x"+hextext;
+        //const sendData = "maxshow#0x"+hextext;
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+    }
+    async max7219_set(args){
+        max7219_config[0] = args.DATA_PIN.substring(0,2);
+        max7219_config[1] = args.CS_PIN.substring(0,2);
+        max7219_config[2] = args.CLK_PIN.substring(0,2);
+        //const devices = args.DEVICES;
+        //let send_data ='maxset#'+data_pin+','+clock_pin+','+cs_pin+',1';
+        //console.log('sendData=',send_data);
+        //this.serialSend(send_data);
+    }
+
+    async max7219_matrix(args){
+        const value_2 = parseInt(args.VALUE,2);
+        let hextext = value_2.toString(16);
+        let i = hextext.length;
+        while(i++<16){
+            hextext='0'+hextext;
+        }
+        const sendData = "maxshow#0x"+hextext+'#'+max7219_config[0]+','+max7219_config[2]+','+max7219_config[1];
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+    }
+    async listener(){
+        navigator.serial.addEventListener('disconnect', (event) => {
+            port = null;
+            alert(msg.FormDisconnect[the_locale]);
+        // TODO: Remove |event.target| from the UI.
+        // If the serial port was opened, a stream error would be observed as well.
+       });
+    }
+
+    async firmwareversion(){
+        if(firmware_ver == ''){
+        const sendData = "ver#";
+        await this.serialSend(sendData);
+        console.log(sendData);
+        firmware_ver= await this.serialRead();
+        }
+        return firmware_ver;
+        //console.log(serial_data);
+        //return serial_data;
     }
 
     _setLocale() {
