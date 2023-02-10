@@ -128,6 +128,30 @@ class Scratch3ArduinoWebSerial {
 
                 },
                 {
+                    opcode: 'analog_read',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormAnalogRead[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 'A0',
+                            menu: 'analog_pins'
+                        },
+                    }
+                },
+                {
+                    opcode: 'digital_read',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormDigitalRead[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '2',
+                            menu: 'digital_pins'
+                        },
+                    }
+                },
+                {
                     opcode: 'digitalWrite',
                     blockType: BlockType.COMMAND,
                     text: msg.digitalWrite[the_locale],
@@ -139,7 +163,7 @@ class Scratch3ArduinoWebSerial {
                         },
                         ON_OFF: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: '0',
+                            defaultValue: '1',
                             menu: "on_off"
                         }
                     }
@@ -168,7 +192,7 @@ class Scratch3ArduinoWebSerial {
                         PIN: {
                             type: ArgumentType.NUMBER,
                             defaultValue: '9',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         },
                         FREQ: {
                             type: ArgumentType.NOTE,
@@ -207,7 +231,7 @@ class Scratch3ArduinoWebSerial {
                         PIN: {
                             type: ArgumentType.NUMBER,
                             defaultValue: '6',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         },
                         NUM: {
                             type: ArgumentType.STRING,
@@ -250,31 +274,7 @@ class Scratch3ArduinoWebSerial {
                     blockType: BlockType.COMMAND,
                     text: msg.FormLcdClear[the_locale],
                 },
-                '---',
-                {
-                    opcode: 'analog_read',
-                    blockType: BlockType.REPORTER,
-                    text: msg.FormAnalogRead[the_locale],
-                    arguments: {
-                        PIN: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 'A0',
-                            menu: 'analog_pins'
-                        },
-                    }
-                },
-                {
-                    opcode: 'digital_read',
-                    blockType: BlockType.REPORTER,
-                    text: msg.FormDigitalRead[the_locale],
-                    arguments: {
-                        PIN: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: '2',
-                            menu: 'digital_pins'
-                        },
-                    }
-                },
+                '---',                
                 {
                     opcode: 'conver_num',
                     blockType: BlockType.REPORTER,
@@ -310,7 +310,7 @@ class Scratch3ArduinoWebSerial {
                         PIN: {
                             type: ArgumentType.NUMBER,
                             defaultValue: '8',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         }
                     }
                 },
@@ -340,12 +340,12 @@ class Scratch3ArduinoWebSerial {
                         TRIGGER_PIN: {
                             type: ArgumentType.STRING,
                             defaultValue: '12',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         },
                         ECHO_PIN: {
                             type: ArgumentType.STRING,
                             defaultValue: '11',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         }
                     }
                 },
@@ -384,7 +384,7 @@ class Scratch3ArduinoWebSerial {
                         PIN: {
                             type: ArgumentType.NUMBER,
                             defaultValue: '6',
-                            menu: 'digital_pins'
+                            menu: 's_pins'
                         }
 
                     }
@@ -449,17 +449,17 @@ class Scratch3ArduinoWebSerial {
                         DATA_PIN:{
                             type: ArgumentType.STRING,
                             defaultValue: '12',
-                            menu:'digital_pins'
+                            menu:'s_pins'
                         },
                         CS_PIN:{
                             type: ArgumentType.STRING,
                             defaultValue: '11',
-                            menu:'digital_pins'
+                            menu:'s_pins'
                         },
                         CLK_PIN:{
                             type: ArgumentType.STRING,
                             defaultValue: '10',
-                            menu:'digital_pins'
+                            menu:'s_pins'
                         },                        
                         /*DEVICES:{
                             type: ArgumentType.STRING,
@@ -502,6 +502,11 @@ class Scratch3ArduinoWebSerial {
                 
             ],
             menus: {
+                s_pins:{
+                    acceptReporters: true,
+                    items: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
+                        '12', '14(A0)', '15(A1)', '16(A2)', '17(A3)' ]
+                },
                 digital_pins: {
                     acceptReporters: true,
                     items: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11',

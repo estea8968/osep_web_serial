@@ -1,5 +1,5 @@
 /*
- * 更新日期112/02/09 estea chen
+ * 更新日期112/02/10 estea chen
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -88,7 +88,7 @@ void loop()
 
     //版本
     if(strcmp(commandString, "ver") == 0){
-      Serial.println("1120209");
+      Serial.println("1120210");
     }
     //max7219
     if(strcmp(commandString, "maxshow") == 0){      
@@ -160,7 +160,7 @@ void loop()
       int sp;
       bb = strtok(inputValue, ",");
       led_value[i] = atoi(bb);
-      Serial.println(led_value[i]);
+      //Serial.println(led_value[i]);
       i++;
       while( bb != NULL){
         bb = strtok(NULL, ",");
@@ -288,6 +288,7 @@ void loop()
     
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
+      pinMode(atoi(inputPin),INPUT);
       DHT.read11(atoi(inputPin));
     }
     
