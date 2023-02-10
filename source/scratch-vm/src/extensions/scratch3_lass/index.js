@@ -128,7 +128,7 @@ class gasoLASS {
                         attr: {
                             type: ArgumentType.STRING,
                             menu: 'lassAttrs',
-                            defaultValue: 'PM 2.5'
+                            defaultValue: 'PM2.5'
                         }
                     },
                     text: msg.parseAttrFromLASS[theLocale]
@@ -184,19 +184,18 @@ class gasoLASS {
         window.open("https://list.airmap.g0v.tw/");
     }
 
-    fetchLASS(args) {
+    async fetchLASS(args) {
         const id = args.id;
         const url = `${LASS_URI}${id}`;
 
-        return fetch(url).then(res => {
+        await fetch(url).then(res => {
             if (res.ok) {
                 res.json().then(json => {
                     var jsonData = JSON.stringify(json);
                     var feeds = JSON.parse(jsonData)["feeds"]
                     var AirBox = feeds.length == 1 ? feeds[0]["AirBox"] : "設備不存在";
-
-                    this.LASSData = AirBox;
                     this.fetched = true;
+                    this.LASSData = AirBox;
                     this.runtime.startHats('gasoLASS_onLASSReceived', {});
                 });
             }
@@ -209,7 +208,7 @@ class gasoLASS {
 
     parseAttrFromLASS(args) {
         var attr = args.attr;
-
+        console.log(this.LASSData);
         if (this.fetched) {
             if (attr == "PM2.5")
                 return this.LASSData["s_d0"];
