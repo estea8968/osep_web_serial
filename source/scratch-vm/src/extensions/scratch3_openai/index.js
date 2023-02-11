@@ -83,6 +83,7 @@ class openai {
         theLocale = this._setLocale();
         this.runtime = runtime;
         this.api_key ='';
+        this.ai_answer = '';
         this.image_size_ary=['1024x1024','512x512','256x256'];
         //this.runtime.registerPeripheralExtension('openai', this);
     }
@@ -139,7 +140,7 @@ class openai {
                 },
                 {
                     opcode: 'talktext',
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.COMMAND,
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
@@ -147,6 +148,17 @@ class openai {
                         },
                     },
                     text: msg.talktext[theLocale]
+                },
+                {
+                    opcode: 'aianswer',
+                    blockType: BlockType.REPORTER,
+                    text: msg.ananswer[theLocale],
+                    arguments: {
+                        id: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        }
+                    },
                 },
                 {
                     opcode: 'copyTEXT_memory',
@@ -240,22 +252,23 @@ class openai {
               //stop:["\n"]
             });
             //await new Promise(resolve => setTimeout(resolve, wait_time));
-            return completion.data.choices[0].text;
+            this.ai_answer = completion.data.choices[0].text;
+
             console.log('return text=',completion.data.choices[0].text);
           } catch (error) {
-            if (error.response) {
-                
+            if (error.response) {                
               console.log('error status=',error.response.status);
               console.log('error data=',error.response.data);
-              return error.response.data.error.message;
+              this.ai_answer = error.response.data.error.message;              
             } else {
-                
+              this.ai_answer =  error.message;   
               console.log(error.message);
-              return error.message
             }
           }
     }
-
+    aianswer(){
+        return this.ai_answer;
+    }
     copyTEXT_memory(args){
         const copy_text = args.TEXT;
         navigator.clipboard.writeText(copy_text).then(function() {

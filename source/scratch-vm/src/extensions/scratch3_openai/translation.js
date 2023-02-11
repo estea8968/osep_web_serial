@@ -8,6 +8,10 @@ export const talktext = {
     'zh-tw': 'AI會話訊息[TEXT]'
 };
 
+export const ananswer ={
+    'en': 'AI response.',
+    'zh-tw': 'AI回應訊息'
+}
 export const copyTEXT_memory ={
     'en': 'copy [TEXT]to clipboard',
     'zh-tw': '複製[TEXT]到剪貼簿'
