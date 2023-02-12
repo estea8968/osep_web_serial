@@ -1,24 +1,24 @@
 export const Token = {
-    'en': 'Token text [TOKEN]',
+    'en': 'token text [TOKEN]',
     'zh-tw': '權杖[TOKEN]',
 };
 
 export const SendMessage = {
-    'en': ' Send Message [MESSAGE]',
+    'en': 'send the message [MESSAGE]',
     'zh-tw': '送出訊息[MESSAGE]',
 };
 
 export const TokenNull ={
-    'en': ' Token or Message is null',
+    'en': 'Token or Message is null',
     'zh-tw': '權杖或傳送訊息錯誤',
 }
 
 export const SendstickerId ={
-    'en': ' Send stickerId:[STICKERId] StickerPackageId:[StickerPackageId]',
+    'en': 'set Package ID [StickerPackageId] Sticker ID [STICKERId]',
     'zh-tw': '設定表情代號[STICKERId] 表情主題[StickerPackageId]',
 }
 
 export const SendImageFile ={
-    'en': ' Send image file:[URL]',
+    'en': 'send the image file[URL]',
     'zh-tw': '傳送圖片[URL]',
 }

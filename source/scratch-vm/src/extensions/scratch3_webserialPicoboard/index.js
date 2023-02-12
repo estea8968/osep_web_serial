@@ -75,8 +75,8 @@ let theNonButtonSensorMap = {0: 7, 1: 5, 2: 6, 3: 4, 4: 2, 5: 1, 6: 0};
 
 const FormConnect ={
     'en': 'connect PicoBoard',
-    'zh-tw': '連線PicoBoard',
-    'zh-cn': '连线PicoBoard',
+    'zh-tw': '連線到 PicoBoard',
+    'zh-cn': '连线到 PicoBoard',
 }
 
 const FormDisconnect ={
@@ -89,8 +89,8 @@ const DisConnect ={
     'zh-tw': '離線',
 }
 const FormNotSupport ={
-    'en': 'Browser not support webserial api',
-    'zh-tw': '瀏覽器不支援webserial api',
+    'en': 'Browser not support Web Serial API',
+    'zh-tw': '瀏覽器不支援 Web Serial API',
 }
 
 const FormComparison = {
@@ -164,7 +164,7 @@ const MENU_ALL_SENSORS = {
 };
 
 const FormIsButtonPressed = {
-    'en': 'Is Button Pressed?',
+    'en': 'Button pressed ?',
     'zh-tw': '按鈕被按下？',
     'zh-cn': '按钮被按下？',
     'pt-br': 'O botão está pressionado?',
@@ -193,7 +193,7 @@ const FormRangeConverter = {
 };
 
 const FormCurrentSensorValue = {
-    'en': '[SENSOR] current value.',
+    'en': 'read [SENSOR]',
     'zh-tw': '讀取 [SENSOR]',
     'zh-cn': '讀取 [SENSOR]',
     'pt': 'Ler valor atual: [SENSOR]',

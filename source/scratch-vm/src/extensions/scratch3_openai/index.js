@@ -105,7 +105,7 @@ class openai {
         theLocale = this._setLocale();
         return {
             id: 'openai',
-            name: msg.name[theLocale],
+            name: 'OpenAI',
             color1: '#f95834',
             color2: '#f95834',
             menuIconURI: menuIconURI,

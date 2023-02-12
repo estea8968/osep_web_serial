@@ -12,7 +12,7 @@
   "main": "./dist/scratch-gui.js",
   "scripts": {
     "copy": "cp -Rf ./source/* ./node_modules",
-    "copy:win": "xcopy /s .\\source\\* .\\node_modules",
+    "copy:win": "xcopy /s /y .\\source\\* .\\node_modules",
     "build": "npm run clean && webpack --colors --bail",
     "build:win": "SET NODE_OPTIONS=--openssl-legacy-provider && npm run clean && webpack --colors --bail",
     "clean": "rimraf ./build && mkdirp build && rimraf ./dist && mkdirp dist",
