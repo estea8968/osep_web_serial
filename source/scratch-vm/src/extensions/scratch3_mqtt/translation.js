@@ -29,12 +29,12 @@ export const Publish_Topic = {
 };
 
 export const FormDmqttMsg = {
-    'en': 'Message',
+    'en': 'message',
     'zh-tw': '訊息',
 };
 
 export const FormDmqttTopic ={
-    'en': 'Topic',
+    'en': 'topic',
     'zh-tw': '主題',
 }
 

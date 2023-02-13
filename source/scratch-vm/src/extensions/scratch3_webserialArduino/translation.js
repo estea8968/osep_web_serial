@@ -122,7 +122,7 @@ export const ws2812_show = {
 };
 
 export const FormConverNum = {
-    'en': "Conver[VALUE]from([F_BEGIN],[F_END])to([T_BEGIN],[T_END])",
+    'en': "convert[VALUE]from ([F_BEGIN],[F_END]) to ([T_BEGIN],[T_END])",
     'zh-tw': "轉換[VALUE]從([F_BEGIN],[F_END])到([T_BEGIN],[T_END])",
 };
 
@@ -167,7 +167,7 @@ export const FormWs2812SetClear = {
 };
 
 export const FormPmsRead ={
-    'en': "Read PMS5003 TX at pin:2 ",
+    'en': "read PMS5003 TX at pin:2 ",
     'zh-tw': "讀取PMS5003 TX在腳位:2 ",
 
 };
@@ -189,7 +189,7 @@ export const browser_not_support ={
 };
 
 export const FormMax7219Set = {
-    'en': "max7219 set DIN pin:[DATA_PIN] CS pin[CS_PIN] CLK pin[CLK_PIN] ",//devices[DEVICES]",
+    'en': "Max7219 DIN:[DATA_PIN]CS:[CS_PIN]CLK: [CLK_PIN] ",//devices[DEVICES]",
     'zh-tw': "max7219設定  DIN 腳位[DATA_PIN] CS 腳位[CS_PIN] CLK 腳位[CLK_PIN]",//  片數[DEVICES]"
 };
 
@@ -199,7 +199,7 @@ export const FormMax7219Set = {
 };*/
 
 export const Form7219_show ={
-    'en': "max7219 show HEX value:[TEXT]",
+    'en': "Max7219 show HEX value:[TEXT]",
     'zh-tw': "max7219顯示HEX值:[TEXT]",
 };
 
@@ -209,6 +209,6 @@ export const Max7219_matrix ={
 };
 
 export const FirmwareVersion ={
-    'en': "Firmware version",
+    'en': "firmware version",
     'zh-tw':"韌體版本",
 };

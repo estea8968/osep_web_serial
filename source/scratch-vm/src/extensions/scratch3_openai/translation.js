@@ -4,12 +4,12 @@ export const openai_apikey = {
 };
 
 export const talktext = {
-    'en': 'answer the question[TEXT]',
+    'en': 'ask OpenAI[TEXT]',
     'zh-tw': 'AI會話訊息[TEXT]'
 };
 
 export const ananswer ={
-    'en': 'response the message',
+    'en': 'response',
     'zh-tw': 'AI回應訊息'
 }
 export const copyTEXT_memory ={

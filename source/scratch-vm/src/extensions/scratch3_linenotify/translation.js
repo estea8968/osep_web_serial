@@ -15,10 +15,17 @@ export const TokenNull ={
 
 export const SendstickerId ={
     'en': 'set Package ID [StickerPackageId] Sticker ID [STICKERId]',
-    'zh-tw': '設定表情代號[STICKERId] 表情主題[StickerPackageId]',
+    'zh-tw': '設定表情主題[StickerPackageId]表情代號[STICKERId] ',
 }
 
 export const SendImageFile ={
     'en': 'send the image file[URL]',
     'zh-tw': '傳送圖片[URL]',
 }
+
+export const checkOut ={
+    'en': 'check out Line sticker definitions',
+    'zh-tw': '查閱表情主題與代號',
+}
+
+
