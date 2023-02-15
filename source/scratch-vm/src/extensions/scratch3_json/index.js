@@ -5,6 +5,7 @@ const formatMessage = require('format-message');
 const xml2js = require('xml2js');
 //async add estea
 const ml5 = require('ml5');
+const { result } = require('lodash');
 //require('babel-polyfill');
 //end
 const menuIconURI = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgd2lkdGg9IjE1MCIKICAgaGVpZ2h0PSIxNDkuOTk5NzciCiAgIHZpZXdCb3g9IjAgMCAxNS4zNiAxNS4zNTk5NzciCiAgIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIgogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmc0MjgiCiAgIHNvZGlwb2RpOmRvY25hbWU9Impzb24uc3ZnIgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjIuMiAoYjBhODQ4NjU0MSwgMjAyMi0xMi0wMSwgY3VzdG9tKSIKICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiCiAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgaWQ9Im5hbWVkdmlldzQzMCIKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMS4wIgogICAgIGlua3NjYXBlOnNob3dwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgICAgaW5rc2NhcGU6cGFnZWNoZWNrZXJib2FyZD0iMCIKICAgICBpbmtzY2FwZTpkZXNrY29sb3I9IiNkMWQxZDEiCiAgICAgc2hvd2dyaWQ9ImZhbHNlIgogICAgIGlua3NjYXBlOnpvb209IjAuMTI1IgogICAgIGlua3NjYXBlOmN4PSIxNDA0IgogICAgIGlua3NjYXBlOmN5PSIxNDIwIgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTI5NCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI3MDQiCiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjcyIgogICAgIGlua3NjYXBlOndpbmRvdy15PSIyNyIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICAgIGlua3NjYXBlOmN1cnJlbnQtbGF5ZXI9InN2ZzQyOCIgLz4KICA8ZGVmcwogICAgIGlkPSJkZWZzNDIyIj4KICAgIDxsaW5lYXJHcmFkaWVudAogICAgICAgeDE9IjM5LjEwOTkxMyIKICAgICAgIHkxPSIzNi42NTQzNDMiCiAgICAgICB4Mj0iMjI1LjQwMzk4IgogICAgICAgeTI9IjIxMS4yNDA5MSIKICAgICAgIGlkPSJhIgogICAgICAgZ3JhZGllbnRUcmFuc2Zvcm09InNjYWxlKDAuOTY4MDc0NDQsMS4wMzI5Nzg0KSIKICAgICAgIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3AKICAgICAgICAgb2Zmc2V0PSIwJSIKICAgICAgICAgaWQ9InN0b3A0MTIiIC8+CiAgICAgIDxzdG9wCiAgICAgICAgIHN0b3AtY29sb3I9IiNGRkYiCiAgICAgICAgIG9mZnNldD0iMTAwJSIKICAgICAgICAgaWQ9InN0b3A0MTQiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50CiAgICAgICB4MT0iMjQwLjAzOTM1IgogICAgICAgeTE9IjE5OC4zNjE0IgogICAgICAgeDI9IjQxLjY1MDM5MSIKICAgICAgIHkyPSIzNC40MTkyMDkiCiAgICAgICBpZD0iYiIKICAgICAgIGdyYWRpZW50VHJhbnNmb3JtPSJzY2FsZSgwLjkwOTA1MjQsMS4xMDAwNDY2KSIKICAgICAgIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3AKICAgICAgICAgb2Zmc2V0PSIwJSIKICAgICAgICAgaWQ9InN0b3A0MTciIC8+CiAgICAgIDxzdG9wCiAgICAgICAgIHN0b3AtY29sb3I9IiNGRkYiCiAgICAgICAgIG9mZnNldD0iMTAwJSIKICAgICAgICAgaWQ9InN0b3A0MTkiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8ZwogICAgIGlkPSJnNTc0IgogICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMDYsMCwwLDAuMDYsMCwtMi4zNTgyNDYyZS01KSI+CiAgICA8cGF0aAogICAgICAgZD0iTSAxMjcuNzgzLDE5MC41NiBDIDE4NC40MiwyNjcuNzY4IDIzOS44NDcsMTY5LjAxIDIzOS43NjUsMTA5LjYyIDIzOS42NywzOS40MDQgMTY4LjUsMC4xNiAxMjcuNzM3LDAuMTYgNjIuMzA5LDAuMTU5IDAsNTQuMjMyIDAsMTI4LjIxNiAwLDIxMC40NSA3MS40MjUsMjU2IDEyNy43MzcsMjU2IDExNC45OTQsMjU0LjE2NSA3Mi41MjcsMjQ1LjA2NiA3MS45NTcsMTQ3LjI1MyA3MS41NzIsODEuMDk5IDkzLjUzNyw1NC42NjggMTI3LjY0NSw2Ni4yOTUgYyAwLjc2NCwwLjI4MyAzNy42MjIsMTQuODIzIDM3LjYyMiw2Mi4zMiAwLDQ3LjI5NiAtMzcuNDg0LDYxLjk0NCAtMzcuNDg0LDYxLjk0NCB6IgogICAgICAgZmlsbD0idXJsKCNhKSIKICAgICAgIGlkPSJwYXRoNDI0IgogICAgICAgc3R5bGU9ImZpbGw6dXJsKCNhKSIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDEyNy43MTcsNjYuMjQxIEMgOTAuMjkzLDUzLjM0MiA0NC40NDgsODQuMTg3IDQ0LjQ0OCwxNDUuOTY3IDQ0LjQ0OCwyNDYuODQ0IDExOS4yMDEsMjU2IDEyOC4yNjMsMjU2IDE5My42OTEsMjU2IDI1NiwyMDEuOTI2IDI1NiwxMjcuOTQzIDI1Niw0NS43MDkgMTg0LjU3NSwwLjE1OSAxMjguMjYzLDAuMTU5IGMgMTUuNTk3LC0yLjE2IDg0LjA2NSwxNi44OCA4NC4wNjUsMTEwLjQ1OCAwLDYxLjAyNiAtNTEuMTI0LDk0LjI0OCAtODQuMzc2LDgwLjA1NCAtMC43NjQsLTAuMjgzIC0zNy42MjMsLTE0LjgyMyAtMzcuNjIzLC02Mi4zMiAwLC00Ny4yOTcgMzcuMzg4LC02Mi4xMSAzNy4zODgsLTYyLjExIHoiCiAgICAgICBmaWxsPSJ1cmwoI2IpIgogICAgICAgaWQ9InBhdGg0MjYiCiAgICAgICBzdHlsZT0iZmlsbDp1cmwoI2IpIiAvPgogIDwvZz4KPC9zdmc+Cg==';
@@ -325,7 +326,7 @@ class gasoJSON {
     async fetchJSON(args) {
         //const url = encodeURIComponent(args.url);
         url = args.url;
-        console.log(url);
+        //console.log(url);
         const f_type = 'json';
         let request;
         //直接取回url
@@ -337,6 +338,24 @@ class gasoJSON {
             //request = this.myfetch(cors_url +'?f='+f_type+'&url='+ url,f_type);
         //}
         return request ;
+    }
+
+    async fetchJSON1(in_url,f_type) {
+        let url = encodeURIComponent(in_url);
+        //const f_type = 'json';
+        console.log(url);
+        //let cors_url = 'https://script.google.com/macros/s/AKfycbzE3fs6P0HAkK0dUE31wLambBLhjtsRK1zY3ZytotQenoVNpaAsunXhz9lqKgoiEpp9/exec';
+        console.log(cors_url +'?url='+ url);
+        return await fetch(cors_url +'?f='+f_type+'&url='+ url).then(res => {
+           
+            if (res.ok) {
+                res.json().then(json => {
+                    this.data.fetched = true;
+                    this.data.data = JSON.stringify(json);
+                    this.runtime.startHats('gasoJSON_onJSONReceived', {});
+                });
+            }
+        })   
     }
 
     async myfetch(in_url,f_type){
@@ -357,8 +376,7 @@ class gasoJSON {
                     if(f_type=='json' || f_type=='xml'){
                         res.json().then(json => {
                             if(f_type=='json'){
-                                this.data.data = JSON.stringify(json);
-                                //this.runtime.startHats('gasoJSON_onJSONReceived', {});
+                                this.data.data = JSON.stringify(json);                                //this.runtime.startHats('gasoJSON_onJSONReceived', {});
                             }else if(f_type=='xml'){
                                 xml2js.parseString(json, (err, result) => {
                                     if (err) {
@@ -374,10 +392,12 @@ class gasoJSON {
                 }
             })
             .catch(error => {
-                console.log('err_url=',in_url);
-                this.myfetch(cors_url +'?f='+f_type+'&url='+ in_url,f_type);
+                //console.log('err_url=',in_url);
+                //cors_url +'?f='+f_type+'&url='+ in_url;
+                this.fetchJSON1(in_url,f_type);
+
                 //my_request='wait ...';
-            });
+            })
             //return my_request;
     }
 
