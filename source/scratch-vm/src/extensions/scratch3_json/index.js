@@ -349,11 +349,33 @@ class gasoJSON {
         return await fetch(cors_url +'?f='+f_type+'&url='+ url).then(res => {
            
             if (res.ok) {
-                res.json().then(json => {
-                    this.data.fetched = true;
-                    this.data.data = JSON.stringify(json);
-                    this.runtime.startHats('gasoJSON_onJSONReceived', {});
-                });
+                if(f_type=='txt' || f_type =='csv' ){
+                    res.text().then(json =>{
+                        if(f_type=='txt'){
+                            this.data.data =JSON.stringify(Object.assign({}, json.split('\n')));
+                        }else if(f_type=='csv'){
+                            this.data.data = JSON.stringify(Object.assign({}, json.split('\\r\\n')));
+                        }
+                        this.data.fetched = true;
+                        this.runtime.startHats('gasoJSON_onJSONReceived', {});
+                    });
+                    }
+                if(f_type=='json' || f_type=='xml'){
+                    res.json().then(json => {
+                        if(f_type=='json'){
+                            this.data.data = JSON.stringify(json);                                //this.runtime.startHats('gasoJSON_onJSONReceived', {});
+                        }else if(f_type=='xml'){
+                            xml2js.parseString(json, (err, result) => {
+                            if (err) {
+                                   throw err
+                                }
+                                  this.data.data = JSON.stringify(result, null, 4);
+                                })
+                            }
+                            this.data.fetched = true;
+                            this.runtime.startHats('gasoJSON_onJSONReceived', {});
+                        });
+                    }
             }
         })   
     }
