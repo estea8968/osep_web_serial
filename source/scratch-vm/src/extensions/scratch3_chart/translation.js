@@ -33,13 +33,8 @@ export const showChart = {
     'zh-tw': '讀取資料[data]顯示[chart]'
 };
 
-export const ChartData = {
-    'en': 'data',
-    'zh-tw': '資料'
-};
-
 export const LineChart = {
-    'en': 'line Chart',
+    'en': 'line Chart ',
     'zh-tw': '折線圖'
 };
 

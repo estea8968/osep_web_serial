@@ -128,12 +128,12 @@ class chart {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: msg.ChartData[theLocale],
+                            defaultValue: 'data',
                         },
                         chart: {
                             type: ArgumentType.STRING,
                             menu: 'chartSelectField',
-                            defaultValue: msg.LineChart[theLocale],
+                            defaultValue: '1',
                         },
                     },
                     text: msg.showChart[theLocale]
@@ -144,24 +144,24 @@ class chart {
                     acceptReporters: true,
                     items: [
                         {
-                            text: msg.LineChart[theLocale],
-                            value: '折線圖'
+                            text: msg.LineChart[theLocale], // 折線圖
+                            value: '1'
                         },
                         {
-                            text: msg.BarChart[theLocale],
-                            value: '長條圖'
+                            text: msg.BarChart[theLocale], // 長條圖
+                            value: '2'
                         },
                         {
-                            text: msg.PieChart[theLocale],
-                            value: '圓餅圖'
+                            text: msg.PieChart[theLocale], // 圓餅圖
+                            value: '3'
                         },
                         {
-                            text: msg.DonutChart[theLocale],
-                            value: '環形圖'
+                            text: msg.DonutChart[theLocale], // 環形圖
+                            value: '4'
                         },
                         {
-                            text: msg.RadarChart[theLocale],
-                            value: '雷達圖'
+                            text: msg.RadarChart[theLocale], // 雷達圖
+                            value: '5'
                         },
                     ],
                 },
@@ -196,15 +196,15 @@ class chart {
         var chart = args.chart;
         this.chartData = data;
 
-        if (chart == "折線圖")
+        if (chart == "1")
             this.showLineChart();
-        if (chart == "長條圖")
+        if (chart == "2")
             this.showBarChart();
-        if (chart == "圓餅圖")
+        if (chart == "3")
             this.showPieChart();
-        if (chart == "環形圖")
+        if (chart == "4")
             this.showDoughnutChart();
-        if (chart == "雷達圖")
+        if (chart == "5")
             this.showRadarChart();
     }
 

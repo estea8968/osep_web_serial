@@ -95,7 +95,7 @@ class dataProcessing {
                         before: {
                             type: ArgumentType.STRING,
                             menu: 'selectYear',
-                            defaultValue: msg.Binary[theLocale]
+                            defaultValue: '1'
                         },
                         data: {
                             type: ArgumentType.STRING,
@@ -104,7 +104,7 @@ class dataProcessing {
                         after: {
                             type: ArgumentType.STRING,
                             menu: 'selectYear',
-                            defaultValue: msg.Decimal[theLocale],
+                            defaultValue: '3'
                         },
                     },
                     text: msg.conversion[theLocale]
@@ -236,19 +236,19 @@ class dataProcessing {
                     items: [
                         {
                             text: msg.Binary[theLocale],
-                            value: '二進制'
+                            value: '1'
                         },
                         {
                             text: msg.Octal[theLocale],
-                            value: '八進制'
+                            value: '2'
                         },
                         {
                             text: msg.Decimal[theLocale],
-                            value: '十進制'
+                            value: '3'
                         },
                         {
                             text: msg.Hexadecimal[theLocale],
-                            value: '十六進制'
+                            value: '4'
                         },
                     ]
                 },
@@ -264,20 +264,20 @@ class dataProcessing {
         var convertToOtherBases;
 
         switch (beforeConversion) {
-            case "二進制": convertToDecimal = parseInt(data, 2); break;
-            case "八進制": convertToDecimal = parseInt(data, 8); break;
-            case "十六進制": convertToDecimal = parseInt(data, 16); break;
-            default: convertToDecimal = parseInt(data, 10); break;
+            case "1": convertToDecimal = parseInt(data, 2); break;
+            case "2": convertToDecimal = parseInt(data, 8); break;
+            case "3": convertToDecimal = parseInt(data, 10); break;
+            case "4": convertToDecimal = parseInt(data, 16); break;
         }
 
         switch (afterConversion) {
-            case "二進制": convertToOtherBases = convertToDecimal.toString(2); break;
-            case "八進制": convertToOtherBases = convertToDecimal.toString(8); break;
-            case "十六進制": convertToOtherBases = convertToDecimal.toString(16); break;
-            default: convertToOtherBases = convertToDecimal.toString(10);; break;
+            case "1": convertToOtherBases = convertToDecimal.toString(2); break;
+            case "2": convertToOtherBases = convertToDecimal.toString(8); break;
+            case "3": convertToOtherBases = convertToDecimal.toString(10); break;
+            case "4": convertToOtherBases = convertToDecimal.toString(16); break;
         }
 
-        return convertToOtherBases.toString();
+        return convertToOtherBases;
     }
 
     substring(args) {
