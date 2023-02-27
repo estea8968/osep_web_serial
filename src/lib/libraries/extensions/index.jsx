@@ -404,15 +404,21 @@ const extensions = [
     helpLink: "https://scratch.mit.edu/vernier",
   },
   {
-    name: "圖表",
+    name: (
+      <FormattedMessage
+        defaultMessage="Chart"
+        description="Chart extension"
+        id="gui.extension.chart.title"
+      />
+    ),
     extensionId: "chart",
     collaborator: "TYiC",
     iconURL: chartImage,
     insetIconURL: chartInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Chart"
-        description="Chart extension"
+        defaultMessage="Make charts to visualize data."
+        description="Make charts to visualize data."
         id="gui.extension.chart.description"
       />
     ),
@@ -423,15 +429,21 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "股票資訊",
+    name: (
+      <FormattedMessage
+        defaultMessage="TAIEX"
+        description="TAIEX extension"
+        id="gui.extension.TAIEX.title"
+      />
+    ),
     extensionId: "stockInfo",
     collaborator: "TYiC",
     iconURL: stockInfoImage,
     insetIconURL: stockInfoInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Stock Infomation"
-        description="StockInfo extension"
+        defaultMessage="Information about Taiwan Capitalization Weighted Stock Index (TAXIE)."
+        description="Information about Taiwan Capitalization Weighted Stock Index (TAXIE)."
         id="gui.extension.stockInfo.description"
       />
     ),
@@ -442,15 +454,15 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "Google Map",
+    name: "Google Maps",
     extensionId: "googleMap",
-    collaborator: "TYiC",
+    collaborator: "Champierre, TYiC",
     iconURL: googleMapImage,
     insetIconURL: googleMapInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Google Map"
-        description="Google Map extension"
+        defaultMessage="Display geographic location using the latitude and longitude coordinates (Experimental)."
+        description="Display geographic location using the latitude and longitude coordinates (Experimental)."
         id="gui.extension.googleMap.description"
       />
     ),
@@ -461,15 +473,21 @@ const extensions = [
     helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
-    name: "數位資料表示與處理",
+    name:(
+      <FormattedMessage
+        defaultMessage="Data Processing"
+        description="Data Processing extension"
+        id="gui.extension.dataProcessing.title"
+      />
+    ),
     extensionId: "dataProcessing",
     collaborator: "TYiC",
     iconURL: dataProcessingImage,
     insetIconURL: dataProcessingInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Data Processing"
-        description="Data Processing extension"
+        defaultMessage="Number system conversion and string manipulation."
+        description="Number system conversion and string manipulation."
         id="gui.extension.dataProcessing.description"
       />
     ),
@@ -482,7 +500,7 @@ const extensions = [
   {
     name: "JSON",
     extensionId: "gasoJSON",
-    collaborator: "gasolin,TYiC",
+    collaborator: "gasolin, TYiC",
     iconURL: jsonImage,
     insetIconURL: jsonInsetIconURL,
     description: (
@@ -609,7 +627,7 @@ const extensions = [
   {
     name: "Google Sheets",
     extensionId: "rwGoogle",
-    collaborator: "TYiC",
+    collaborator: "estea chen, TYiC",
     iconURL: rwGoogleImage,
     insetIconURL: rwGoogleInsetIconURL,
     description: (
@@ -626,83 +644,6 @@ const extensions = [
     // launchPeripheralConnectionFlow: false,
     useAutoScan: false,
     helpLink: "https://github.com/estea8968/scratch3-internet",
-  },
-  {
-    name: "Web Serial Arduino",
-    extensionId: "webserialArduino",
-    collaborator: "estea chen",
-
-    iconURL: webserialArduinoImage,
-    insetIconURL: webserialArduinoInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Connect Arudino and Google Chrome using Web Serial API."
-        description="Web serial for the Arduino extension"
-        id="gui.extension.WebSerialArduino.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
-  },
-  {
-    name: "Web Serial ESP-8266",
-    extensionId: "webserialEsp",
-    collaborator: "estea chen",
-    iconURL: webserialEsp8266Image,
-    insetIconURL: webserialEsp8266InsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Connect ESP-8266 and Google Chrome with Web Serial API."
-        description="Webserial ESP-8266 extension"
-        id="gui.extension.WebserialEsp.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
-  },
-  {
-    name: "Webserial ESP-32",
-    extensionId: "webserialEsp32",
-    collaborator: "estea chen",
-    iconURL: webserialEsp32Image,
-    insetIconURL: webserialEsp32InsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Webserial ESP-32"
-        description="Webserial ESP-32 extension"
-        id="gui.extension.WebserialEsp32.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
-  },
-  {
-    name: "WebSerial Picoboard",
-    extensionId: "webserialPicoboard",
-    collaborator: "estea chen",
-    iconURL: webserialPicoboardImage,
-    insetIconURL: webserialPicoboardInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="WebSerial Picoboard"
-        description="WebSerial Picoboard extension"
-        id="gui.extension.WebSerialPcoboard.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-    helpLink: "https://ys-fang.github.io/OSEP/app/",
   },
   {
     name: "MQTT",
@@ -732,8 +673,8 @@ const extensions = [
     insetIconURL: linenotifyInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Use Line Notify send message."
-        description="Line Notify extension"
+        defaultMessage="Use Line Notify to send messages."
+        description="Use Line Notify to send messages."
         id="gui.extension.linenotify.description"
       />
     ),
@@ -742,102 +683,6 @@ const extensions = [
     internetConnectionRequired: true,
     bluetoothRequired: false,
     //helpLink: ''
-  },
-  {
-    name: "ML2Scratch",
-    extensionId: "ml2scratch",
-    collaborator: "champierre",
-    iconURL: ml2scratchIconURL,
-    insetIconURL: ml2scratchInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Machine learning for Scratch"
-        description="ML2Scratch Blocks."
-        id="gui.extension.ml2scratchblocks.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-  },
-  {
-    name: "Posenet2Scratch",
-    extensionId: "posenet2scratch",
-    collaborator: "champierre",
-    iconURL: posenet2scratchIconURL,
-    insetIconURL: posenet2scratchInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Pose detection for Scratch"
-        description="PoseNet2Scratch Blocks."
-        id="gui.extension.posenet2scratchblocks.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-  },
-  {
-    name: "TM2Scratch",
-    extensionId: "tm2scratch",
-    collaborator: "Tsukurusha, YengawaLab and Google",
-    iconURL: tm2scratchIconURL,
-    insetIconURL: tm2scratchInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Machine learning for images and sound"
-        description="画像や音声を学習させよう。"
-        id="gui.extension.tm2scratchblocks.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    internetConnectionRequired: true,
-    bluetoothRequired: false,
-  },
-  {
-    name: "Microbit More",
-    extensionId: "microbitMore",
-    //extensionURL: 'https://microbit-more.github.io/dist/microbitMore.mjs',
-    collaborator: "Yengawa Lab",
-    iconURL: microbitMoreIconURL,
-    insetIconURL: microbitMoreInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Play with all functions of micro:bit."
-        description="Description for the 'Microbit More' extension"
-        id="gui.extension.microbitMore.description"
-      />
-    ),
-    /*get description () {
-        return formatMessage({
-            defaultMessage: 'Play with all functions of micro:bit.',
-            description: "Description for the 'Microbit More' extension",
-            id: 'gui.extension.microbitMore.description'
-        });
-    },*/
-    featured: true,
-    disabled: false,
-    bluetoothRequired: true,
-    internetConnectionRequired: false,
-    launchPeripheralConnectionFlow: true,
-    useAutoScan: false,
-    connectionIconURL: microbitMoreConnectionIconURL,
-    connectionSmallIconURL: microbitMoreConnectionSmallIconURL,
-    get connectingMessage() {
-      return formatMessage({
-        defaultMessage: "Connecting",
-        description: "Message to help people connect to their micro:bit.",
-        id: "gui.extension.microbit.connectingMessage",
-      });
-    },
-    helpLink: "https://microbit-more.github.io/",
-    setFormatMessage: (formatter) => {
-      formatMessage = formatter;
-    },
-    translationMap: translationMap,
   },
   {
     name: (
@@ -899,6 +744,172 @@ const extensions = [
     },
   },
   {
+    name: "Web Serial Arduino",
+    extensionId: "webserialArduino",
+    collaborator: "estea chen",
+
+    iconURL: webserialArduinoImage,
+    insetIconURL: webserialArduinoInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect Arudino and Google Chrome using Web Serial API."
+        description="Web serial for the Arduino extension"
+        id="gui.extension.WebSerialArduino.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
+  },
+  {
+    name: "Web Serial ESP-8266",
+    extensionId: "webserialEsp",
+    collaborator: "estea chen",
+    iconURL: webserialEsp8266Image,
+    insetIconURL: webserialEsp8266InsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect ESP-8266 and Google Chrome with Web Serial API."
+        description="Webserial ESP-8266 extension"
+        id="gui.extension.WebserialEsp.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
+  },
+  {
+    name: "Web Serial ESP-32",
+    extensionId: "webserialEsp32",
+    collaborator: "estea chen",
+    iconURL: webserialEsp32Image,
+    insetIconURL: webserialEsp32InsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect ESP-32 and Google Chrome with Web Serial API."
+        description="Webserial ESP-32 extension"
+        id="gui.extension.WebserialEsp32.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
+  },
+  {
+    name: "Web Serial PicoBoard",
+    extensionId: "webserialPicoboard",
+    collaborator: "estea chen",
+    iconURL: webserialPicoboardImage,
+    insetIconURL: webserialPicoboardInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect PicoBoard and Google Chrome with Web Serial API."
+        description="Connect PicoBoard and Google Chrome with Web Serial API."
+        id="gui.extension.WebSerialPcoboard.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://ys-fang.github.io/OSEP/app/",
+  },
+  {
+    name: "Microbit More",
+    extensionId: "microbitMore",
+    //extensionURL: 'https://microbit-more.github.io/dist/microbitMore.mjs',
+    collaborator: "Yengawa Lab",
+    iconURL: microbitMoreIconURL,
+    insetIconURL: microbitMoreInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Play with all functions of micro:bit."
+        description="Description for the 'Microbit More' extension"
+        id="gui.extension.microbitMore.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    bluetoothRequired: true,
+    internetConnectionRequired: false,
+    launchPeripheralConnectionFlow: true,
+    useAutoScan: false,
+    connectionIconURL: microbitMoreConnectionIconURL,
+    connectionSmallIconURL: microbitMoreConnectionSmallIconURL,
+    get connectingMessage() {
+      return formatMessage({
+        defaultMessage: "Connecting",
+        description: "Message to help people connect to their micro:bit.",
+        id: "gui.extension.microbit.connectingMessage",
+      });
+    },
+    helpLink: "https://microbit-more.github.io/",
+    setFormatMessage: (formatter) => {
+      formatMessage = formatter;
+    },
+    translationMap: translationMap,
+  },
+  {
+    name: "ML2Scratch",
+    extensionId: "ml2scratch",
+    collaborator: "champierre",
+    iconURL: ml2scratchIconURL,
+    insetIconURL: ml2scratchInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Machine learning for Scratch"
+        description="ML2Scratch Blocks."
+        id="gui.extension.ml2scratchblocks.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+  },
+  {
+    name: "Posenet2Scratch",
+    extensionId: "posenet2scratch",
+    collaborator: "champierre",
+    iconURL: posenet2scratchIconURL,
+    insetIconURL: posenet2scratchInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Pose detection for Scratch"
+        description="PoseNet2Scratch Blocks."
+        id="gui.extension.posenet2scratchblocks.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+  },
+  {
+    name: "TM2Scratch",
+    extensionId: "tm2scratch",
+    collaborator: "Tsukurusha, YengawaLab and Google",
+    iconURL: tm2scratchIconURL,
+    insetIconURL: tm2scratchInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Machine learning for images and sound"
+        description="画像や音声を学習させよう。"
+        id="gui.extension.tm2scratchblocks.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+  },
+  {
     name: "TMPose2Scratch",
     extensionId: "tmpose2scratch",
     collaborator: "Tsukurusha, YengawaLab and Google",
@@ -935,15 +946,15 @@ const extensions = [
     },
   },
   {
-    name: "OPENAI",
+    name: "OpenAI",
     extensionId: "openai",
-    collaborator: "estea,chen",
+    collaborator: "estea chen",
     iconURL: openaiImage,
     insetIconURL: openaiInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Fetch OPENAI."
-        description="Fetch OPENAI extension"
+        defaultMessage="Use OpenAI’s models to process natural language and generate images."
+        description="Use OpenAI’s models to process natural language and generate images."
         id="gui.extension.openai.description"
       />
     ),

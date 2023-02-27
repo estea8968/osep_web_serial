@@ -19,7 +19,7 @@ const base = {
     devtool: 'cheap-module-source-map',
     devServer: {
         contentBase: path.resolve(__dirname, 'build'),
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         port: process.env.PORT || 8601
     },
     output: {
@@ -145,7 +145,7 @@ module.exports = [
                 chunks: ['lib.min', 'blocksonly'],
                 template: 'src/playground/index.ejs',
                 filename: 'blocks-only.html',
-                title: 'OSEP_scratch: Blocks Only Example'
+                title: 'SOSEP_scratch: Blocks Only Example'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'compatibilitytesting'],
@@ -253,3 +253,4 @@ module.exports = [
             ])
         })) : []
 );
+
