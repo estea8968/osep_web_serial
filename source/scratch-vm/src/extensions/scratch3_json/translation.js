@@ -108,6 +108,6 @@ export const value = {
 };
 
 export const splitString = {
-    'en': 'item #[n] of the resultant JSON data [data]',
-    'zh-tw': '取得第[n]筆資料查詢的 JSON 資料[data]'
+    'en': 'Split the [data] and extract the [n] data record.',
+    'zh-tw': '分割[data]取第[n]筆資料'
 };
