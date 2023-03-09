@@ -642,11 +642,7 @@ class gasoJSON {
         const n = args.n;
         var splitText = data.split(",");
 
-        try {
-            return splitText[n - 1];
-        } catch (err) {
-            return `Error: ${err}`;
-        }
+        return splitText[n - 1] != undefined ? splitText[n - 1] : "" ;
     }
 }
 
