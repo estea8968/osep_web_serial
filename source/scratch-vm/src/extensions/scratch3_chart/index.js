@@ -23,14 +23,15 @@ class chart {
         this.onclose = this.onclose.bind(this);
         this.write = this.write.bind(this);
 
-        this.chartData = null;
+        this.chartData = "";
         this.colorTable = this.saveColorTable();
-        this.chartTitle = null;
-        this.X_axisTitle = null;
-        this.Y_axisTitle = null;
+        this.chartTitle = "圖表標題";
 
-        //this.showText();
+        this.X_axisTitle = "X軸標題";
+        this.Y_axisTitle = "Y軸標題";
 
+        this.startDate = this.calculateTheStartOfTheMonth();
+        this.endDate = this.calculateTheEndOfTheMonth();
     }
 
     onclose() {
@@ -91,8 +92,8 @@ class chart {
         return {
             id: 'chart',
             name: msg.title[theLocale],
-            color1: '#525252',
-            color2: '#4C5B5C',
+            color1: '#83251B',
+            color2: '#83251B',
             menuIconURI: menuIconURI,
             blockIconURI: blockIconURI,
             blocks: [
@@ -122,6 +123,7 @@ class chart {
                     },
                     text: msg.showAxisTitle[theLocale]
                 },
+                '---',
                 {
                     opcode: 'showChart',
                     blockType: BlockType.COMMAND,
@@ -138,29 +140,56 @@ class chart {
                     },
                     text: msg.showChart[theLocale]
                 },
+                '---',
+                {
+                    opcode: 'setDate',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        start: {
+                            type: ArgumentType.STRING,
+                            defaultValue: this.calculateTheStartOfTheMonth(),
+                        },
+                        end: {
+                            type: ArgumentType.STRING,
+                            defaultValue: this.calculateTheEndOfTheMonth(),
+                        },
+                    },
+                    text: msg.setDate[theLocale]
+                },
+                {
+                    opcode: 'showGanttChart',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        data: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '名稱,開始日期,結束日期',
+                        },
+                    },
+                    text: msg.showGanttChart[theLocale]
+                },
             ],
             menus: {
                 chartSelectField: {
                     acceptReporters: true,
                     items: [
                         {
-                            text: msg.LineChart[theLocale], // 折線圖
+                            text: msg.lineChart[theLocale], // 折線圖
                             value: '1'
                         },
                         {
-                            text: msg.BarChart[theLocale], // 長條圖
+                            text: msg.barChart[theLocale], // 長條圖
                             value: '2'
                         },
                         {
-                            text: msg.PieChart[theLocale], // 圓餅圖
+                            text: msg.pieChart[theLocale], // 圓餅圖
                             value: '3'
                         },
                         {
-                            text: msg.DonutChart[theLocale], // 環形圖
+                            text: msg.donutChart[theLocale], // 環形圖
                             value: '4'
                         },
                         {
-                            text: msg.RadarChart[theLocale], // 雷達圖
+                            text: msg.radarChart[theLocale], // 雷達圖
                             value: '5'
                         },
                     ],
@@ -171,13 +200,13 @@ class chart {
 
     saveColorTable() {
         var color = [
-            ["#FF53784D", "#FF97AD"],
-            ["#FF9B394D", "#FFCF9F"],
-            ["#FFCC534D", "#FFE6AA"],
-            ["#43BDBD4D", "#A5DFDF"],
-            ["#31A0EA4D", "#9AD0F5"],
-            ["#945FFF4D", "#CCB2FF"],
-            ["#C9CBCF4D", "#E4E5E7"]
+            ["rgba(255, 26, 104, 0.3)", "rgba(255, 26, 104, 0.8)"],
+            ["rgba(54, 162, 235, 0.3)", "rgba(54, 162, 235, 0.8)"],
+            ["rgba(255, 206, 86, 0.3)", "rgba(255, 206, 86, 0.8)"],
+            ["rgba(75, 192, 192, 0.3)", "rgba(75, 192, 192, 0.8)"],
+            ["rgba(153, 102, 255, 0.3)", "rgba(153, 102, 255, 0.81)"],
+            ["rgba(255, 159, 64, 0.3)", "rgba(255, 159, 64, 0.8)"],
+            ["rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.8)"]
         ];
         return color;
     }
@@ -192,9 +221,8 @@ class chart {
     }
 
     showChart(args) {
-        var data = args.data;
         var chart = args.chart;
-        this.chartData = data;
+        this.chartData = args.data;
 
         if (chart == "1")
             this.showLineChart();
@@ -209,253 +237,582 @@ class chart {
     }
 
     showLineChart() {
-        var keys = Object.keys(JSON.parse(this.chartData)[0]);
-        var dataLength = JSON.parse(this.chartData).length;
+        var dataSet = JSON.parse(this.chartData);
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
         var column = [];
 
         for (var i = 0; i < dataLength; i++)
-            column.push(JSON.parse(this.chartData)[i][keys[0]]);
+            column.push(dataSet[i][keys[0]]);
 
         var width = screen.width / 2;
         var height = screen.height / 2;
 
-        var openWindow = window.open('', 'OSEP Scratch 線上編輯器', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no'); openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<body><canvas id="myChart" style="width:100%;"></canvas><script>');
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openWindow.document.write('var labels = [');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart" style="width:100%;"></canvas>
+                <script>
+        `);
+
+        openWindow.document.write(`var labels = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + column[i] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${column[i]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var data = { labels:labels, datasets:[');
+        openWindow.document.write(`var data = { labels:labels, datasets:[`);
         for (var i = 1; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
-                data.push(JSON.parse(this.chartData)[j][keys[i]]);
+                data.push(dataSet[j][keys[i]]);
 
-            openWindow.document.write('{ label:"' + label + '",');
-            openWindow.document.write('backgroundColor:"' + this.colorTable[(i - 1) % 7][1] + '",');
-            openWindow.document.write('borderColor:"' + this.colorTable[(i - 1) % 7][0] + '",');
+            openWindow.document.write(`{ label: '${label}',`);
+            openWindow.document.write(`backgroundColor: '${this.colorTable[(i - 1) % 7][0]}',`);
+            openWindow.document.write(`borderColor: '${this.colorTable[(i - 1) % 7][1]}',`);
 
-            openWindow.document.write('data:[');
+            openWindow.document.write(`data:[`);
             for (var k = 0; k < data.length; k++)
-                openWindow.document.write('"' + data[k].replace(/([,*=!:${}()|[\]/\\])/g, '') + '",');
-            openWindow.document.write(']');
+                openWindow.document.write(`'${data[k].replace(/([,*=!:${}()|[\]/\\])/g, '')}',`);
+            openWindow.document.write(`]`);
 
-            openWindow.document.write('},');
+            openWindow.document.write(`},`);
         }
-        openWindow.document.write(']};');
+        openWindow.document.write(`]};`);
 
-        openWindow.document.write('var config = { type:"line", data:data, options:{ radius:4, hoverRadius:8, responsive:true,');
-        openWindow.document.write('plugins:{ title:{ display:true, text:"' + this.chartTitle + '", font:{ size:16 }}, legend:{ labels:{ font:{ size:16 }},},},');
-        openWindow.document.write('scales:{ x:{ display:true, title:{ display:true, text:"' + this.X_axisTitle + '", font:{ size:14, }}, ticks:{ font:{ size:14, }}},');
-        openWindow.document.write('y:{ display:true, title:{ display:true, text:"' + this.Y_axisTitle + '", font:{ size:14, }}, ticks:{ font:{ size:14, }}}},');
-        openWindow.document.write('animation: { duration: 0, }}};');
-        openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
+        openWindow.document.write(`
+            var config = { 
+                type: "line", 
+                data: data, 
+                options: { 
+                    radius: 4, 
+                    hoverRadius: 8,
+                    responsive: true,
+                    plugins: { 
+                        title: { 
+                            display: true, 
+                            text: '${this.chartTitle}', 
+                            font: { size:16 , weight: "bold"}
+                        }, 
+                        legend: { 
+                            labels: { 
+                                font: { size:16 , weight: "bold" }
+                            },
+                        },
+                    },
+                    scales: { 
+                        x: { 
+                            display: true, 
+                            title:{ 
+                                display: true, 
+                                text: '${this.X_axisTitle}', 
+                                font: { size:14 ,weight: "bold" }
+                            }, 
+                            ticks: { font:{ size:14 }}
+                        },
+                        y: { 
+                            display: true, 
+                            title: { 
+                                display :true, 
+                                text: '${this.Y_axisTitle}',
+                                font: { size:14 ,weight: "bold" }
+                            }, 
+                            ticks: { font:{ size:14 }}
+                        }
+                    },
+                    animation: { duration: 0 }
+                }
+            };
+            var myChart = new Chart(document.getElementById("myChart"), config);
+            </script></body>
+        `);
 
         openWindow.document.close();
     }
 
     showBarChart() {
-        var keys = Object.keys(JSON.parse(this.chartData)[0]);
-        var dataLength = JSON.parse(this.chartData).length;
+        var dataSet = JSON.parse(this.chartData);
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
         var column = [];
 
         for (var i = 0; i < dataLength; i++)
-            column.push(JSON.parse(this.chartData)[i][keys[0]]);
+            column.push(dataSet[i][keys[0]]);
 
         var width = screen.width / 2;
         var height = screen.height / 2;
 
-        var openWindow = window.open('', 'OSEP Scratch 線上編輯器', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no'); openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<body><canvas id="myChart" style="width:100%;"></canvas><script>');
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openWindow.document.write('var labels = [');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart" style="width:100%;"></canvas>
+                <script>
+        `);
+
+        openWindow.document.write(`var labels = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + column[i] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${column[i]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var data = { labels:labels, datasets:[');
+        openWindow.document.write(`var data = { labels:labels, datasets:[`);
         for (var i = 1; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
-                data.push(JSON.parse(this.chartData)[j][keys[i]]);
+                data.push(dataSet[j][keys[i]]);
 
-            openWindow.document.write('{ label:"' + label + '",');
-            openWindow.document.write('backgroundColor:"' + this.colorTable[(i - 1) % 7][1] + '",');
-            openWindow.document.write('borderColor:"' + this.colorTable[(i - 1) % 7][0] + '",');
+            openWindow.document.write(`{ label: '${label}',`);
+            openWindow.document.write(`backgroundColor: '${this.colorTable[(i - 1) % 7][0]}',`);
+            openWindow.document.write(`borderColor: '${this.colorTable[(i - 1) % 7][1]}',`);
 
-            openWindow.document.write('data:[');
+            openWindow.document.write(`data:[`);
             for (var k = 0; k < data.length; k++)
-                openWindow.document.write('"' + data[k].replace(/([,*=!:${}()|[\]/\\])/g, '') + '",');
-            openWindow.document.write(']');
+                openWindow.document.write(`'${data[k].replace(/([,*=!:${}()|[\]/\\])/g, '')}',`);
+            openWindow.document.write(`]`);
 
-            openWindow.document.write('},');
+            openWindow.document.write(`},`);
         }
-        openWindow.document.write(']};');
+        openWindow.document.write(`]};`);
 
-        openWindow.document.write('var config = { type:"bar", data:data, options:{ radius:4, hoverRadius:8, responsive:true,');
-        openWindow.document.write('plugins:{ title:{ display:true, text:"' + this.chartTitle + '", font:{ size:16 }}, legend:{ labels:{ font:{ size:16 }},},},');
-        openWindow.document.write('scales:{ x:{ display:true, title:{ display:true, text:"' + this.X_axisTitle + '", font:{ size:14, }}, ticks:{ font:{ size:14, }}},');
-        openWindow.document.write('y:{ display:true, title:{ display:true, text:"' + this.Y_axisTitle + '", font:{ size:14, }}, ticks:{ font:{ size:14, }}}},');
-        openWindow.document.write('animation: { duration: 0, }}};');
-        openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
+        openWindow.document.write(`
+            var config = { 
+                type: "bar",
+                data: data,
+                options: {
+                    radius: 4,
+                    hoverRadius: 8,
+                    responsive: true,
+                    plugins: { 
+                        title: { 
+                            display: true, 
+                            text: '${this.chartTitle}', 
+                            font: { size:16 ,weight: "bold" }
+                        }, 
+                        legend: { 
+                            labels: { 
+                                font:{ size:16 , weight: "bold" }
+                            },
+                        },
+                    },
+                    scales: { 
+                        x: { 
+                            display: true, 
+                            title: { 
+                                display: true, 
+                                text: '${this.X_axisTitle}', 
+                                font: { size:14 , weight: "bold" }
+                            },
+                            ticks: { font:{ size:14, } }
+                        },
+                        y: {
+                            display: true, 
+                            title: {
+                                display: true, 
+                                text: '${this.Y_axisTitle}', 
+                                font: { size:14 , weight: "bold" }
+                            },
+                            ticks: { font:{ size:14, }}
+                        }
+                    },
+                    animation: { duration: 0 },
+                }
+            };
+            var myChart = new Chart(document.getElementById("myChart"), config);
+            </script></body>
+        `);
 
         openWindow.document.close();
     }
 
     showPieChart() {
-        var keys = Object.keys(JSON.parse(this.chartData)[0]);
-        var dataLength = JSON.parse(this.chartData).length;
+        var dataSet = JSON.parse(this.chartData);
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
         var column = [];
 
         for (var i = 0; i < dataLength; i++)
-            column.push(JSON.parse(this.chartData)[i][keys[0]]);
+            column.push(dataSet[i][keys[0]]);
 
         var width = screen.width / 2;
         var height = screen.height;
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        var openWindow = window.open('', 'OSEP Scratch 線上編輯器', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
-        openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<body><canvas id="myChart" style="width:100%;"></canvas><script>');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart" style="width:100%;"></canvas>
+                <script>
+        `);
 
-        openWindow.document.write('var label = [');
+        openWindow.document.write(`var label = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + column[i] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${column[i]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var color = [');
+        openWindow.document.write(`var color = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + this.colorTable[i % 7][1] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${this.colorTable[i % 7][0]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var data = { labels:label, datasets:[');
+        openWindow.document.write(`var data = { labels:label, datasets:[`);
         for (var i = 1; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
-                data.push(JSON.parse(this.chartData)[j][keys[i]]);
+                data.push(dataSet[j][keys[i]]);
 
-            openWindow.document.write('{ label:"' + label + '",');
+            openWindow.document.write(`{ label: '${label}',`);
 
-            openWindow.document.write('data:[');
+            openWindow.document.write(`data:[`);
             for (var l = 0; l < data.length; l++)
-                openWindow.document.write('"' + data[l].replace(/([,*=!:${}()|[\]/\\])/g, '') + '",');
-            openWindow.document.write('],');
+                openWindow.document.write(`'${data[l].replace(/([,*=!:${}()|[\]/\\])/g, '')}',`);
+            openWindow.document.write(`],`);
 
-            openWindow.document.write('backgroundColor:color,},');
+            openWindow.document.write(`backgroundColor:color,},`);
         }
-        openWindow.document.write(']};');
+        openWindow.document.write(`]};`);
 
-        openWindow.document.write('var config = { type:"doughnut", data:data, options:{ responsive:true,');
-        openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
-        openWindow.document.write('animation:{ duration:0, }},};');
-        openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
+        openWindow.document.write(`
+            var config = { 
+                type: "pie", 
+                data: data, 
+                options: { 
+                    responsive: true,
+                    plugins: { 
+                        legend: { 
+                            position: "top",
+                        }, 
+                        title: { 
+                            display: true,
+                            text: '${this.chartTitle}',
+                            font: { size: 16 ,weight: "bold" }
+                        }, 
+                        legend: { 
+                            labels: {
+                                font: { size:16 ,weight: "bold" }
+                            },
+                        },
+                    },
+                    animation: { duration: 0, }
+                },
+            };
+            var myChart = new Chart(document.getElementById("myChart"), config);
+            </script></body>
+        `);
 
         openWindow.document.close();
     }
 
     showDoughnutChart() {
-        var keys = Object.keys(JSON.parse(this.chartData)[0]);
-        var dataLength = JSON.parse(this.chartData).length;
+        var dataSet = JSON.parse(this.chartData);
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
         var column = [];
 
         for (var i = 0; i < dataLength; i++)
-            column.push(JSON.parse(this.chartData)[i][keys[0]]);
+            column.push(dataSet[i][keys[0]]);
 
         var width = screen.width / 2;
         var height = screen.height;
 
-        var openWindow = window.open('', 'OSEP Scratch 線上編輯器', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
-        openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<body><canvas id="myChart" style="width:100%;"></canvas><script>');
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openWindow.document.write('var label = [');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart" style="width:100%;"></canvas>
+                <script>
+        `);
+
+        openWindow.document.write(`var label = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + column[i] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${column[i]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var color = [');
+        openWindow.document.write(`var color = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + this.colorTable[i % 7][1] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${this.colorTable[i % 7][0]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var data = { labels:label, datasets:[');
+        openWindow.document.write(`var data = { labels:label, datasets:[`);
         for (var i = 1; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
-                data.push(JSON.parse(this.chartData)[j][keys[i]]);
+                data.push(dataSet[j][keys[i]]);
 
-            openWindow.document.write('{ label:"' + label + '",');
+            openWindow.document.write(`{ label: '${label}',`);
 
-            openWindow.document.write('data:[');
+            openWindow.document.write(`data:[`);
             for (var l = 0; l < data.length; l++)
-                openWindow.document.write('"' + data[l].replace(/([,*=!:${}()|[\]/\\])/g, '') + '",');
-            openWindow.document.write('],');
+                openWindow.document.write(`'${data[l].replace(/([,*=!:${}()|[\]/\\])/g, '')}',`);
+            openWindow.document.write(`],`);
 
-            openWindow.document.write('backgroundColor:color,},');
+            openWindow.document.write(`backgroundColor:color,},`);
         }
-        openWindow.document.write(']};');
+        openWindow.document.write(`]};`);
 
-        openWindow.document.write('var config = { type:"doughnut", data:data, options:{ responsive:true,');
-        openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
-        openWindow.document.write('animation:{ duration:0, }},};');
-        openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
+        openWindow.document.write(`
+            var config = { 
+                type: "doughnut",
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: { 
+                        legend: { position: "top" },
+                        title: { 
+                            display:true,
+                            text: '${this.chartTitle}',
+                            font: { size: 16 ,weight: "bold" }
+                        },
+                        legend:{ 
+                            labels: {
+                                font: { size:16 ,weight: "bold" }
+                            },
+                        },
+                    },
+                    animation:{ duration:0, }
+                },
+            };
+            var myChart = new Chart(document.getElementById("myChart"), config);
+            </script></body>
+        `);
 
         openWindow.document.close();
     }
 
     showRadarChart() {
-        var keys = Object.keys(JSON.parse(this.chartData)[0]);
-        var dataLength = JSON.parse(this.chartData).length;
+        var dataSet = JSON.parse(this.chartData);
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
         var column = [];
 
         for (var i = 0; i < dataLength; i++)
-            column.push(JSON.parse(this.chartData)[i][keys[0]]);
+            column.push(dataSet[i][keys[0]]);
 
         var width = screen.width / 2;
         var height = screen.height;
 
-        var openWindow = window.open('', 'OSEP Scratch 線上編輯器', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
-        openWindow.document.write('<head><title>Scratch OSEP</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>');
-        openWindow.document.write('<body><canvas id="myChart" style="width:100%;"></canvas><script>');
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openWindow.document.write('var label = [');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart" style="width:100%;"></canvas>
+                <script>
+        `);
+
+        openWindow.document.write(`var label = [`);
         for (var i = 0; i < column.length; i++)
-            openWindow.document.write('"' + column[i] + '",');
-        openWindow.document.write('];');
+            openWindow.document.write(`'${column[i]}',`);
+        openWindow.document.write(`];`);
 
-        openWindow.document.write('var data = { labels:label, datasets:[');
+        openWindow.document.write(`var data = { labels:label, datasets:[`);
         for (var i = 1; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
-                data.push(JSON.parse(this.chartData)[j][keys[i]]);
+                data.push(dataSet[j][keys[i]]);
 
-            openWindow.document.write('{ label:"' + label + '",');
-            openWindow.document.write('backgroundColor:"' + this.colorTable[(i - 1) % 7][0] + '",');
-            openWindow.document.write('borderColor:"' + this.colorTable[(i - 1) % 7][1] + '",');
+            openWindow.document.write(`{ label:'${label}',`);
+            openWindow.document.write(`backgroundColor:'${this.colorTable[(i - 1) % 7][0]}',`);
+            openWindow.document.write(`borderColor:'${this.colorTable[(i - 1) % 7][1]}',`);
 
-            openWindow.document.write('data:[');
+            openWindow.document.write(`data:[`);
             for (var k = 0; k < data.length; k++)
-                openWindow.document.write('"' + data[k].replace(/([,*=!:${}()|[\]/\\])/g, '') + '",');
-            openWindow.document.write(']');
+                openWindow.document.write(`'${data[k].replace(/([,*=!:${}()|[\]/\\])/g, '')}',`);
+            openWindow.document.write(`]`);
 
-            openWindow.document.write('},');
+            openWindow.document.write(`},`);
         }
-        openWindow.document.write(']};');
+        openWindow.document.write(`]};`);
 
-        openWindow.document.write('var config = { type:"radar", data:data, options:{ responsive:true,');
-        openWindow.document.write('plugins:{ legend:{ position:"top",}, title:{ display:true, text:"' + this.chartTitle + '",font: { size: 16 }}, legend:{ labels: {font: { size:16 }},},},');
-        openWindow.document.write('animation:{ duration:0, }},};');
-        openWindow.document.write('var myChart = new Chart(document.getElementById("myChart"), config);</script></body>');
+        openWindow.document.write(`
+            var config = { 
+                type: "radar",
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: { 
+                        legend: { position: "top" },
+                        title: { 
+                            display:true,
+                            text: '${this.chartTitle}',
+                            font: { size: 16 ,weight: "bold" }
+                        },
+                        legend:{ 
+                            labels: {
+                                font: { size:16 ,weight: "bold" }
+                            },
+                        },
+                    },
+                    animation:{ duration:0, }
+                },
+            };
+            var myChart = new Chart(document.getElementById("myChart"), config);
+            </script></body>
+        `);
+
+        openWindow.document.close();
+    }
+
+    calculateTheStartOfTheMonth() {
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth();
+
+        var firstDay = new Date(y, m, 1);
+        var y = firstDay.getFullYear();
+        var m = (firstDay.getMonth() + 1).toString().padStart(2, '0');
+        var d = firstDay.getDate().toString().padStart(2, '0');
+
+        var theStartDate = y + "-" + m + "-" + d;
+
+        return theStartDate;
+    }
+
+    calculateTheEndOfTheMonth() {
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth();
+
+        var lastDay = new Date(y, m + 1, 0);
+        var y = lastDay.getFullYear();
+        var m = (lastDay.getMonth() + 1).toString().padStart(2, '0');
+        var d = lastDay.getDate().toString().padStart(2, '0');
+
+        var theEndDate = y + "-" + m + "-" + d;
+
+        return theEndDate;
+    }
+
+    setDate(args) {
+        this.startDate = args.start;
+        this.endDate = args.end;
+    }
+
+    showGanttChart(args) {
+        this.chartData = args.data;
+
+        var dataSet = JSON.parse(this.chartData);
+
+        var keys = Object.keys(dataSet[0]);
+        var dataLength = dataSet.length;
+        var column = [];
+
+        for (var i = 0; i < dataLength; i++)
+            column.push(dataSet[i][keys[0]]);
+
+        var width = screen.width / 2;
+        var height = screen.height / 2;
+
+        var openWindow = window.open('', '圖表擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+        openWindow.document.write(`
+            <head>
+                <title>圖表擴充功能</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+            </head>
+            <body>
+                <canvas id="myChart"></canvas>
+                <script>
+                    var data = {
+                        datasets: [{
+                            label: '',
+        `);
+
+        openWindow.document.write(`data: [`);
+        for (var i = 0; i < column.length; i++) {
+            var name = dataSet[i]["名稱"];
+            var startDate = dataSet[i]["開始日期"];
+            var endDate = dataSet[i]["結束日期"];
+            openWindow.document.write(`{ x: ['${startDate}', '${endDate}'], y: '${name}' },`);
+        }
+        openWindow.document.write(`],`);
+
+        openWindow.document.write(`backgroundColor: [`);
+        for (var i = 0; i < column.length; i++)
+            openWindow.document.write(`'${this.colorTable[i % 7][0]}',`);
+        openWindow.document.write(`],`);
+
+        openWindow.document.write(`borderColor: [`);
+        for (var i = 0; i < column.length; i++)
+            openWindow.document.write(`'${this.colorTable[i % 7][1]}',`);
+        openWindow.document.write(`],`);
+
+        openWindow.document.write(`
+                    borderWidth: 2,
+                    borderSkipped: false,
+                    barPercentage: 0.4,
+                    hoverBorderRadius: 0,
+                }]
+            };
+        `);
+
+        openWindow.document.write(`
+            var config = {
+                type: 'bar',
+                data,
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期',
+                                font: { size: 16, weight: 'bold' },
+                            },
+                            ticks: { font: { size: 14 } },
+                            type: 'time',
+                            time: { displayFormats: { day: 'MM-dd' } },
+                            min: '${this.startDate}',
+                            max: '${this.endDate}',
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '名稱',
+                                font: { size: 16, weight: 'bold' },
+                            },
+                            ticks: { font: { size: 14 } },
+                        },
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "${this.chartTitle}",
+                            font: { size: 16 },
+                            padding: { bottom: -20, }
+                        },
+                        legend: { labels: { boxWidth: 0, }, },
+                    },
+                },
+            };
+        `);
+
+        openWindow.document.write(`var myChart = new Chart(document.getElementById('myChart'), config);</script></body></html>`);
 
         openWindow.document.close();
     }
 }
-
 module.exports = chart;

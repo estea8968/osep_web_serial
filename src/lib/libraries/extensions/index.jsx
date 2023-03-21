@@ -114,6 +114,7 @@ import microbitMoreConnectionIconURL from "./microbitMore/connection-icon.svg";
 import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-icon.svg";
 import openaiImage from "./openai/openai.png";
 import openaiInsetIconURL from "./openai/openai-small.svg";
+
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -582,27 +583,6 @@ const extensions = [
     helpLink: "https://github.com/gasolin/scratch3-internet",
   },
   {
-    name: "Speech to Text",
-    extensionId: "voicetoTEXT",
-    collaborator: "estea chen",
-    iconURL: voicetotextImage,
-    insetIconURL: voicetotextInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Convert speech to text."
-        description="Speech To Text extension"
-        id="gui.extension.voicetotext.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    // bluetoothRequired: false,
-    internetConnectionRequired: false,
-    // launchPeripheralConnectionFlow: false,
-    useAutoScan: false,
-    helpLink: "https://github.com/estea8968/scratch3-internet",
-  },
-  {
     name: "URL & Text File",
     extensionId: "urlTXT",
     collaborator: "estea chen",
@@ -854,6 +834,27 @@ const extensions = [
       formatMessage = formatter;
     },
     translationMap: translationMap,
+  },
+  {
+    name: "Speech to Text",
+    extensionId: "voicetoTEXT",
+    collaborator: "estea chen",
+    iconURL: voicetotextImage,
+    insetIconURL: voicetotextInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Convert speech to text."
+        description="Speech To Text extension"
+        id="gui.extension.voicetotext.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: false,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    helpLink: "https://github.com/estea8968/scratch3-internet",
   },
   {
     name: "ML2Scratch",
