@@ -45,7 +45,9 @@ const builtinExtensions = {
     posenet2scratch: () => require('../extensions/scratch3_posenet2scratch'),
     tm2scratch: () => require('../extensions/scratch3_tm2scratch'), 
     microbitMore:() => require('../extensions/scratch3_microbitMore'),
-    openai: () => require('../extensions/scratch3_openai'),     
+    openai: () => require('../extensions/scratch3_openai'),
+    facemesh2scratch:() => require('../extensions/scratch3_facemesh2scratch'),
+    handpose2scratch:() => require('../extensions/scratch3_handpose2scratch'),     
     //tmpose2scratch: () => require('../extensions/scratch3_tmpose2scratch'),
     //qrcode: () => require('../extensions/scratch3_qrcode'),
 };

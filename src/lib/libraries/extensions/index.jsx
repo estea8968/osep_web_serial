@@ -115,6 +115,11 @@ import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-
 import openaiImage from "./openai/openai.png";
 import openaiInsetIconURL from "./openai/openai-small.svg";
 
+import facemesh2scratchIconURL from "./facemesh2scratch/facemesh2scratch.png";
+import facemesh2scratchInsetIconURL from "./facemesh2scratch/facemesh2scratch-small.png";
+import handpose2scratchIconURL from "./handpose2scratch/handpose2scratch.png";
+import handpose2scratchInsetIconURL from "./handpose2scratch/handpose2scratch-small.png";
+
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -946,6 +951,43 @@ const extensions = [
       },
     },
   },
+  {
+        name: "Facemesh2Scratch",
+        extensionId: "facemesh2scratch",
+        collaborator: "champierre",
+        iconURL: facemesh2scratchIconURL,
+        insetIconURL: facemesh2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='Face Tracking'
+                description='Face Tracking'
+                id='gui.extension.facemesh2scratch.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false
+    },
+    {
+        name: "Handpose2Scratch",
+        extensionId: "handpose2scratch",
+        collaborator: "champierre",
+        iconURL: handpose2scratchIconURL,
+        insetIconURL: handpose2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='HandPose2Scratch Blocks.'
+                description='HandPose2Scratch Blocks.'
+                id='gui.extension.handpose2scratchblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        helpLink: 'https://champierre.github.io/handpose2scratch/'
+    },  
   {
     name: "OpenAI",
     extensionId: "openai",
