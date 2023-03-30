@@ -207,7 +207,14 @@ export const Max7219_matrix ={
     'en': "show value: [VALUE]",
     'zh-tw':"顯示01值 [VALUE]",
 };
-
+export const hx711_set = {
+    'en': "hx711 zero-setting, DAT pin:[DAT] SCK pin:[SCK]",
+    'zh-tw': "hx711歸零,DAT腳位:[DAT] SCK腳位:[SCK]",
+}
+export const hx711 = {
+    'en': "hx711 value",//, DAT pin:[DAT] SCK pin:[SCK]",
+    'zh-tw': "hx711值,",//DAT腳位:[DAT] SCK腳位:[SCK]",
+}
 export const FirmwareVersion ={
     'en': "firmware version",
     'zh-tw':"韌體版本",

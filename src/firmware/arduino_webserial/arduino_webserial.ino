@@ -1,5 +1,6 @@
 /*
- * 更新日期112/02/10 estea chen
+ * 更新日期112/03/29 estea chen
+ * 0326 add hx711
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -9,14 +10,19 @@
 #include <Adafruit_NeoPixel.h>
 //max7219
 #include <LedControl.h>
-
+//hx711
+#include <HX711.h>
 //PMS5003T
 #include <SoftwareSerial.h>
+//版本號
+char* version="1120329";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
+//hx711
+HX711 scale;
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -88,7 +94,7 @@ void loop()
 
     //版本
     if(strcmp(commandString, "ver") == 0){
-      Serial.println("1120210");
+      Serial.println(version);
     }
     //max7219
     if(strcmp(commandString, "maxshow") == 0){      
@@ -335,6 +341,38 @@ void loop()
       Serial.print(":");
       Serial.println(digitalRead(atoi(inputPin)));
     }
+    //hx711
+    if(strcmp(commandString, "hx0") == 0){
+      scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+    }
+    if(strcmp(commandString, "hx1") == 0){
+      //scale.begin(DT_PIN, SCK_PIN);
+      /*scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+      digitalWrite(13,1);   //13腳位亮燈給使用者放東西，時間2秒
+      delay(2000);
+      digitalWrite(13,0);*/
+      //scale.power_up();               // 結束睡眠模式
+      Serial.print("hx:");
+      Serial.println(scale.get_units(10), 0);       
+      //scale.power_down();             // 進入睡眠模式
+      //delay(500);
+      //scale.power_up();               // 結束睡眠模式
+    }
+    
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
       analogWrite(atoi(inputPin),atoi(inputValue));
