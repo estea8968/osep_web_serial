@@ -467,58 +467,7 @@
                         }
                     ]
                 },
-                {
-                    "name": "LinkIt 7697",
-                    "architecture": "linkit_rtos",
-                    "version": "0.7.3",
-                    "category": "Contributed",
-                    "url": "http://download.labs.mediatek.com/mediatek_linkit_7697-0.7.3.tar.bz2",
-                    "archiveFileName": "mediatek_linkit_7697-0.7.3.tar.bz2",
-                    "checksum": "SHA-256:",
-                    "size": "",
-                    "boards": [
-                        {
-                            "name": "LinkIt 7697"
-                        }
-                    ],
-                    "toolsDependencies": [
-                        {
-                            "packager": "arduino",
-                            "name": "arm-none-eabi-gcc",
-                            "version": "4.8.3-2014q1"
-                        },
-                        {
-                            "packager": "LinkIt",
-                            "name": "flash_tool",
-                            "version": "1.4.0"
-                        }
-                    ]
-                },
-                {
-                    "name": "LinkIt 7697",
-                    "architecture": "linkit_rtos",
-                    "version": "0.6.0",
-                    "category": "Contributed",
-                    "url": "http://download.labs.mediatek.com/mediatek_linkit_7697-0.6.0.tar.bz2",
-                    "archiveFileName": "mediatek_linkit_7697-0.6.0.tar.bz2",
-                    "boards": [
-                        {
-                            "name": "LinkIt 7697"
-                        }
-                    ],
-                    "toolsDependencies": [
-                        {
-                            "packager": "arduino",
-                            "name": "arm-none-eabi-gcc",
-                            "version": "4.8.3-2014q1"
-                        },
-                        {
-                            "packager": "LinkIt",
-                            "name": "flash_tool",
-                            "version": "1.3.0"
-                        }
-                    ]
-                }
+                
             ],
             "tools": [
                 {
