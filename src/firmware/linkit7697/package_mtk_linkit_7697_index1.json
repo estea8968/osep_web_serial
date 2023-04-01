@@ -15,8 +15,6 @@
                     "category": "Contributed",
                     "url": "https://github.com/MediaTek-Labs/Arduino-Add-On-for-LinkIt-SDK/releases/download/v0.10.21/mediatek_linkit_7697-v0.10.21.tar.bz2",
                     "archiveFileName": "mediatek_linkit_7697-v0.10.21.tar.bz2",
-                    "checksum": "SHA-256:6544ffc4060cb1855dd47c6273fd5cf38be466732399b68252f1ab1586841ce7",
-                    "size": "16969430",
                     "boards": [
                         {
                             "name": "LinkIt 7697"
@@ -42,8 +40,6 @@
                     "category": "Contributed",
                     "url": "https://github.com/MediaTek-Labs/Arduino-Add-On-for-LinkIt-SDK/releases/download/v0.10.18/mediatek_linkit_7697-v0.10.18.tar.bz2",
                     "archiveFileName": "mediatek_linkit_7697-v0.10.18.tar.bz2",
-                    "checksum": "SHA-256:11cdcc2296f8f0bcca7107c62a5cd9adda25a99f04c8ecf1534327e36f840b13",
-                    "size": "4698570",
                     "boards": [
                         {
                             "name": "LinkIt 7697"
