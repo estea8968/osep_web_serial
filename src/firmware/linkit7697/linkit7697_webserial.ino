@@ -3,6 +3,13 @@
  * 
  */
 #include <Servo.h>
+#include <DHTStable.h>
+
+#include <Wire.h>  // I2C程式庫
+#include <LiquidCrystal_I2C.h>  // LCD_I2C模組程式庫
+#include <Ultrasonic.h>   //超音波測距模組HC-SR04
+LiquidCrystal_I2C lcd(0x27);  //0x3F  0x27
+DHTStable DHT;
 //版本號
 char* version="1120330";
 Servo myservo;  // create servo object to control a servo
@@ -32,6 +39,8 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200);
+  lcd.begin(16, 2); ;
+  lcd.backlight();
 }
 
 
@@ -61,7 +70,6 @@ void loop()
     if(strcmp(commandString, "ver") == 0){
       Serial.println(version);
     }
-      
     
     //tone
     if(strcmp(commandString, "tonePlay") == 0){
@@ -80,19 +88,30 @@ void loop()
     }
     //類比讀取
     if(strcmp(commandString, "analogRead") == 0){
-      Serial.print("A");
-      Serial.print(atoi(inputPin));
-      Serial.print(":");
-      Serial.println(analogRead(atoi(inputPin)));
+      int pin = atoi(inputPin);
+      if(pin==0){
+        Serial.print("A0:");
+        Serial.println(analogRead(A0));
+      }else if(pin==1){
+        Serial.print("A1:");
+        Serial.println(analogRead(A1));  
+      }else if(pin==2){
+        Serial.print("A2:");
+        Serial.println(analogRead(A2));  
+      }else if(pin==3){
+        Serial.print("A3:");
+        Serial.println(analogRead(A3));  
+      }
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      pinMode(atoi(inputPin),INPUT);
+      int pin = atoi(inputPin);
+      pinMode(pin,INPUT);
       //2-19
       Serial.print("D");
-      Serial.print(atoi(inputPin));
+      Serial.print(pin);
       Serial.print(":");
-      Serial.println(digitalRead(atoi(inputPin)));
+      Serial.println(digitalRead(pin));
     }
         
     //類比寫入
@@ -104,6 +123,39 @@ void loop()
          pinMode(atoi(inputPin),OUTPUT);
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
+
+    //dht11
+    if(strcmp(commandString, "dht11Set") == 0){
+      pinMode(atoi(inputPin),INPUT);
+      DHT.read11(atoi(inputPin));
+    }
+    
+    if(strcmp(commandString, "dht11Read") == 0){
+      //int chk = DHT.read11(atoi(inputPin));
+      DHT.read11(12);
+      Serial.print(DHT.getTemperature());
+      Serial.print(",");
+      Serial.println(DHT.getHumidity());
+      /*
+      if( atoi(inputValue) == 1 ){
+          Serial.println(DHT.getTemperature(), 1);
+      }else{
+          Serial.println(DHT.getHumidity(), 1);
+      }*/
+    }
+
+    //lcd
+    if(strcmp(commandString, "l") == 0){
+      //文字inputPin
+      //第幾行inputValue 
+      if(strcmp(inputPin, "clear") == 0){
+        lcd.clear(); 
+      }else{
+        lcd.setCursor(0, atoi(inputValue));
+        lcd.print(inputPin);   
+      }
+      
+    }
     needPrompt=true;
     //delay(1000);
   }
