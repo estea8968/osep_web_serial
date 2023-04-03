@@ -39,6 +39,7 @@ const builtinExtensions = {
     webserialEsp: () => require('../extensions/scratch3_webserialEsp8266'),
     webserialEsp32: () => require('../extensions/scratch3_webserialEsp32'),    
     webserialPicoboard: () => require('../extensions/scratch3_webserialPicoboard'),
+    webserialLinkit7697: () => require('../extensions/scratch3_webserialLinkit7697'),
     mqtt: () => require('../extensions/scratch3_mqtt'),
     linenotify: () => require('../extensions/scratch3_linenotify'),
     ml2scratch: () => require('../extensions/scratch3_ml2scratch'),

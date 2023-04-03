@@ -4,15 +4,15 @@
  */
 #include <Servo.h>
 #include <DHTStable.h>
-
 #include <Wire.h>  // I2C程式庫
 #include <LiquidCrystal_I2C.h>  // LCD_I2C模組程式庫
 #include <Ultrasonic.h>   //超音波測距模組HC-SR04
+
 LiquidCrystal_I2C lcd(0x27);  //0x3F  0x27
-DHTStable DHT;
 //版本號
 char* version="1120330";
 Servo myservo;  // create servo object to control a servo
+DHTStable DHT;
 
 char* serialString()
 {
@@ -124,26 +124,78 @@ void loop()
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
 
-    //dht11
-    if(strcmp(commandString, "dht11Set") == 0){
-      pinMode(atoi(inputPin),INPUT);
-      DHT.read11(atoi(inputPin));
-    }
-    
+    //dht11    
     if(strcmp(commandString, "dht11Read") == 0){
-      //int chk = DHT.read11(atoi(inputPin));
-      DHT.read11(12);
-      Serial.print(DHT.getTemperature());
-      Serial.print(",");
-      Serial.println(DHT.getHumidity());
-      /*
-      if( atoi(inputValue) == 1 ){
-          Serial.println(DHT.getTemperature(), 1);
-      }else{
-          Serial.println(DHT.getHumidity(), 1);
-      }*/
+      int chk;
+      int pin = atoi(inputPin);
+      //Serial.print(pin);
+      int a=0;  
+        do{
+         
+        if(pin==0){
+          //Serial.print("A0");
+          chk = DHT.read11(A0);
+          //Serial.print("0");
+          //#define DHT11_PIN       A0
+        }else if(pin==1){
+          //#define DHT11_PIN       A1
+          chk = DHT.read11(A1);
+        }else if(pin==2){
+          //#define DHT11_PIN       A2
+          chk = DHT.read11(A2);
+        }else if(pin==3){
+          //#define DHT11_PIN       A3
+          chk = DHT.read11(A3);
+        }  
+        //chk = DHT.read11(A0); 
+        delay(1000);
+        switch (chk){
+          case DHTLIB_OK:  
+            //Serial.print("OK,\t");
+            a=1;
+            Serial.print(DHT.getHumidity());
+            Serial.print(",");
+            Serial.println(DHT.getTemperature());
+            break;
+          case DHTLIB_ERROR_CHECKSUM: 
+            //Serial.print("Checksum error,\t");
+            Serial.println("error"); 
+            a=0;
+            break;
+          case DHTLIB_ERROR_TIMEOUT: 
+            Serial.println("error"); 
+            a=0;
+            break;
+          default: 
+            a=0;
+            Serial.println("error"); 
+            break;
+         }   
+        delay(1000);
+        }while(a=0);
+ 
     }
 
+    //超音波
+    if(strcmp(commandString, "HC-SR04")== 0){
+       long duration, cm; 
+       int trigPin = atoi(inputPin);
+       int echoPin = atoi(inputValue);
+       pinMode(trigPin, OUTPUT);        // 定義輸入及輸出 
+       pinMode(echoPin, INPUT);
+       digitalWrite(trigPin, LOW);
+       delayMicroseconds(5);
+       //digitalWrite(trigPin, HIGH);     // 給 Trig 高電位，持續 10微秒  
+       digitalWrite(trigPin, HIGH);     // 給 Trig 高電位，持續 10微秒  
+       delayMicroseconds(10);
+       digitalWrite(trigPin, LOW);
+       //pinMode(echoPin, INPUT);             // 讀取 echo 的電位
+       pinMode(echoPin, INPUT);             // 讀取 echo 的電位
+       duration = pulseIn(echoPin, HIGH);   // 收到高電位時的時間
+       cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
+       Serial.print("HC,");
+       Serial.println(cm);        
+    }
     //lcd
     if(strcmp(commandString, "l") == 0){
       //文字inputPin

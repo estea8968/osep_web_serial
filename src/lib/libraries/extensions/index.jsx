@@ -86,6 +86,8 @@ import webserialEsp32InsetIconURL from "./webserialEsp32/webserialEsp-small.png"
 
 import webserialPicoboardImage from "./webserialPicoboard/webserialPicoboard.png";
 import webserialPicoboardInsetIconURL from "./webserialPicoboard/webserialPicoboard-small.png";
+import webserialLinkit7697Image from "./webserialLinkit7697/webserialLinkit7697.png";
+import webserialLinkit7697InsetIconURL from "./webserialLinkit7697/webserialLinkit7697-small.png";
 
 import mqttImage from "./mqtt/mqtt.png";
 import mqttInsetIconURL from "./mqtt/mqtt-small.png";
@@ -839,6 +841,26 @@ const extensions = [
       formatMessage = formatter;
     },
     translationMap: translationMap,
+  },
+  {
+    name: "Web Serial Linkit7697",
+    extensionId: "webserialLinkit7697",
+    collaborator: "estea chen",
+
+    iconURL: webserialLinkit7697Image,
+    insetIconURL: webserialLinkit7697InsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect Linkit7697 and Google Chrome using Web Serial API."
+        description="Web serial for the Linkit7697 extension"
+        id="gui.extension.WebSerialLinkit7697.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
   },
   {
     name: "Speech to Text",
