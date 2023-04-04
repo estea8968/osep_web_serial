@@ -79,6 +79,10 @@ export const FormDigitalRead = {
     'pl': 'Odczytaj cyfrowy Pin [PIN]',
 };
 
+export const FormNtcRead = {
+    'en': 'NTC temperature 3.3V pin [PIN] ',
+    'zh-tw': 'NTC溫度3.3V 在腳位 [PIN]',
+};
 //dht11
 export const FormDht11Read = {
     'en': 'DHT11 pin [PIN] ,[TH] ',

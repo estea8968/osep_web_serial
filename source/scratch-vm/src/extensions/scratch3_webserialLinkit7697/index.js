@@ -314,6 +314,19 @@ class Scratch3Linkit7697WebSerial {
                     }
                 },
                 {
+                    opcode: 'ntc_read',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormNtcRead[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'A0',
+                            menu: 'analog_pins'
+                        },
+                    }
+
+                },
+                {
                     opcode: 'sonar_read',
                     blockType: BlockType.REPORTER,
                     text: msg.FormSonarRead[the_locale],
@@ -331,6 +344,7 @@ class Scratch3Linkit7697WebSerial {
                         }
                     }
                 },
+                
                 /*
                 {
                     opcode: 'pms_read',
@@ -499,6 +513,10 @@ class Scratch3Linkit7697WebSerial {
                     acceptReporters: true,
                     items: ['input', 'output']
                 },
+                volt:{
+                    acceptReporters: true,
+                    items: ['5', '3.3']
+                },
                 rgb: {
                     acceptReporters: true,
                     items: msg.FormRGB[the_locale]
@@ -638,7 +656,9 @@ class Scratch3Linkit7697WebSerial {
             Linkitreader.releaseLock();
             return string[0];
         }catch (error) {
+            Linkitreader.releaseLock();
             console.log(error);
+            
         }// finally {
          //   reader.releaseLock();
         //}
@@ -778,7 +798,25 @@ class Scratch3Linkit7697WebSerial {
         }
 
     }
+    async ntc_read(args){
+        //送出pin並取回值
+        let pin = args['PIN'].substr(1, 2);
+        //pin = parseInt(pin, 10);
+        let sendData = 'analogRead#' + pin + '#';
+        this.serialSend(sendData);
+        console.log(sendData);
+        let serial_data = (await this.serialRead()).split(':');
+        if (serial_data[0] == 'A' + pin) {
+            //ntc https://microcontrollerslab.com/thermistor-arduino-temperature-meter/
+            const analog_value = 1023- (Number(serial_data[1])/4)*0.8;
+            let Temp =  Math.log( ( ( 10240000 / analog_value ) - 10000 ) ) ;
+            Temp = 1 / ( 0.001129148 + ( 0.000234125 * Temp ) + ( 0.0000000876741 * Temp * Temp * Temp ) ) ;
+            Temp = (Temp - 273.15).toFixed(1) ;            // This will Convert Kelvin to Celcius
+            console.log('temp=',Temp);
+            return Temp;
+        }
 
+    }
     async analog_read(args) {
         //送出pin並取回值
         let pin = args['PIN'].substr(1, 2);
@@ -857,6 +895,7 @@ class Scratch3Linkit7697WebSerial {
             return hc_return[1];
         }        
     }
+    
     //shu
     ws2812_set_pin(args) {
         ws2812_pin = args['PIN'].substring(0, 2);       

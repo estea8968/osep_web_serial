@@ -60572,5 +60572,6 @@ export default {
     "gui.extension.dataProcessing.description":"進制轉換與字串處理",
     "gui.extension.facemesh2scratch.description": "臉網辨識",
     "gui.extension.handpose2scratchblocks.description" : "手掌辨識",
+    "gui.extension.WebSerialLinkit7697.description":"使用 Web Serial API 連接 LinkIt7697 與 Googel Chrome 瀏覽器",
   }
 };
