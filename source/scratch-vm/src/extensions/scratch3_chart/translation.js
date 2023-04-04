@@ -33,27 +33,42 @@ export const showChart = {
     'zh-tw': '讀取資料[data]顯示[chart]'
 };
 
-export const LineChart = {
-    'en': 'line Chart ',
+export const lineChart = {
+    'en': 'line chart ',
     'zh-tw': '折線圖'
 };
 
-export const BarChart = {
-    'en': 'bar Chart',
+export const barChart = {
+    'en': 'bar chart',
     'zh-tw': '長條圖'
 };
 
-export const PieChart = {
-    'en': 'pie Chart',
+export const pieChart = {
+    'en': 'pie chart',
     'zh-tw': '圓餅圖'
 };
 
-export const DonutChart = {
-    'en': 'donut Chart',
+export const donutChart = {
+    'en': 'donut chart',
     'zh-tw': '環形圖'
 };
 
-export const RadarChart = {
-    'en': 'radar Chart',
+export const radarChart = {
+    'en': 'radar chart',
     'zh-tw': '雷達圖'
+};
+
+export const ganttChart = {
+    'en': 'gantt chart',
+    'zh-tw': '甘特圖'
+};
+
+export const setDate = {
+    'en': 'Set the dates of the Gantt chart from [start] to [end]',
+    'zh-tw': '設定甘特圖的日期從[start]到[end]'
+};
+
+export const showGanttChart = {
+    'en': 'display gantt chart by reading data[data]',
+    'zh-tw': '讀取資料[data]顯示甘特圖'
 };

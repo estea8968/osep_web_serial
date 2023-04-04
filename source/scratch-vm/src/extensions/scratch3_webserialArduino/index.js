@@ -495,6 +495,40 @@ class Scratch3ArduinoWebSerial {
                     }
                 },
                 {
+                    opcode: 'hx711_set',
+                    blockType: BlockType.COMMAND,
+                    text: msg.hx711_set[the_locale],
+                    arguments:{
+                        DAT:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'5',
+                            menu:'pwm_pins',
+                        },
+                        SCK:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'6', 
+                            menu:'pwm_pins',
+                        }
+                    }
+                },
+                {
+                    opcode: 'hx711',
+                    blockType: BlockType.REPORTER,
+                    text: msg.hx711[the_locale],
+                    /*arguments:{
+                        DAT:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'5',
+                            menu:'pwm_pins',
+                        },
+                        SCK:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'6', 
+                            menu:'pwm_pins',
+                        }
+                    }*/
+                },
+                {
                     opcode: 'firmwareversion',
                     blockType: BlockType.REPORTER,
                     text: msg.FirmwareVersion[the_locale],
@@ -1046,6 +1080,34 @@ class Scratch3ArduinoWebSerial {
         console.log('sendData=',sendData);
         await this.serialSend(sendData);
     }
+    async hx711_set(args){
+        const dat_pin = parseInt(args.DAT);
+        const sck_pin = parseInt(args.SCK);
+        const sendData = 'hx0#'+dat_pin+'#'+sck_pin;
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+        //await new Promise(resolve => setTimeout(resolve, 2050));
+        /*let serial_data = (await this.serialRead()).split(':');
+        if (serial_data[0] == 'hx') {
+            console.log('hx=',serial_data[1]);
+            return serial_data[1];
+        }*/
+    }
+
+    async hx711(args){
+        //const dat_pin = parseInt(args.DAT);
+        //const sck_pin = parseInt(args.SCK);
+        const sendData = 'hx1#';
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        let serial_data = (await this.serialRead()).split(':');
+        if (serial_data[0] == 'hx') {
+            console.log('hx=',serial_data[1]);
+            return serial_data[1];
+        }
+    }
+
     async listener(){
         navigator.serial.addEventListener('disconnect', (event) => {
             port = null;
@@ -1054,7 +1116,7 @@ class Scratch3ArduinoWebSerial {
         // If the serial port was opened, a stream error would be observed as well.
        });
     }
-
+    
     async firmwareversion(){
         if(firmware_ver == ''){
         const sendData = "ver#";
