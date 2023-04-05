@@ -1,4 +1,4 @@
 @echo off
-echo linkit7697ç‡’éŒ„ç¨‹å¼ï¼Œé€£ç·šcom port æ˜¯ %1
-upload.exe -c %1 -f linkit7697.bin -t cm4 -p mt7697 
+echo 'Linkit7697¿N¿ı§å¦¸ÀÉ³s½uµ¡¤f¬O' %1
 
+upload.exe -c %1 -f linkit7697.bin -t cm4 -p mt7697 
