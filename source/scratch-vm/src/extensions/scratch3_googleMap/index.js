@@ -148,7 +148,7 @@ class googleMap {
     }
 
     /**
-     * 在此聲明，感謝石原純也(Junya Ishihara)先生提供 Github 開源專案
+     * 在此聲明致謝，感謝石原純也(Junya Ishihara)先生提供 Github 開源專案
      * 此 showMarker() 與 recordMarker2() 兩個函式的程式碼源自 sheet2gmap 專案改編而來
      * champierre/sheet2gmap 專案來源：https://github.com/champierre/sheet2gmap/
      */
@@ -158,15 +158,47 @@ class googleMap {
         var height = screen.height / 2;
         var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openGoogleMapWindow.document.write('<head><meta charset="utf-8" /><title>Google Map 擴充功能</title><style>');
-        openGoogleMapWindow.document.write('#map {height: 100%;}html,body {height: 100%;margin: 0;padding: 0;}');
-        openGoogleMapWindow.document.write('#sidebar {position: absolute;top: 20%;left: 75%;width: 20%;height: 50%;');
-        openGoogleMapWindow.document.write('border: 1px solid #666;padding: 10px;background-color: white;font-size: 16px;font-weight: bold;}</style></head>');
-        openGoogleMapWindow.document.write('<body><div id="map"></div><div id="sidebar" style="overflow:scroll;"></div>');
-        openGoogleMapWindow.document.write('<script src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=' + GOOGLE_MAP_API_KEY + '&callback=initMap" defer></script><script>');
+        openGoogleMapWindow.document.write(`
+        <head>
+            <meta charset="utf-8" />
+            <title>Google Map 擴充功能</title>
+            <style>
+                #map {
+                    height: 100%;
+                }
+
+                html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                #sidebar {
+                    position: absolute;
+                    top: 20%;
+                    left: 75%;
+                    width: 20%;
+                    height: 50%;
+                    border: 1px solid #666;
+                    padding: 10px;
+                    background-color: white;
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+
+        <body>
+            <div id="map"></div>
+            <div id="sidebar" style="overflow:scroll;"></div>
+            <script
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                defer></script>
+            <script>
+        `);
 
         openGoogleMapWindow.document.write('var markerData = [');
-
         for (var i = 0; i < this.recordCoordinate.length; i++) {
             var label = this.recordCoordinate[i][0];
             var lat = this.recordCoordinate[i][1];
@@ -174,36 +206,101 @@ class googleMap {
 
             openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + '},');
         }
-
         openGoogleMapWindow.document.write('];');
 
-        openGoogleMapWindow.document.write('var map; var marker = []; var infoWindow = []; var windowOpened;');
+        openGoogleMapWindow.document.write(`
+                var map;
+                var marker = [];
+                var infoWindow = [];
+                var windowOpened;
 
-        openGoogleMapWindow.document.write('function initMap() {var target = document.getElementById("map");');
-        openGoogleMapWindow.document.write('var latMax = lat_Max();var latMin = lat_Min();var lngMax = lng_Max();var lngMin = lng_Min();');
-        openGoogleMapWindow.document.write('map = new google.maps.Map(target, { center: { lat: latMax, lng: lngMin }, zoom: 10, }); setData(markerData);');
-        openGoogleMapWindow.document.write('var bounds = new google.maps.LatLngBounds({ lat: latMax, lng: lngMin }, { lat: latMin, lng: lngMax });');
-        openGoogleMapWindow.document.write('map.fitBounds(bounds);}');
+                function initMap() {
+                    var target = document.getElementById("map");
+                    var latMax = lat_Max();
+                    var latMin = lat_Min();
+                    var lngMax = lng_Max();
+                    var lngMin = lng_Min();
+                    var bounds = new google.maps.LatLngBounds(
+                        { lat: latMax, lng: lngMin },
+                        { lat: latMin, lng: lngMax }
+                    );
 
-        openGoogleMapWindow.document.write('function lat_Max() { var a = 0; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lat > a) a = markerData[i].lat; } return a; }');
-        openGoogleMapWindow.document.write('function lat_Min() { var b = 1000; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lat < b) b = markerData[i].lat; } return b; }');
-        openGoogleMapWindow.document.write('function lng_Max() { var c = 0; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lng > c) c = markerData[i].lng; } return c; }');
-        openGoogleMapWindow.document.write('function lng_Min() { var d = 1000; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lng < d) d = markerData[i].lng; } return d; }');
+                    map = new google.maps.Map(
+                        target, {
+                        center: {
+                            lat: latMax,
+                            lng: lngMin
+                        }, zoom: 16,
+                    });
+                    setData(markerData);
+                    if (markerData.length > 1) map.fitBounds(bounds);
+                }
 
-        openGoogleMapWindow.document.write('function addMarker(i, lat, lng, label) {');
-        openGoogleMapWindow.document.write('var markerLatLng = new google.maps.LatLng({lat: lat,lng: lng,});');
-        openGoogleMapWindow.document.write('marker[i] = new google.maps.Marker({position: markerLatLng,map: map});');
-        openGoogleMapWindow.document.write('const contentString = \'<h2>\' + label + \'</h2><p style="font-size:16px;font-weight:bold;"></p>\';');
-        openGoogleMapWindow.document.write('infoWindow[i] = new google.maps.InfoWindow({content: contentString});markerEvent(i);}');
+                function lat_Max() {
+                    var a = 0;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lat > a) a = markerData[i].lat;
+                    return a;
+                }
 
-        openGoogleMapWindow.document.write('function setData(markerData) {var sidebar_html = `座標清單：<br>`;');
-        openGoogleMapWindow.document.write('for (var i = 0; i < markerData.length; i++) {addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label);');
-        openGoogleMapWindow.document.write(' var name = markerData[i]["label"];sidebar_html += `<b>${i + 1}.</b> <a href="javascript:openWindow(${i})">${name}<\/a><br />`;}');
-        openGoogleMapWindow.document.write('document.getElementById("sidebar").innerHTML = sidebar_html;}');
+                function lat_Min() {
+                    var b = 1000;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lat < b) b = markerData[i].lat;
+                    return b;
+                }
 
-        openGoogleMapWindow.document.write('function markerEvent(i) {marker[i].addListener("click", function () {if (windowOpened) {windowOpened.close();}infoWindow[i].open(map, marker[i]);windowOpened = infoWindow[i];});}');
-        openGoogleMapWindow.document.write('function openWindow(i) {if (windowOpened) {windowOpened.close();}infoWindow[i].open(map, marker[i]);windowOpened = infoWindow[i];}');
-        openGoogleMapWindow.document.write('</script></body></html>');
+                function lng_Max() {
+                    var c = 0;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lng > c) c = markerData[i].lng;
+                    return c;
+                }
+
+                function lng_Min() {
+                    var d = 1000;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lng < d) d = markerData[i].lng;
+                    return d;
+                }
+
+                function setData(markerData) {
+                    var sidebar_html = '座標清單：<br>';
+                    for (var i = 0; i < markerData.length; i++) {
+                        var name = markerData[i]["label"];
+                        sidebar_html += '<b>' + (i + 1) + '.</b> <a href="javascript:openWindow(' + i + ')">' + name + '</a><br />';
+                        addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label);
+                    }
+                    document.getElementById("sidebar").innerHTML = sidebar_html;
+                }
+
+                function addMarker(i, lat, lng, label) {
+                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
+                    marker[i] = new google.maps.Marker({ position: markerLatLng, map: map });
+                    const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;"></p>';
+                    infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
+                    markerEvent(i);
+                }
+
+                function markerEvent(i) {
+                    marker[i].addListener("click",
+                        function () {
+                            if (windowOpened) windowOpened.close();
+                            infoWindow[i].open(map, marker[i]);
+                            windowOpened = infoWindow[i];
+                        }
+                    );
+                }
+
+                function openWindow(i) {
+                    if (windowOpened) windowOpened.close();
+                    infoWindow[i].open(map, marker[i]);
+                    windowOpened = infoWindow[i];
+                }
+            </script>
+        </body>
+        </html>
+        `);
 
         openGoogleMapWindow.document.close();
 
@@ -217,17 +314,48 @@ class googleMap {
         var height = screen.height / 2;
         var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
 
-        openGoogleMapWindow.document.write('<head><meta charset="utf-8" /><title>Google Map 擴充功能</title><style>');
-        openGoogleMapWindow.document.write('#map {height: 100%;}html,body {height: 100%;margin: 0;padding: 0;}');
-        openGoogleMapWindow.document.write('#sidebar {position: absolute;top: 20%;left: 75%;width: 20%;height: 50%;');
-        openGoogleMapWindow.document.write('border: 1px solid #666;padding: 10px;background-color: white;font-size: 16px;font-weight: bold;}</style></head>');
-        openGoogleMapWindow.document.write('<body><div id="map"></div><div id="sidebar" style="overflow:scroll;"></div>');
-        openGoogleMapWindow.document.write('<script src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=' + GOOGLE_MAP_API_KEY + '&callback=initMap" defer></script><script>');
+        openGoogleMapWindow.document.write(`
+        <head>
+            <meta charset="utf-8" />
+            <title>Google Map 擴充功能</title>
+            <style>
+                #map {
+                    height: 100%;
+                }
+
+                html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                #sidebar {
+                    position: absolute;
+                    top: 20%;
+                    left: 75%;
+                    width: 20%;
+                    height: 50%;
+                    border: 1px solid #666;
+                    padding: 10px;
+                    background-color: white;
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+
+        <body>
+            <div id="map"></div>
+            <div id="sidebar" style="overflow:scroll;"></div>
+            <script
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                defer></script>
+            <script>
+        `);
 
         openGoogleMapWindow.document.write('var markerData = [');
-
         for (var i = 0; i < data.length; i++) {
-
             if (data[i]["名稱"]) {
                 var label = data[i]["名稱"];
                 var lng = data[i]["經度"];
@@ -240,39 +368,102 @@ class googleMap {
                 var lat = data[i]["latitude"];
                 var remark = data[i]["descriptions"] == undefined ? "" : data[i]["descriptions"];
             }
-
             openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ',remark:"' + remark + '"},');
         }
-
         openGoogleMapWindow.document.write('];');
 
-        openGoogleMapWindow.document.write('var map; var marker = []; var infoWindow = []; var windowOpened;');
+        openGoogleMapWindow.document.write(`
+                var map;
+                var marker = [];
+                var infoWindow = [];
+                var windowOpened;
 
-        openGoogleMapWindow.document.write('function initMap() {var target = document.getElementById("map");');
-        openGoogleMapWindow.document.write('var latMax = lat_Max();var latMin = lat_Min();var lngMax = lng_Max();var lngMin = lng_Min();');
-        openGoogleMapWindow.document.write('map = new google.maps.Map(target, { center: { lat: latMax, lng: lngMin }, zoom: 10, }); setData(markerData);');
-        openGoogleMapWindow.document.write('var bounds = new google.maps.LatLngBounds({ lat: latMax, lng: lngMin }, { lat: latMin, lng: lngMax });');
-        openGoogleMapWindow.document.write('map.fitBounds(bounds);}');
+                function initMap() {
+                    var target = document.getElementById("map");
+                    var latMax = lat_Max();
+                    var latMin = lat_Min();
+                    var lngMax = lng_Max();
+                    var lngMin = lng_Min();
+                    var bounds = new google.maps.LatLngBounds(
+                        { lat: latMax, lng: lngMin },
+                        { lat: latMin, lng: lngMax }
+                    );
 
-        openGoogleMapWindow.document.write('function lat_Max() { var a = 0; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lat > a) a = markerData[i].lat; } return a; }');
-        openGoogleMapWindow.document.write('function lat_Min() { var b = 1000; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lat < b) b = markerData[i].lat; } return b; }');
-        openGoogleMapWindow.document.write('function lng_Max() { var c = 0; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lng > c) c = markerData[i].lng; } return c; }');
-        openGoogleMapWindow.document.write('function lng_Min() { var d = 1000; for (var i = 0; i < markerData.length; i++) { if (markerData[i].lng < d) d = markerData[i].lng; } return d; }');
+                    map = new google.maps.Map(target, {
+                        center: {
+                            lat: latMax,
+                            lng: lngMin
+                        },
+                        zoom: 16,
+                    });
+                    setData(markerData);
+                    map.fitBounds(bounds);
+                }
 
-        openGoogleMapWindow.document.write('function addMarker(i, lat, lng, label, remark) {');
-        openGoogleMapWindow.document.write('var markerLatLng = new google.maps.LatLng({lat: lat,lng: lng,});');
-        openGoogleMapWindow.document.write('marker[i] = new google.maps.Marker({position: markerLatLng,map: map});');
-        openGoogleMapWindow.document.write('const contentString = \'<h2>\' + label + \'</h2><p style="font-size:16px;font-weight:bold;">\' + remark + \'</p>\';');
-        openGoogleMapWindow.document.write('infoWindow[i] = new google.maps.InfoWindow({content: contentString});markerEvent(i);}');
+                function lat_Max() {
+                    var a = 0;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lat > a) a = markerData[i].lat;
+                    return a;
+                }
 
-        openGoogleMapWindow.document.write('function setData(markerData) {var sidebar_html = `座標清單：<br>`;');
-        openGoogleMapWindow.document.write('for (var i = 0; i < markerData.length; i++) {addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label, markerData[i].remark);');
-        openGoogleMapWindow.document.write(' var name = markerData[i]["label"];sidebar_html += `<b>${i + 1}.</b> <a href="javascript:openWindow(${i})">${name}<\/a><br />`;}');
-        openGoogleMapWindow.document.write('document.getElementById("sidebar").innerHTML = sidebar_html;}');
+                function lat_Min() {
+                    var b = 1000;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lat < b) b = markerData[i].lat;
+                    return b;
+                }
 
-        openGoogleMapWindow.document.write('function markerEvent(i) {marker[i].addListener("click", function () {if (windowOpened) {windowOpened.close();}infoWindow[i].open(map, marker[i]);windowOpened = infoWindow[i];});}');
-        openGoogleMapWindow.document.write('function openWindow(i) {if (windowOpened) {windowOpened.close();}infoWindow[i].open(map, marker[i]);windowOpened = infoWindow[i];}');
-        openGoogleMapWindow.document.write('</script></body></html>');
+                function lng_Max() {
+                    var c = 0;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lng > c) c = markerData[i].lng;
+                    return c;
+                }
+
+                function lng_Min() {
+                    var d = 1000;
+                    for (var i = 0; i < markerData.length; i++)
+                        if (markerData[i].lng < d) d = markerData[i].lng;
+                    return d;
+                }
+
+                function setData(markerData) {
+                    var sidebar_html = '座標清單：<br>';
+                    for (var i = 0; i < markerData.length; i++) {
+                        addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label, markerData[i].remark);
+                        var name = markerData[i]["label"];
+                        sidebar_html += '<b>' + (i + 1) + '.</b> <a href="javascript:openWindow(' + i + ')">' + name + '</a><br />';
+                    }
+                    document.getElementById("sidebar").innerHTML = sidebar_html;
+                }
+
+                function addMarker(i, lat, lng, label, remark) {
+                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
+                    marker[i] = new google.maps.Marker({ position: markerLatLng, map: map });
+                    const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;">' + remark + '</p>';
+                    infoWindow[i] = new google.maps.InfoWindow({ content: contentString }); markerEvent(i);
+                }
+
+                function markerEvent(i) {
+                    marker[i].addListener("click",
+                        function () {
+                            if (windowOpened) { windowOpened.close(); }
+                            infoWindow[i].open(map, marker[i]);
+                            windowOpened = infoWindow[i];
+                        }
+                    );
+                }
+
+                function openWindow(i) {
+                    if (windowOpened) { windowOpened.close(); }
+                    infoWindow[i].open(map, marker[i]);
+                    windowOpened = infoWindow[i];
+                }
+            </script>
+        </body>
+        </html>
+        `);
 
         openGoogleMapWindow.document.close();
     }

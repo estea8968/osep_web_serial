@@ -60573,5 +60573,7 @@ export default {
     "gui.extension.facemesh2scratch.description": "臉網辨識",
     "gui.extension.handpose2scratchblocks.description" : "手掌辨識",
     "gui.extension.WebSerialLinkit7697.description":"使用 Web Serial API 連接 LinkIt7697 與 Googel Chrome 瀏覽器",
+    "gui.extension.dataMining.title":"資料探勘",
+    "gui.extension.dataMining.description":"挖掘大量資料進行知識探索，並使用分析模型來評估與預測",
   }
 };
