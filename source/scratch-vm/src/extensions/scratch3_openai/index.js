@@ -148,7 +148,7 @@ class openai {
                         },
                         MAX_tokens:{
                             type: ArgumentType.NUMBER,
-                            defaultValue: 500
+                            defaultValue: 1000
                         }
                     },
                     text: msg.talktext[theLocale]
@@ -236,8 +236,7 @@ class openai {
 
     async talktext(args){
         const input_text = args.TEXT;
-        const max_tokens = Number(args.MAX_tokens);
-        console.log('max_tokens=',max_tokens);
+        const max_tokens = parseInt(args.MAX_tokens,10);
         if(this.api_key=='' || this.api_key=='api key'){
             return 'api_key is null';
         }
@@ -255,7 +254,6 @@ class openai {
               top_p:1.0,
               frequency_penalty:0.0,
               presence_penalty:0.6,
-              //stop: [" Human:", " AI:"],
               //stop:["\n"]
             });
             //await new Promise(resolve => setTimeout(resolve, wait_time));
