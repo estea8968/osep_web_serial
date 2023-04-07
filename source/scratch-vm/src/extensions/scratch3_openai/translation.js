@@ -4,8 +4,8 @@ export const openai_apikey = {
 };
 
 export const talktext = {
-    'en': 'ask OpenAI[TEXT]',
-    'zh-tw': 'AI會話訊息[TEXT]'
+    'en': 'ask OpenAI max tokens:[MAX_tokens],text:[TEXT] ',
+    'zh-tw': 'AI會話回覆最大字數[MAX_tokens],訊息:[TEXT],'
 };
 
 export const ananswer ={

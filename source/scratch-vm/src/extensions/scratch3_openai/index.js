@@ -146,6 +146,10 @@ class openai {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
                         },
+                        MAX_tokens:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 500
+                        }
                     },
                     text: msg.talktext[theLocale]
                 },
@@ -232,6 +236,8 @@ class openai {
 
     async talktext(args){
         const input_text = args.TEXT;
+        const max_tokens = Number(args.MAX_tokens);
+        console.log('max_tokens=',max_tokens);
         if(this.api_key=='' || this.api_key=='api key'){
             return 'api_key is null';
         }
@@ -245,10 +251,11 @@ class openai {
               model: "text-davinci-003",
               prompt: input_text,
               temperature:0,
-              max_tokens:1000,
+              max_tokens:max_tokens,
               top_p:1.0,
               frequency_penalty:0.0,
-              presence_penalty:0.0,
+              presence_penalty:0.6,
+              //stop: [" Human:", " AI:"],
               //stop:["\n"]
             });
             //await new Promise(resolve => setTimeout(resolve, wait_time));
