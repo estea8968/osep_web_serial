@@ -60535,6 +60535,7 @@ export default {
     "gui.extension.voicetotext.description": "語音轉文字 (限 Chrome 瀏覽器)",
     "gui.extension.urltxt.description": "訪問網站和取得文字檔內容",
     "gui.extension.rwgoogle.description": "讀寫 Google 試算表與寫入 Google 表單",
+    "gui.extension.rwgoogle.title":'讀寫 Google 試算表',
     "gui.extension.knnalgorithm.description": "Knn 影像辨識",
     "gui.extension.dht11.description": "DHT11 溫度感測器",
     "gui.extension.WebSerialArduino.description": "使用 Web Serial API 連接 Arduino 與 Googel Chrome 瀏覽器",

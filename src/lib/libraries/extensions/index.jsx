@@ -638,7 +638,13 @@ const extensions = [
   },
 
   {
-    name: "Google Sheets",
+    name:(
+      <FormattedMessage
+        defaultMessage="Google Sheets"
+        description="Google Sheets extension"
+        id="gui.extension.rwgoogle.title"
+      />
+    ),
     extensionId: "rwGoogle",
     collaborator: "estea chen, TYiC",
     iconURL: rwGoogleImage,
