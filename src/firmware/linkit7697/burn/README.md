@@ -1,3 +1,9 @@
+#OSEP LinkIt7697韌體燒錄
+####windows
+執行7697_burn.exe，選擇連接埠，後燒錄
+### Linux and macOS
+執行7697_burn，選擇連接埠，後燒錄
+
 # MT76x7 Uploader
 
 This tool provides the functionality to flash the bootloader and the firmware of the MT7687 and MT7697 platform, including firmwares for both CM4 and the N9 processors.

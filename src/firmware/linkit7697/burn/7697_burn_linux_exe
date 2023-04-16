@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /opt/s3-extend-tool
+python3 acepr.pyc
