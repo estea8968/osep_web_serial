@@ -60569,7 +60569,7 @@ export default {
     "gui.extension.TAIEX.title":"台股資訊",
     "gui.extension.stockInfo.description":"查詢台灣股票相關資訊",
     "gui.extension.googleMap.description":"使用經緯度坐標顯示地理位置【實驗性】",
-    "gui.extension.dataProcessing.title":"數位資料處理",
+    "gui.extension.dataProcessing.title":"數位資料表示與處理",
     "gui.extension.dataProcessing.description":"進制轉換與字串處理",
     "gui.extension.facemesh2scratch.description": "臉網辨識",
     "gui.extension.handpose2scratchblocks.description" : "手掌辨識",

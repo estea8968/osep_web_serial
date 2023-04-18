@@ -807,11 +807,24 @@ class Scratch3Linkit7697WebSerial {
         console.log(sendData);
         let serial_data = (await this.serialRead()).split(':');
         if (serial_data[0] == 'A' + pin) {
-            //ntc https://microcontrollerslab.com/thermistor-arduino-temperature-meter/
-            const analog_value = 1023- (Number(serial_data[1])/4)*0.8;
-            let Temp =  Math.log( ( ( 10240000 / analog_value ) - 10000 ) ) ;
-            Temp = 1 / ( 0.001129148 + ( 0.000234125 * Temp ) + ( 0.0000000876741 * Temp * Temp * Temp ) ) ;
-            Temp = (Temp - 273.15).toFixed(1) ;            // This will Convert Kelvin to Celcius
+
+            //ntc https://www.makdev.net/2021/11/arduino-analogread-model-func.html
+            
+            const analog_value =parseInt(serial_data[1],10)/4;
+            const THSourceVoltage =5.0;
+            const THRES=7500;
+            const RT0=10000;  // 常溫 25度時的 NTC 電阻值
+            const RT1=35563;  // 0度時的 NTC 電阻值
+            const RT2=596;    // 105度時的 NTC 電阻值
+            const T0=298.15; // 常溫 25度時的 Kelvin 值
+            const T1=273.15; // 0度時的 Kelvin 值
+            const T2=378.15; // 105度時的 Kelvin 值
+            let beta = (Math.log(RT1/RT2))/((1/T1)-(1/T2));
+            let Rx = RT0 * Math.exp(-beta/T0);
+            let VoltageOut = (THSourceVoltage * analog_value)/1023;
+            let ROut = THRES * VoltageOut/ (THSourceVoltage - VoltageOut); //目前 NTC 電阻值
+            const KelvinValue=(beta/Math.log(ROut/Rx));
+            const Temp =Math.round((KelvinValue - 273.15)*10)/10; //Kelvin 轉 溫度C
             console.log('temp=',Temp);
             return Temp;
         }
