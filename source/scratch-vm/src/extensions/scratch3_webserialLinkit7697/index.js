@@ -314,6 +314,19 @@ class Scratch3Linkit7697WebSerial {
                     }
                 },
                 {
+                    opcode: 'ntc_read',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormNtcRead[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'A0',
+                            menu: 'analog_pins'
+                        },
+                    }
+
+                },
+                {
                     opcode: 'sonar_read',
                     blockType: BlockType.REPORTER,
                     text: msg.FormSonarRead[the_locale],
@@ -331,6 +344,7 @@ class Scratch3Linkit7697WebSerial {
                         }
                     }
                 },
+                
                 /*
                 {
                     opcode: 'pms_read',
@@ -499,6 +513,10 @@ class Scratch3Linkit7697WebSerial {
                     acceptReporters: true,
                     items: ['input', 'output']
                 },
+                volt:{
+                    acceptReporters: true,
+                    items: ['5', '3.3']
+                },
                 rgb: {
                     acceptReporters: true,
                     items: msg.FormRGB[the_locale]
@@ -638,7 +656,9 @@ class Scratch3Linkit7697WebSerial {
             Linkitreader.releaseLock();
             return string[0];
         }catch (error) {
+            Linkitreader.releaseLock();
             console.log(error);
+            
         }// finally {
          //   reader.releaseLock();
         //}
@@ -778,7 +798,38 @@ class Scratch3Linkit7697WebSerial {
         }
 
     }
+    async ntc_read(args){
+        //送出pin並取回值
+        let pin = args['PIN'].substr(1, 2);
+        //pin = parseInt(pin, 10);
+        let sendData = 'analogRead#' + pin + '#';
+        this.serialSend(sendData);
+        console.log(sendData);
+        let serial_data = (await this.serialRead()).split(':');
+        if (serial_data[0] == 'A' + pin) {
 
+            //ntc https://www.makdev.net/2021/11/arduino-analogread-model-func.html
+            
+            const analog_value =parseInt(serial_data[1],10)/4;
+            const THSourceVoltage =5.0;
+            const THRES=7500;
+            const RT0=10000;  // 常溫 25度時的 NTC 電阻值
+            const RT1=35563;  // 0度時的 NTC 電阻值
+            const RT2=596;    // 105度時的 NTC 電阻值
+            const T0=298.15; // 常溫 25度時的 Kelvin 值
+            const T1=273.15; // 0度時的 Kelvin 值
+            const T2=378.15; // 105度時的 Kelvin 值
+            let beta = (Math.log(RT1/RT2))/((1/T1)-(1/T2));
+            let Rx = RT0 * Math.exp(-beta/T0);
+            let VoltageOut = (THSourceVoltage * analog_value)/1023;
+            let ROut = THRES * VoltageOut/ (THSourceVoltage - VoltageOut); //目前 NTC 電阻值
+            const KelvinValue=(beta/Math.log(ROut/Rx));
+            const Temp =Math.round((KelvinValue - 273.15)*10)/10; //Kelvin 轉 溫度C
+            console.log('temp=',Temp);
+            return Temp;
+        }
+
+    }
     async analog_read(args) {
         //送出pin並取回值
         let pin = args['PIN'].substr(1, 2);
@@ -857,6 +908,7 @@ class Scratch3Linkit7697WebSerial {
             return hc_return[1];
         }        
     }
+    
     //shu
     ws2812_set_pin(args) {
         ws2812_pin = args['PIN'].substring(0, 2);       

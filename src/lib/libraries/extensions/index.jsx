@@ -55,6 +55,9 @@ import stockInfoInsetIconURL from "./stockInfo/stockInfo-small.png";
 import googleMapImage from "./googleMap/googleMap.png";
 import googleMapInsetIconURL from "./googleMap/googleMap-small.png";
 
+import dataMiningImage from "./dataMining/dataMining.png";
+import dataMiningInsetIconURL from "./dataMining/dataMining-small.png";
+
 import dataProcessingImage from "./dataProcessing/dataProcessing.png";
 import dataProcessingInsetIconURL from "./dataProcessing/dataProcessing-small.png";
 
@@ -86,8 +89,6 @@ import webserialEsp32InsetIconURL from "./webserialEsp32/webserialEsp-small.png"
 
 import webserialPicoboardImage from "./webserialPicoboard/webserialPicoboard.png";
 import webserialPicoboardInsetIconURL from "./webserialPicoboard/webserialPicoboard-small.png";
-import webserialLinkit7697Image from "./webserialLinkit7697/webserialLinkit7697.png";
-import webserialLinkit7697InsetIconURL from "./webserialLinkit7697/webserialLinkit7697-small.png";
 
 import mqttImage from "./mqtt/mqtt.png";
 import mqttInsetIconURL from "./mqtt/mqtt-small.png";
@@ -114,6 +115,8 @@ import microbitMoreIconURL from "./microbitMore/entry-icon.png";
 import microbitMoreInsetIconURL from "./microbitMore/inset-icon.svg";
 import microbitMoreConnectionIconURL from "./microbitMore/connection-icon.svg";
 import microbitMoreConnectionSmallIconURL from "./microbitMore/connection-small-icon.svg";
+import webserialLinkit7697Image from "./webserialLinkit7697/webserialLinkit7697.png";
+import webserialLinkit7697InsetIconURL from "./webserialLinkit7697/webserialLinkit7697-small.png";
 import openaiImage from "./openai/openai.png";
 import openaiInsetIconURL from "./openai/openai-small.svg";
 
@@ -483,6 +486,31 @@ const extensions = [
   {
     name:(
       <FormattedMessage
+        defaultMessage="Data Mining"
+        description="Data Mining extension"
+        id="gui.extension.dataMining.title"
+      />
+    ),
+    extensionId: "dataMining",
+    collaborator: "TYiC",
+    iconURL: dataMiningImage,
+    insetIconURL: dataMiningInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Mining a large amount of data for knowledge exploration and using analytical models to evaluate and predict."
+        description="Mining a large amount of data for knowledge exploration and using analytical models to evaluate and predict."
+        id="gui.extension.dataMining.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+    helpLink: "https://github.com/estea8968/scratch3-internet",
+  },
+  {
+    name:(
+      <FormattedMessage
         defaultMessage="Data Processing"
         description="Data Processing extension"
         id="gui.extension.dataProcessing.title"
@@ -612,7 +640,13 @@ const extensions = [
   },
 
   {
-    name: "Google Sheets",
+    name:(
+      <FormattedMessage
+        defaultMessage="Google Sheets"
+        description="Google Sheets extension"
+        id="gui.extension.rwgoogle.title"
+      />
+    ),
     extensionId: "rwGoogle",
     collaborator: "estea chen, TYiC",
     iconURL: rwGoogleImage,

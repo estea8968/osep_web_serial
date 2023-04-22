@@ -60535,6 +60535,7 @@ export default {
     "gui.extension.voicetotext.description": "語音轉文字 (限 Chrome 瀏覽器)",
     "gui.extension.urltxt.description": "訪問網站和取得文字檔內容",
     "gui.extension.rwgoogle.description": "讀寫 Google 試算表與寫入 Google 表單",
+    "gui.extension.rwgoogle.title":'讀寫 Google 試算表',
     "gui.extension.knnalgorithm.description": "Knn 影像辨識",
     "gui.extension.dht11.description": "DHT11 溫度感測器",
     "gui.extension.WebSerialArduino.description": "使用 Web Serial API 連接 Arduino 與 Googel Chrome 瀏覽器",
@@ -60568,9 +60569,12 @@ export default {
     "gui.extension.TAIEX.title":"台股資訊",
     "gui.extension.stockInfo.description":"查詢台灣股票相關資訊",
     "gui.extension.googleMap.description":"使用經緯度坐標顯示地理位置【實驗性】",
-    "gui.extension.dataProcessing.title":"數位資料處理",
+    "gui.extension.dataProcessing.title":"數位資料表示與處理",
     "gui.extension.dataProcessing.description":"進制轉換與字串處理",
     "gui.extension.facemesh2scratch.description": "臉網辨識",
     "gui.extension.handpose2scratchblocks.description" : "手掌辨識",
+    "gui.extension.WebSerialLinkit7697.description":"使用 Web Serial API 連接 LinkIt7697 與 Googel Chrome 瀏覽器",
+    "gui.extension.dataMining.title":"資料探勘",
+    "gui.extension.dataMining.description":"挖掘大量資料進行知識探索，並使用分析模型來評估與預測",
   }
 };

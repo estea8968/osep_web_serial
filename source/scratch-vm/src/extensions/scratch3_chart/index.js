@@ -784,7 +784,7 @@ class chart {
                             },
                             ticks: { font: { size: 14 } },
                             type: 'time',
-                            time: { displayFormats: { day: 'MM-dd' } },
+                            time: { unit: 'day', displayFormats: { day: 'MM-dd' } },
                             min: '${this.startDate}',
                             max: '${this.endDate}',
                         },

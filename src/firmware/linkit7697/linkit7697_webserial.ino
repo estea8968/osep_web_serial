@@ -1,8 +1,9 @@
 /*
- * 更新日期112/03/30 estea chen
+ * 更新日期112/04/03 estea chen
  * 
  */
 #include <Servo.h>
+#include <math.h> //包含數學庫
 #include <DHTStable.h>
 #include <Wire.h>  // I2C程式庫
 #include <LiquidCrystal_I2C.h>  // LCD_I2C模組程式庫
@@ -10,7 +11,7 @@
 
 LiquidCrystal_I2C lcd(0x27);  //0x3F  0x27
 //版本號
-char* version="1120330";
+char* version="1120403";
 Servo myservo;  // create servo object to control a servo
 DHTStable DHT;
 
@@ -123,7 +124,7 @@ void loop()
          pinMode(atoi(inputPin),OUTPUT);
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
-
+     
     //dht11    
     if(strcmp(commandString, "dht11Read") == 0){
       int chk;
