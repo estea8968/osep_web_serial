@@ -14,8 +14,10 @@
 #include <HX711.h>
 //PMS5003T
 #include <SoftwareSerial.h>
+//ntc
+#include "thermistor.h"
 //版本號
-char* version="1120329";
+char* version="1120420";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
@@ -53,6 +55,7 @@ char* serialString()
   str[count]='\0'; // make it a zero terminated string
   return str;
 }
+
 
 void setup() {
   Serial.begin(115200);
@@ -124,7 +127,7 @@ void loop()
           }
         }
       }
-      
+    
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
       //bool isloop = true;
@@ -140,6 +143,21 @@ void loop()
         Serial.println(Humidity);
         //isloop = false;
       
+    }
+    //ntc
+    if(strcmp(commandString, "ntc") == 0){
+      
+      THERMISTOR thermistor(atoi(inputPin),        // Analog pin
+                      10000,          // Nominal resistance at 25 ºC
+                      3950,           // thermistor's beta coefficient
+                      10000);         // Value of the series resistor
+
+      // Global temperature reading
+      uint16_t temp;
+      Serial.print("N");
+      Serial.print(inputPin);
+      Serial.print(":");      
+      Serial.println(thermistor.read());
     }
 
     //lcd
