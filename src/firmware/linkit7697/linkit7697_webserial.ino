@@ -1,5 +1,5 @@
 /*
- * 更新日期112/04/03 estea chen
+ * 更新日期112/04/26 estea chen
  * 
  */
 #include <Servo.h>
@@ -11,7 +11,7 @@
 
 LiquidCrystal_I2C lcd(0x27);  //0x3F  0x27
 //版本號
-char* version="1120403";
+char* version="1120426";
 Servo myservo;  // create servo object to control a servo
 DHTStable DHT;
 
@@ -43,9 +43,6 @@ void setup() {
   lcd.begin(16, 2); ;
   lcd.backlight();
 }
-
-
-
 void loop() 
 {
   static boolean needPrompt=true;
@@ -55,8 +52,9 @@ void loop()
     //Serial.print("Please enter inputs and press enter at the end:\n");
     needPrompt=false;
   }
-  inputData= serialString();
 
+  inputData= serialString();
+  
   if (inputData!=NULL)
   {
     //取出命令、腳位、值、時間
@@ -104,6 +102,26 @@ void loop()
         Serial.println(analogRead(A3));  
       }
     }
+    //ntc
+    if(strcmp(commandString, "ntc") == 0){
+      int pin = atoi(inputPin);
+      int analog_sum=0;
+      for(int i=1;i<10;i++){
+        if(pin==0){
+          analog_sum += analogRead(A0);
+        }else if(pin==1){
+          analog_sum += analogRead(A1);  
+        }else if(pin==2){
+          analog_sum += analogRead(A2);   
+        }else if(pin==3){
+          analog_sum += analogRead(A3);  
+        }
+        delay(10);
+      }
+      analog_sum = (int)analog_sum/10;
+      Serial.print("N:");
+      Serial.println(analog_sum);
+    }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
       int pin = atoi(inputPin);
@@ -124,7 +142,7 @@ void loop()
          pinMode(atoi(inputPin),OUTPUT);
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
-     
+    
     //dht11    
     if(strcmp(commandString, "dht11Read") == 0){
       int chk;

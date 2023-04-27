@@ -210,11 +210,15 @@ export const Max7219_matrix ={
 export const hx711_set = {
     'en': "hx711 zero-setting, DAT pin:[DAT] SCK pin:[SCK]",
     'zh-tw': "hx711歸零,DAT腳位:[DAT] SCK腳位:[SCK]",
-}
+};
 export const hx711 = {
     'en': "hx711 value",//, DAT pin:[DAT] SCK pin:[SCK]",
     'zh-tw': "hx711值,",//DAT腳位:[DAT] SCK腳位:[SCK]",
-}
+};
+export const FormNtcRead = {
+    'en': 'NTC temperature pin [PIN] ',
+    'zh-tw': 'NTC溫度 在腳位 [PIN]',
+};
 export const FirmwareVersion ={
     'en': "firmware version",
     'zh-tw':"韌體版本",

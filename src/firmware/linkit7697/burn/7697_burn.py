@@ -170,7 +170,6 @@ class App(QWidget):
         else :
             subprocess.call(exe_b_7697 + def_port,shell = True)
 
-
     #def listviewA_clicked(listviewA,qModelIndex):
     def listviewA_clicked(self,qModelIndex):
         #提示信息窗，你選擇的訊息

@@ -323,6 +323,21 @@ class Scratch3Linkit7697WebSerial {
                             defaultValue: 'A0',
                             menu: 'analog_pins'
                         },
+                        OM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '10000',
+                            menu: 'om'
+                        },
+                        TYPE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '+',
+                            menu: 'ab'
+                        },
+                        VOLTE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '3.3',
+                            menu: 'volt'
+                        }
                     }
 
                 },
@@ -529,7 +544,15 @@ class Scratch3Linkit7697WebSerial {
                     acceptReporters: true,
                     items:msg.pmsItems[the_locale]
                     //items: ['PM1.0', 'PM2.5', 'PM10.0','Temperature','Humidity']
-                }
+                },
+                om:{
+                    acceptReporters: true,
+                    items: ['100000', '5000']
+                },
+                ab:{
+                    acceptReporters: true,
+                    items: ['+', '-']
+                },
             }
         };
     }
@@ -801,34 +824,33 @@ class Scratch3Linkit7697WebSerial {
     async ntc_read(args){
         //送出pin並取回值
         let pin = args['PIN'].substr(1, 2);
+        const Rs = parseInt(args.OM,10);
+        console.log('om=',Rs);
+        const type = args.TYPE;
+        console.log('type=',type);
+        const Vcc = parseFloat(args.VOLTE);
+        console.log('volte=',Vcc);
         //pin = parseInt(pin, 10);
-        let sendData = 'analogRead#' + pin + '#';
+        let sendData = 'ntc#' + pin + '#';
         this.serialSend(sendData);
         console.log(sendData);
         let serial_data = (await this.serialRead()).split(':');
-        if (serial_data[0] == 'A' + pin) {
-
-            //ntc https://www.makdev.net/2021/11/arduino-analogread-model-func.html
-            
-            const analog_value =parseInt(serial_data[1],10)/4;
-            const THSourceVoltage =5.0;
-            const THRES=7500;
-            const RT0=10000;  // 常溫 25度時的 NTC 電阻值
-            const RT1=35563;  // 0度時的 NTC 電阻值
-            const RT2=596;    // 105度時的 NTC 電阻值
-            const T0=298.15; // 常溫 25度時的 Kelvin 值
-            const T1=273.15; // 0度時的 Kelvin 值
-            const T2=378.15; // 105度時的 Kelvin 值
-            let beta = (Math.log(RT1/RT2))/((1/T1)-(1/T2));
-            let Rx = RT0 * Math.exp(-beta/T0);
-            let VoltageOut = (THSourceVoltage * analog_value)/1023;
-            let ROut = THRES * VoltageOut/ (THSourceVoltage - VoltageOut); //目前 NTC 電阻值
-            const KelvinValue=(beta/Math.log(ROut/Rx));
-            const Temp =Math.round((KelvinValue - 273.15)*10)/10; //Kelvin 轉 溫度C
+        let analog_value = parseInt(serial_data[1],10);
+        if (serial_data[0] == 'N') {
+            if(type==='+'){
+                analog_value = 4095-analog_value;    
+            }
+            console.log('analog_value=',analog_value);
+            //const Rs = 5000;   //電阻
+            //const Vcc = 5.0;    //電壓
+            const V_NTC =analog_value / 1024;
+            let R_NTC =(Rs * V_NTC)/(Vcc-V_NTC); 
+            R_NTC = Math.log(R_NTC); 
+            let Temp = 1 /(0.001129148 +(0.000234125 +(0.0000000876741 * R_NTC * R_NTC))* R_NTC); 
+            Temp= Math.round((Temp - 273.15)*10)/10;   //取小數第1位
             console.log('temp=',Temp);
             return Temp;
         }
-
     }
     async analog_read(args) {
         //送出pin並取回值
@@ -981,7 +1003,7 @@ class Scratch3Linkit7697WebSerial {
     /*max7219_show (args){
         const devices = args['DEVICES'];
         const  cs_pin = args['CS_PIN'];
-        const data_pin = args['DATA_PIN'];
+        const data_pin = args['DdevicesATA_PIN'];
         const clk_pin = args['CLK_PIN'];
         const text = args['TEXT'];
         const sendData = 'max#' +data_pin+','+ clk_pin+','+ cs_pin+','+devices + '#'+text+'#';
@@ -998,7 +1020,7 @@ class Scratch3Linkit7697WebSerial {
         switch (hextext) {
             case 'o':
                 hextext=max7219_img.o;
-                console.log(max7219_img.o)
+                console.log(max7219_img.o);
                 break;
             case 'x':
                 hextext=max7219_img.x;

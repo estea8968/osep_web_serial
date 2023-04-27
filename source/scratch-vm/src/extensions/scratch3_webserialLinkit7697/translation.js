@@ -80,8 +80,8 @@ export const FormDigitalRead = {
 };
 
 export const FormNtcRead = {
-    'en': 'NTC temperature 3.3V pin [PIN] ',
-    'zh-tw': 'NTC溫度3.3V 在腳位 [PIN]',
+    'en': 'NTC temperature volte[VOLTE] om[OM] tyep[TYPE] pin [PIN] ',
+    'zh-tw': 'NTC溫度電壓[VOLTE]電阻[OM]型態[TYPE] 在腳位 [PIN]',
 };
 //dht11
 export const FormDht11Read = {
