@@ -528,6 +528,19 @@ class Scratch3ArduinoWebSerial {
                         }
                     }*/
                 },
+                /*{
+                    opcode: 'ntc_read',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormNtcRead[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'A0',
+                            menu: 'analog_pins'
+                        },
+                    }
+
+                },*/
                 {
                     opcode: 'firmwareversion',
                     blockType: BlockType.REPORTER,
@@ -1108,6 +1121,40 @@ class Scratch3ArduinoWebSerial {
         }
     }
 
+    async ntc_read(args){
+        //送出pin並取回值
+        let pin = args['PIN'].substr(1, 2);
+        //pin = parseInt(pin, 10);
+        //let sendData = 'analogRead#' + pin + '#';
+        let sendData = 'ntc#' + pin + '#';
+        this.serialSend(sendData);
+        console.log(sendData);
+        let serial_data = (await this.serialRead()).split(':');
+        console.log('ntc--=',serial_data);
+        if (serial_data[0] == 'N' + pin) {
+            //ntc https://www.makdev.net/2021/11/arduino-analogread-model-func.html
+            const Temp =parseInt(serial_data[1],10)/100;
+            //float tempF = 1.8 * tempC + 32.0;
+
+            /*const THSourceVoltage =5.0;
+            const THRES=10000;
+            const RT0=10000;  // 常溫 25度時的 NTC 電阻值
+            const RT1=35563;  // 0度時的 NTC 電阻值
+            const RT2=596;    // 105度時的 NTC 電阻值
+            const T0=298.15; // 常溫 25度時的 Kelvin 值
+            const T1=273.15; // 0度時的 Kelvin 值
+            const T2=373.15; // 100度時的 Kelvin 值
+            let beta = (Math.log(RT1/RT2))/((1/T1)-(1/T2));
+            let Rx = RT0 * Math.exp(-beta/T0);
+            let VoltageOut = (THSourceVoltage * analog_value)/1023;
+            let ROut = THRES * VoltageOut/ (THSourceVoltage - VoltageOut); //目前 NTC 電阻值
+            const KelvinValue=(beta/Math.log(ROut/Rx));
+            const Temp =Math.round((KelvinValue - 273.15)*10)/10; //Kelvin 轉 溫度C*/
+            console.log('temp=',Temp);
+            return Temp;
+        }
+
+    }
     async listener(){
         navigator.serial.addEventListener('disconnect', (event) => {
             port = null;
