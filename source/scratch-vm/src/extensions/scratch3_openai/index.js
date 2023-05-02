@@ -84,6 +84,9 @@ class openai {
         this.runtime = runtime;
         this.api_key ='';
         this.ai_answer = '';
+        this.system35='';
+        this.assistant35='';
+        this.question35='';
         this.image_size_ary=['1024x1024','512x512','256x256'];
         //this.runtime.registerPeripheralExtension('openai', this);
     }
@@ -153,6 +156,41 @@ class openai {
                     },
                     text: msg.talktext[theLocale]
                 },
+                '---',
+                {
+                    opcode: 'set_system35',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        SYSTEM: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                    },
+                    text: msg.set_system35[theLocale]
+                },
+                {
+                    opcode: 'set_assistant35',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ASSISTANT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                    },
+                    text: msg.set_assistant35[theLocale]
+                },
+                {
+                    opcode: 'do_question35',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        QUESTION:{
+                            type: ArgumentType.STRING,
+                            defaultValue: ' '
+                        },
+                    },
+                    text: msg.set_question35[theLocale]
+                },
+                '---',
                 {
                     opcode: 'aianswer',
                     blockType: BlockType.REPORTER,
@@ -238,8 +276,9 @@ class openai {
         const input_text = args.TEXT;
         const max_tokens = parseInt(args.MAX_tokens,10);
         if(this.api_key=='' || this.api_key=='api key'){
-            return 'api_key is null';
-        }
+            this.ai_answer= 'api_key is null';
+            return this.ai_answer;
+        }else{
         const configuration = new Configuration({
             apiKey: this.api_key,
             //apiKey: process.env.OPENAI_API_KEY,
@@ -249,7 +288,7 @@ class openai {
             const completion = await openai_talk.createCompletion({
               model: "text-davinci-003",
               prompt: input_text,
-              temperature:0,
+              temperature:0.5,
               max_tokens:max_tokens,
               top_p:1.0,
               frequency_penalty:0.0,
@@ -258,7 +297,6 @@ class openai {
             });
             //await new Promise(resolve => setTimeout(resolve, wait_time));
             this.ai_answer = completion.data.choices[0].text;
-
             console.log('return text=',completion.data.choices[0].text);
           } catch (error) {
             if (error.response) {                
@@ -270,10 +308,60 @@ class openai {
               console.log(error.message);
             }
           }
+        }
     }
+
+    set_system35(args){
+        this.system35 = args.SYSTEM;
+    }
+
+    set_assistant35(args){
+        this.assistant35 = args.ASSISTANT;
+    }
+
+    async do_question35(args){
+        this.question35 = args.QUESTION;
+        if(this.api_key=='' || this.api_key=='api key' || this.system35==''||this.assistant35==''||this.question35==''){
+            this.ai_answer= msg.error_ai35[theLocale];//'api_key system assistant user can not empty';
+        }else{
+        const configuration = new Configuration({
+            apiKey: this.api_key,
+            //apiKey: process.env.OPENAI_API_KEY,
+          });
+        //gpt 3.5 turbo
+        // Using GPT-3.5-Turbo
+        const openai = new OpenAIApi(configuration);
+        //const model = “gpt-3.5-turbo”;
+        const model = "gpt-3.5-turbo";
+        const tokens = 1024;
+        //const TurboGPT = async (prompt) => {
+        try {
+        const completion = await openai.createChatCompletion({
+        model: model,
+        messages: [
+        { role: "system", content: this.system35 },
+        { role: "assistant", content: this.assistant35 },
+        { role: "user", content: this.question35 },
+        ],
+        temperature: 0.5,
+        max_tokens: tokens,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        n: 1,
+        stop: "",
+        });
+        this.ai_answer = completion.data.choices[0].message.content;
+        } catch (error) {
+            console.error(error); 
+        };
+        }
+    }
+
     aianswer(){
         return this.ai_answer;
     }
+
     copyTEXT_memory(args){
         const copy_text = args.TEXT;
         navigator.clipboard.writeText(copy_text).then(function() {
