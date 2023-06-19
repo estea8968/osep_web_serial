@@ -54,12 +54,12 @@ let firmware_ver ='';
 // this is common to all board types since it contains enough
 // entries for all the boards.
 // Modes are listed above - initialize to invalid mode of -1
-let pin_modes = new Array(30).fill(-1);
+//let pin_modes = new Array(30).fill(-1);
 
 // has an websocket message already been received
-let alerted = false;
+//let alerted = false;
 
-let connection_pending = false;
+////let connection_pending = false;
 //def freq array
 let freq_ary=[];
 for(var i=24;i<96;i++){
@@ -74,7 +74,7 @@ for(var i=24;i<96;i++){
 let sonar_report_pin = -1;
 
 //estea flag to indicate if the user connected to a board
-let connected = true;
+let connected = false;
 
 // arrays to hold input values
 let digital_inputs = new Array(32);
@@ -82,10 +82,10 @@ let analog_inputs = new Array(8);
 
 // flag to indicate if a websocket connect was
 // ever attempted.
-let connect_attempt = false;
+//let connect_attempt = false;
 
 // an array to buffer operations until socket is opened
-let wait_open = [];
+//let wait_open = [];
 
 let the_locale = null;
 //pms5003
@@ -121,6 +121,12 @@ class Scratch3ArduinoWebSerial {
             name: 'Webserial Arduino',
             blockIconURI: 'data:image/png;base64,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',
             blocks: [
+                {
+                    opcode: 'iscontent',
+                    blockType: BlockType.REPORTER,
+                    text: msg.isContent[the_locale]
+
+                },
                 {
                     opcode: 'content_port',
                     blockType: BlockType.COMMAND,
@@ -610,7 +616,15 @@ class Scratch3ArduinoWebSerial {
     }
 
     // command blocks
-      
+    iscontent(){
+        if(connected == true){
+            return msg.connectionTrue[the_locale];
+        }else {
+            return msg.disconnectionFalse[the_locale];
+        }
+        
+        //return connected;
+    }  
     //pwm
     async pwm_write(args) {
         let pin = args['PIN'];
@@ -708,6 +722,7 @@ class Scratch3ArduinoWebSerial {
             /*port = await navigator.bluetooth.requestDevice({acceptAllDevices: true,
                 optionalServices: ['battery_service']  });*/
             await port.open({ baudRate: 115200 });
+            connected = true;
             console.log('port:', port);
         }
         this.listener();
@@ -1158,7 +1173,9 @@ class Scratch3ArduinoWebSerial {
     async listener(){
         navigator.serial.addEventListener('disconnect', (event) => {
             port = null;
-            alert(msg.FormDisconnect[the_locale]);
+            connected = false;
+            console.log('disconnect斷線了');
+            //alert(msg.FormDisconnect[the_locale]);
         // TODO: Remove |event.target| from the UI.
         // If the serial port was opened, a stream error would be observed as well.
        });

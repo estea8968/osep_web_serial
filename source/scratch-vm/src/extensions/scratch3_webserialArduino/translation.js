@@ -223,3 +223,18 @@ export const FirmwareVersion ={
     'en': "firmware version",
     'zh-tw':"韌體版本",
 };
+
+export const isContent ={
+    'en': "is contented",
+    'zh-tw':"連線否",
+};
+
+export const connectionTrue ={
+    'en': "contented",
+    'zh-tw':"連線",
+};
+
+export const disconnectionFalse ={
+    'en': "discontented",
+    'zh-tw':"斷線",
+};

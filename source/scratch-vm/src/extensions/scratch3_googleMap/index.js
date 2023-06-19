@@ -8,7 +8,7 @@ const blockIconURI = null;
 
 const defaultId = 'default';
 let theLocale = null;
-const GOOGLE_MAP_API_KEY = "AIzaSyDuGsDZbA_qhW_994yBcxGTwh7QssOqGEw";
+const GOOGLE_MAP_API_KEY = "AIzaSyDQyvBdtQG4wBygmCMLjNhniJXd55PXLyA";
 
 class googleMap {
     constructor(runtime) {
