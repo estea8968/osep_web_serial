@@ -7,7 +7,8 @@ const menuIconURI = null;
 const blockIconURI = null;
 
 const LASS_URI = 'https://pm25.lass-net.org/data/last.php?device_id=';
-const AQI_URI = 'https://data.epa.gov.tw/api/v2/aqx_p_432?api_key=e8dd42e6-9b8b-43f8-991e-b3dee723a52d&limit=1000&sort=ImportDate desc&format=json';
+//const AQI_URI = 'https://data.epa.gov.tw/api/v2/aqx_p_432?api_key=e8dd42e6-9b8b-43f8-991e-b3dee723a52d&limit=1000&sort=ImportDate desc&format=json';
+const AQI_URI = 'https://data.moenv.gov.tw/api/v2/aqx_p_432?api_key=e8dd42e6-9b8b-43f8-991e-b3dee723a52d&limit=1000&sort=ImportDate%20desc&format=json';
 
 let theLocale = null;
 
