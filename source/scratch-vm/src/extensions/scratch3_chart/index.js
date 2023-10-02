@@ -125,6 +125,26 @@ class chart {
                 },
                 '---',
                 {
+                    opcode: 'showChart2',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        n: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '2',
+                        },
+                        data: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'data',
+                        },
+                        chart: {
+                            type: ArgumentType.STRING,
+                            menu: 'chartSelectField',
+                            defaultValue: '1',
+                        },
+                    },
+                    text: msg.showChart2[theLocale]
+                },
+                {
                     opcode: 'showChart',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -236,14 +256,35 @@ class chart {
             this.showRadarChart();
     }
 
-    showLineChart() {
+    showChart2(args) {
+        var n = args.n;
+        var chart = args.chart;
+        this.chartData = args.data;
+
+        if (chart == "1")
+            this.showLineChart(n);
+        if (chart == "2")
+            this.showBarChart(n);
+        if (chart == "3")
+            this.showPieChart(n);
+        if (chart == "4")
+            this.showDoughnutChart(n);
+        if (chart == "5")
+            this.showRadarChart(n);
+    }
+
+    showLineChart(n = 1) {
         var dataSet = JSON.parse(this.chartData);
         var keys = Object.keys(dataSet[0]);
+        var keysLenght = keys.length;
         var dataLength = dataSet.length;
         var column = [];
 
+        if (n > keysLenght - 1)
+            return alert("超出試算表的欄位範圍");
+
         for (var i = 0; i < dataLength; i++)
-            column.push(dataSet[i][keys[0]]);
+            column.push(dataSet[i][keys[n - 1]]);
 
         var width = screen.width / 2;
         var height = screen.height / 2;
@@ -266,7 +307,7 @@ class chart {
         openWindow.document.write(`];`);
 
         openWindow.document.write(`var data = { labels:labels, datasets:[`);
-        for (var i = 1; i < keys.length; i++) {
+        for (var i = n; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
@@ -335,14 +376,18 @@ class chart {
         openWindow.document.close();
     }
 
-    showBarChart() {
+    showBarChart(n = 1) {
         var dataSet = JSON.parse(this.chartData);
         var keys = Object.keys(dataSet[0]);
+        var keysLenght = keys.length;
         var dataLength = dataSet.length;
         var column = [];
 
+        if (n > keysLenght)
+            return alert("超出試算表的欄位範圍");
+
         for (var i = 0; i < dataLength; i++)
-            column.push(dataSet[i][keys[0]]);
+            column.push(dataSet[i][keys[n - 1]]);
 
         var width = screen.width / 2;
         var height = screen.height / 2;
@@ -365,7 +410,7 @@ class chart {
         openWindow.document.write(`];`);
 
         openWindow.document.write(`var data = { labels:labels, datasets:[`);
-        for (var i = 1; i < keys.length; i++) {
+        for (var i = n; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
@@ -434,14 +479,18 @@ class chart {
         openWindow.document.close();
     }
 
-    showPieChart() {
+    showPieChart(n = 1) {
         var dataSet = JSON.parse(this.chartData);
         var keys = Object.keys(dataSet[0]);
+        var keysLenght = keys.length;
         var dataLength = dataSet.length;
         var column = [];
 
+        if (n > keysLenght)
+            return alert("超出試算表的欄位範圍");
+
         for (var i = 0; i < dataLength; i++)
-            column.push(dataSet[i][keys[0]]);
+            column.push(dataSet[i][keys[n - 1]]);
 
         var width = screen.width / 2;
         var height = screen.height;
@@ -468,7 +517,7 @@ class chart {
         openWindow.document.write(`];`);
 
         openWindow.document.write(`var data = { labels:label, datasets:[`);
-        for (var i = 1; i < keys.length; i++) {
+        for (var i = n; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
@@ -516,14 +565,18 @@ class chart {
         openWindow.document.close();
     }
 
-    showDoughnutChart() {
+    showDoughnutChart(n = 1) {
         var dataSet = JSON.parse(this.chartData);
         var keys = Object.keys(dataSet[0]);
+        var keysLenght = keys.length;
         var dataLength = dataSet.length;
         var column = [];
 
+        if (n > keysLenght)
+            return alert("超出試算表的欄位範圍");
+
         for (var i = 0; i < dataLength; i++)
-            column.push(dataSet[i][keys[0]]);
+            column.push(dataSet[i][keys[n - 1]]);
 
         var width = screen.width / 2;
         var height = screen.height;
@@ -551,7 +604,7 @@ class chart {
         openWindow.document.write(`];`);
 
         openWindow.document.write(`var data = { labels:label, datasets:[`);
-        for (var i = 1; i < keys.length; i++) {
+        for (var i = n; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)
@@ -597,14 +650,18 @@ class chart {
         openWindow.document.close();
     }
 
-    showRadarChart() {
+    showRadarChart(n = 1) {
         var dataSet = JSON.parse(this.chartData);
         var keys = Object.keys(dataSet[0]);
+        var keysLenght = keys.length;
         var dataLength = dataSet.length;
         var column = [];
 
+        if (n > keysLenght)
+            return alert("超出試算表的欄位範圍");
+
         for (var i = 0; i < dataLength; i++)
-            column.push(dataSet[i][keys[0]]);
+            column.push(dataSet[i][keys[n - 1]]);
 
         var width = screen.width / 2;
         var height = screen.height;
@@ -627,7 +684,7 @@ class chart {
         openWindow.document.write(`];`);
 
         openWindow.document.write(`var data = { labels:label, datasets:[`);
-        for (var i = 1; i < keys.length; i++) {
+        for (var i = n; i < keys.length; i++) {
             var label = keys[i];
             var data = [];
             for (var j = 0; j < dataLength; j++)

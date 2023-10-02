@@ -26,6 +26,10 @@ class googleMap {
 
         this.recordCoordinate = [];
 
+        this.name = "location";
+        this.longitude = "longitude";
+        this.latitude = "latitude";
+        this.note = "descriptions";
     }
 
     onclose() {
@@ -118,6 +122,29 @@ class googleMap {
                 },
                 '---',
                 {
+                    opcode: 'setFieldNames',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        name: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.name[theLocale]
+                        },
+                        longitude: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.longitude[theLocale]
+                        },
+                        latitude: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.latitude[theLocale]
+                        },
+                        note: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.note[theLocale]
+                        },
+                    },
+                    text: msg.setFieldNames[theLocale]
+                },
+                {
                     opcode: 'recordMarker2',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -156,7 +183,7 @@ class googleMap {
     showMarker(args) {
         var width = screen.width / 2;
         var height = screen.height / 2;
-        var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+        var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
 
         openGoogleMapWindow.document.write(`
         <head>
@@ -307,6 +334,13 @@ class googleMap {
         this.recordCoordinate = [];
     }
 
+    setFieldNames(args){
+        this.name = args.name;
+        this.longitude = args.longitude;
+        this.latitude = args.latitude;
+        this.note = args.note;
+    }
+
     recordMarker2(args) {
         var data = JSON.parse(args.data);
 
@@ -362,11 +396,12 @@ class googleMap {
                 var lat = data[i]["緯度"];
                 var remark = data[i]["備註"] == undefined ? "" : data[i]["備註"];
             }
-            if (data[i]["location"]) {
-                var label = data[i]["location"];
-                var lng = data[i]["longitude"];
-                var lat = data[i]["latitude"];
-                var remark = data[i]["descriptions"] == undefined ? "" : data[i]["descriptions"];
+            
+            if (data[i][this.name]) {
+                var label = data[i][this.name];
+                var lng = data[i][this.longitude];
+                var lat = data[i][this.latitude];
+                var remark = data[i][this.note] == undefined ? "" : data[i][this.note];
             }
             openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ',remark:"' + remark + '"},');
         }
