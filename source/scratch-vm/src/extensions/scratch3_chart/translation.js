@@ -33,6 +33,11 @@ export const showChart = {
     'zh-tw': '讀取資料[data]顯示[chart]'
 };
 
+export const showChart2 = {
+    'en': 'read data [data] from column [n] show [chart]',
+    'zh-tw': '從第[n]欄讀取資料[data]顯示[chart]'
+};
+
 export const lineChart = {
     'en': 'line chart ',
     'zh-tw': '折線圖'
