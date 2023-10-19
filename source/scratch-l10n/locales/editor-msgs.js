@@ -60548,6 +60548,7 @@ export default {
     "gui.extension.tm2scratchblocks.description": "圖像與聲音辨識",
     "gui.menuBar.burnFirmware_a":"燒錄Arduino",
     "gui.menuBar.burnFirmware_e":"燒錄ESP",
+    "gui.menuBar.burnFirmware_m":"燒錄Microbit",
     "gui.extension.linenotify.description":"Line通知，傳送訊息",
     "gui.extension.microbitMore.description":"玩轉 micro:bit 的所有功能。(v2-0.2.4)",
     "gui.extension.microbit.connectingMessage":"連線",
