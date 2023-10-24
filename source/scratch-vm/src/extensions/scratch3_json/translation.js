@@ -81,6 +81,11 @@ export const useNumberCompareGetData = {
     'zh-tw': '查詢資料[data]的欄位[column]數值是否[symbol][number]，取得欄位[column2]的值'
 };
 
+export const useTextSearchGetData2 = {
+    'en': 'Retrieve all data in the data [data] where the field [column] contains the value [value].',
+    'zh-tw': '查詢資料[data]中欄位[column]包含特定值[value]的所有資料'
+};
+
 export const data = {
     'en': 'data',
     'zh-tw': '資料'

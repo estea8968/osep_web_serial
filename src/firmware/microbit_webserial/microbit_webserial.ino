@@ -1,4 +1,4 @@
-//版本日期 112 10 18 
+//版本日期 112 10 17 
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 #include "MMA8653.h"
@@ -24,18 +24,19 @@ const uint8_t sad_bmp[] =
     B01110,
     B10001, };
     
-//MMA8653 accel;
 String inputData;
 
 void setup() {
   Serial.begin(115200);
+  Serial.setTimeout(5);
   pinMode(PIN_BUTTON_A, INPUT);
   pinMode(PIN_BUTTON_B, INPUT);
-  microbit.begin();
+  //microbit.begin();
   Serial.println("micro:bit");
   // Start I2C at 400khz (fast mode)
     Wire.begin();
     Wire.setClock(400000);
+  
 // Setup accelerometer at 2G range, 10bit res, 50hz update rate and HighRes mode
     accel.init(MMA8653_2G_RANGE, MMA8653_10BIT_RES, MMA8653_ODR_50);
     accel.setMODS(MMA8653_MODS_HIGH_RES);
@@ -61,9 +62,9 @@ void config(void)
   Wire.endTransmission();       // stop transmitting
 }
 void loop() {
-     inputData =Serial.readString();
+    inputData =Serial.readString();
 //    Serial.println(inputData);
-    int str_len = inputData.length() + 1; 
+    int str_len = inputData.length()+ 1; 
     char char_str[str_len];
     inputData.toCharArray(char_str, str_len);
     char_str[str_len]='\0';
@@ -73,6 +74,19 @@ void loop() {
       char *commandString = strtok(char_str, "#");
       char *b_String = strtok(NULL, "#");
       char *c_String = strtok(NULL, "#");
+
+      //光線
+      if(strcmp(commandString, "light") == 0){
+        pinMode(23, OUTPUT);
+        pinMode(26, OUTPUT);
+        pinMode(3,INPUT);
+        int lightValue = 1023 - analogRead(3);
+        //Serial.println(analogRead(COL));
+        //int average = calculateAverage(sensorValue);
+        Serial.print("l:");
+        Serial.println(lightValue);
+
+      }
       //button
       if(strcmp(commandString, "b") == 0){
         Serial.print("b:");
@@ -82,6 +96,7 @@ void loop() {
       }
       //led
       if(strcmp(commandString, "led") == 0){
+        microbit.begin();
         if(strcmp(b_String, "led_on") == 0){
           microbit.fillScreen(LED_ON);
         }else if(strcmp(b_String, "heart") == 0){
@@ -99,7 +114,8 @@ void loop() {
         }else if(strcmp(b_String, "drawPixel") == 0){
           char *a0 = strtok(c_String, ",");
           char *a1 = strtok(NULL, ",");
-          microbit.drawPixel(atoi(a0), atoi(a1), LED_ON);
+          char *a2 = strtok(NULL, ",");
+          microbit.drawPixel(atoi(a0), atoi(a1), atoi(a2));
         }else if(strcmp(b_String, "drawLine") == 0){
           char* a0 = strtok(c_String, ",");
           char *a1 = strtok(NULL, ",");
@@ -116,37 +132,15 @@ void loop() {
                   i++;
                 }
               }
-        }
-        /*else if(strcmp(b_String, "analogWrite")==0){
-          //pinMode(26, OUTPUT);
-          //Serial.println(analogRead(3));
-          
-          digitalWrite(3,HIGH);
-          delay(500);
-          digitalWrite(3,LOW);
-          //analogWrite(3,0);
-        }*/else {
+        }else {
           microbit.print(b_String);   
         }
         
       }
-      //光線
-      if(strcmp(commandString, "light") == 0){
-        float v=0;
-        //for(int i=0;i<10;i++){
-          v+=analogRead(3);
-          delay(1);
-          v+=analogRead(4);
-          delay(1);
-          v+=analogRead(10);
-        //}
-        Serial.print("l:");
-        Serial.println(v/3);
-      }
       //MMA8653 xyz
       if(strcmp(commandString, "mma") == 0){
         accel.readSensor(&x, &y, &z);
-        //delay(100);
+        
         //accel.getOffsets(&offset_x, &offset_y, &offset_z);
         Serial.print("mma:");
         Serial.print(x);
@@ -171,6 +165,7 @@ void loop() {
       }
       //數位讀取
       if(strcmp(commandString, "d_read") == 0){
+        pinMode(atoi(b_String),INPUT);
         Serial.print("d");
         Serial.print(b_String);
         Serial.print(":");
@@ -185,6 +180,7 @@ void loop() {
       }
       //數位寫入
       if(strcmp(commandString, "d_write") == 0){
+        pinMode(atoi(b_String),OUTPUT);
         digitalWrite(atoi(b_String),atoi(c_String));
       }
       //類比寫入
@@ -193,17 +189,6 @@ void loop() {
       }
       //delay(1);
     }
-
-    /*Serial.print("b:");
-    Serial.print(digitalRead(PIN_BUTTON_A));
-    Serial.print(",");
-    Serial.println(digitalRead(PIN_BUTTON_B));*/
-    /*if (! digitalRead(PIN_BUTTON_A)) {
-      Serial.println("Button A pressed");
-    }
-    if (! digitalRead(PIN_BUTTON_B)) {
-      Serial.println("Button B pressed");
-    }*/
 }
 
 int mag_read_register(int reg)
