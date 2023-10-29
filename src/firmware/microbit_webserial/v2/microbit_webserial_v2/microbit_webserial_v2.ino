@@ -1,4 +1,4 @@
-//版本日期 112 10 17
+//版本日期 112 10 28
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 //#include "MMA8653.h"
@@ -31,8 +31,9 @@ int32_t y, MagMinY, MagMaxY;
 int32_t z, MagMinZ, MagMaxZ;
 boolean calibrated = false;
 long lastDisplayTime;
-//float heading;
 
+Adafruit_Microbit_Matrix microbit;
+//float heading;
 //MMA8653 accel;
 //int16_t mma_x, mma_y, mma_z;
 //int8_t offset_x, offset_y, offset_z;
@@ -84,7 +85,7 @@ void setup() {
   MicrobitRadio.enable();  // Radio aanzetten
   MicrobitRadio.setGroup(GROEPCODE);
   MicrobitRadio.setFrequencyBand(FREQUENTIEBAND);
-  
+  microbit.begin();
   Serial.println("micro:bit s4a");
  
  }
@@ -143,8 +144,6 @@ void loop() {
       }
       //led
       if(strcmp(commandString, "led") == 0){
-        Adafruit_Microbit_Matrix microbit;
-        microbit.begin();
         if(strcmp(b_String, "led_on") == 0){
           microbit.fillScreen(LED_ON);
         }else if(strcmp(b_String, "heart") == 0){

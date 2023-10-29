@@ -1,4 +1,4 @@
-//版本日期 112 10 17 
+//版本日期 112 10 28 
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 #include "MMA8653.h"
@@ -47,6 +47,7 @@ void setup() {
     //mag3110
     Wire.begin(); // join i2c bus (address optional for master)
     config(); // turn the MAG3110 on
+    microbit.begin();
  }
 
 void config(void)
@@ -96,7 +97,7 @@ void loop() {
       }
       //led
       if(strcmp(commandString, "led") == 0){
-        microbit.begin();
+        
         if(strcmp(b_String, "led_on") == 0){
           microbit.fillScreen(LED_ON);
         }else if(strcmp(b_String, "heart") == 0){
