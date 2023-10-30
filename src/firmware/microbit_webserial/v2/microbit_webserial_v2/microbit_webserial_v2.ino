@@ -145,16 +145,22 @@ void loop() {
       //led
       if(strcmp(commandString, "led") == 0){
         if(strcmp(b_String, "led_on") == 0){
+          microbit.begin();
           microbit.fillScreen(LED_ON);
         }else if(strcmp(b_String, "heart") == 0){
+          microbit.begin();
           microbit.show(microbit.HEART);
         }else if(strcmp(b_String, "no") == 0){
+          microbit.begin();
           microbit.show(microbit.NO);
         }else if(strcmp(b_String, "yes") == 0){
+          microbit.begin();
           microbit.show(microbit.YES);
         }else if(strcmp(b_String, "smile") == 0){
+          microbit.begin();
           microbit.show(smile_bmp);
         }else if(strcmp(b_String, "sad") == 0){
+          microbit.begin();
           microbit.show(sad_bmp);
         }else if(strcmp(b_String, "clear") == 0){
           microbit.clear();
@@ -164,12 +170,14 @@ void loop() {
           char *a2 = strtok(NULL, ",");
           microbit.drawPixel(atoi(a0), atoi(a1), atoi(a2));
         }else if(strcmp(b_String, "drawLine") == 0){
+          microbit.begin();
           char* a0 = strtok(c_String, ",");
           char *a1 = strtok(NULL, ",");
           char* a2 = strtok(NULL, ",");
           char *a3 = strtok(NULL, ",");
           microbit.drawLine(atoi(a0), atoi(a1), atoi(a2), atoi(a3), LED_ON);
         }else if(strcmp(b_String, "matrix")==0){
+          microbit.begin();
             int i=0;
             for(int m=0;m<5;m++){
               for(int n=0;n<5;n++){
