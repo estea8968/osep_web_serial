@@ -658,7 +658,7 @@ class Scratch3WebserialMicroBitBlocks {
         console.log("symbol",symbol);
         const sendData='led#matrix#'+symbol;
         console.log('sendData=',sendData);
-        this.serialSend(sendData);
+        await this.serialSend(sendData);
         //new Promise(resolve => setTimeout(resolve, 100));
     }
 
@@ -696,23 +696,28 @@ class Scratch3WebserialMicroBitBlocks {
         }
     }
     //led亮線
-    displayLine(args){
+    async displayLine(args){
         const sendData = 'led#drawLine#'+args.BX+','+args.BY+','+args.EX+','+args.EY;
         console.log('sendData=',sendData);
-        this.serialSend(sendData);
+        await this.serialSend(sendData);
         //new Promise(resolve => setTimeout(resolve, 1000));
     }
     /**
      * Turn all 5x5 matrix LEDs off.
      * @return {Promise} - a Promise that resolves after a tick.
      */
-    displayClear () {
+    async displayClear () {
         /*for (let i = 0; i < 5; i++) {
             this._peripheral.ledMatrixState[i] = 0;
         }*/
         const sendData ="led#clear";
         console.log("sendData=",sendData);
-        this.serialSend(sendData);
+        await this.serialSend(sendData);
+        /*return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, 100);
+        });*/
     }
 
     async displaydrawPixel(args){
