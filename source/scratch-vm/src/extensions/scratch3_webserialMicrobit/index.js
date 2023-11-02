@@ -198,6 +198,7 @@ class Scratch3WebserialMicroBitBlocks {
                     arguments: {
                         MATRIX: {
                             type: ArgumentType.MATRIX,
+                       
                             defaultValue: '0101010101100010101000100'
                         }
                     }
@@ -208,12 +209,14 @@ class Scratch3WebserialMicroBitBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         X: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: 0
+                                type: ArgumentType.STRING,
+                                menu:'num05',
+                                defaultValue: '0'
                             },
                         Y: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: 0
+                                type: ArgumentType.STRING,
+                                menu:'num05',
+                                defaultValue: '0'
                             },
                         ONOFF:{
                             type: ArgumentType.NUMBER,
@@ -503,8 +506,14 @@ class Scratch3WebserialMicroBitBlocks {
                         }
                     }
                 },
+                {
+                    opcode: 'FirmwareVersion',
+                    text: msg.FirmwareVersion[the_locale],
+                    blockType: BlockType.REPORTER,
+                },
             ],
             menus: {
+                
                 buttons: {
                     acceptReporters: true,
                     items: ['A','B','A+B','any'] //this.BUTTONS_MENU
@@ -540,6 +549,10 @@ class Scratch3WebserialMicroBitBlocks {
                 touchPins: {
                     acceptReporters: true,
                     items: ['0', '1', '2']
+                },
+                num05:{
+                    acceptReporters: true,
+                    items: ['0', '1', '2','3','4']
                 },
                 ledBmp: {
                     acceptReporters: true,
@@ -584,51 +597,28 @@ class Scratch3WebserialMicroBitBlocks {
      */
     async isButtonPressed (args) {
         this.serialSend('b#');
-        setTimeout(() => {
-            console.log("delay 1");
-          }, "1");
         const r_data = await this.serialRead();
         console.log("r_data",r_data);
         const v_ary = r_data.split(':');
-        console.log("v_ary[0]",v_ary[0]);
+        //console.log("v_ary[0]",v_ary[0]);
         if(v_ary[0]=='b'){
               const btn_ary = v_ary[1].split(',');
-              if(args.BTN === 'A'){
-                if(btn_ary[0]==1){
-                    return false;
-                }else{
-                    return true;
-                }
-              }else if(args.BTN === 'B'){
-                if(btn_ary[1]==1){
-                    return false;
-                }else{
-                    return true;
-                }
-              }else if(args.BTN === 'any'){
-                if(btn_ary[0]==0 || btn_ary[1]==0){
-                    return true;
-                }else{
-                    return false;
-                }
-              }else if(args.BTN === 'A+B'){
-                if(btn_ary[0]==0 && btn_ary[1]==0){
-                    return true;
-                }else{
-                    return false;
-                }
-              }else{
-                return false;
-              }           
+              switch (args.BTN){
+                case 'A':
+                    return Boolean(btn_ary[0]==0);
+                    
+                case 'B':
+                    return Boolean(btn_ary[1]==0);
+                case 'any':
+                    return Boolean(btn_ary[0]==0 || btn_ary[1]==0);
+                case 'A+B':
+                    return Boolean(btn_ary[0]==0 && btn_ary[1]==0);
+                default :
+                    return false;             
+              }
+                  
         }  
-        /*if (args.BTN === 'any') {
-            return (this._peripheral.buttonA | this._peripheral.buttonB) !== 0;
-        } else if (args.BTN === 'A') {
-            return this._peripheral.buttonA !== 0;
-        } else if (args.BTN === 'B') {
-            return this._peripheral.buttonB !== 0;
-        }
-        return false;*/
+        
     }
 
     /**
@@ -719,16 +709,18 @@ class Scratch3WebserialMicroBitBlocks {
             }, 100);
         });*/
     }
+    my_range(in_value,mix,max){
+        if(in_value < mix)
+            return mix;
+        if(in_value > max)
+            return max;
+        return in_value;
+    }
 
     async displaydrawPixel(args){
-        const x= parseInt(args.X,10);
-        const y= parseInt(args.Y,10);
-        let onoff = parseInt(args.ONOFF,10);
-        if(onoff > 0){
-            onoff =1;
-        }else{
-            onoff =0;
-        }
+        const x= this.my_range(parseInt(args.X,10),0,4);
+        const y= this.my_range(parseInt(args.Y,10),0,4);
+        const onoff = this.my_range(parseInt(args.ONOFF,10),0,1);
         const sendData ="led#drawPixel#"+x+','+y+','+onoff;
         console.log("sendData=",sendData);
         await this.serialSend(sendData);
@@ -935,6 +927,7 @@ class Scratch3WebserialMicroBitBlocks {
             return v_ary[1] ;
         }        
     }
+
     async digital_read(args){
         const pin = parseInt(args.PIN, 10);
         if (isNaN(pin)) return;
@@ -959,9 +952,7 @@ class Scratch3WebserialMicroBitBlocks {
 
     async analog_write(args){
         const pin = parseInt(args.PIN, 10);
-        let value = parseInt(args.VALUE,10);
-        if(value<0) value=0;
-        if(value>255) value=255;
+        let value = this.my_range(parseInt(args.VALUE,10),0,255);
         this.serialSend('a_write#'+pin+"#"+value);
     }
 
@@ -1077,6 +1068,19 @@ class Scratch3WebserialMicroBitBlocks {
             return v_ary[1];
         }        
     }
+
+    async FirmwareVersion(){
+        await this.serialSend('ver#');
+
+        let r_data = await this.serialRead();
+        console.log("r_data",r_data);
+        let v_ary = r_data.split(':');
+        //return v_ary[1];
+        if(v_ary[0]=='ver'){
+            return v_ary[1];
+        }        
+    }
+
     async isg248(args){
         const g248=args.GXXX;
         this.serialSend('g248#');
@@ -1130,24 +1134,24 @@ class Scratch3WebserialMicroBitBlocks {
         let pin = args['PIN'];
         //pin = pin.toString().substring(0,2);
         //pin = parseInt(pin, 10);
-        let freq = Number(args['FREQ']);
-        if(freq <24){
+        let freq = this.my_range(parseInt(args.FREQ,10),24,96);
+        /*if(freq <24){
             freq =24;
         }
         if(freq>96){
             freq=96
-        }
+        }*/
         console.log('freq = ',freq);
         //freq = parseInt(freq, 10);
         let duration = args['DURATION'];
-        duration = parseInt(duration, 10);
+        duration = this.my_range(parseInt(duration, 10),4,10000);
         // make sure duration maximum is 5 seconds
-        if (duration > 10000) {
+        /*if (duration > 10000) {
             duration = 10000;
         }
         if (duration < 4) {
             duration = 4;
-        }
+        }*/
         let valueFreq = 0;
         const toneArray1 = ['C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1', 'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2', 'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'];
         const toneArray2 = [33, 35, 37, 39, 41, 44, 46, 49, 52, 55, 58, 62, 65, 69, 73, 78, 82, 87, 93, 98, 104, 110, 117, 123, 131, 139, 147, 156, 165, 175, 185, 196, 208, 220, 233, 247, 262, 277, 294, 311, 330, 349, 370, 392, 415, 440, 466, 493, 523, 554, 587, 622, 659, 698, 740, 784, 831, 880, 932, 988,1047,1109,1175,1245,1319,1397,1480,1568,1661,1760,1865,1976];

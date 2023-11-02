@@ -93,3 +93,13 @@ export const directEWSN ={
     'en': ['east', 'northeast', 'north','northwest','west','southwest','south','southeast'],
     'zh-tw': ['東', '東北', '北','西北','西','西南','南','東南']
 };
+
+export const clearDisplay = {
+    'en': 'Clear display',
+    'zh-tw': '清除led顯示'
+};
+
+export const FirmwareVersion ={
+    'en': "firmware version",
+    'zh-tw':"韌體版本",
+};

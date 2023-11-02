@@ -1,11 +1,12 @@
-//版本日期 112 10 28 
+//版本日期 112 11 02 
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 #include "MMA8653.h"
 //#include "i2c_MAG3110.h"
 //MAG3110 mag3110;
 #define MAG_ADDR  0x0E //7-bit address for the MAG3110, doesn't change
-
+//版號
+char *ver = "1121102";
 Adafruit_Microbit_Matrix microbit;
 MMA8653 accel = MMA8653();
 int16_t x, y, z;
@@ -75,7 +76,11 @@ void loop() {
       char *commandString = strtok(char_str, "#");
       char *b_String = strtok(NULL, "#");
       char *c_String = strtok(NULL, "#");
-
+      //ver版本
+      if(strcmp(commandString, "ver") == 0){
+        Serial.print("ver:");
+        Serial.println(ver);
+      }
       //光線
       if(strcmp(commandString, "light") == 0){
         pinMode(23, OUTPUT);

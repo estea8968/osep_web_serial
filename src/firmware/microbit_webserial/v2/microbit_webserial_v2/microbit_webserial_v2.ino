@@ -1,4 +1,4 @@
-//版本日期 112 10 28
+//版本日期 112 11 02
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 //#include "MMA8653.h"
@@ -21,6 +21,9 @@ Servo myservo;  // create servo object to control a servo
 //mag
 LSM303AGR_MAG_Sensor Mag(&DEV_I2C);
 //const float Pi = 3.14159;
+//版號
+char *ver = "1121102";
+
 const int leveled = 160;  // In order to keep the compass horizontal (leveled).
 int32_t accelerometer[3];
 int32_t magnetometer[3];
@@ -104,7 +107,12 @@ void loop() {
       char *commandString = strtok(char_str, "#");
       char *b_String = strtok(NULL, "#");
       char *c_String = strtok(NULL, "#");
-
+      
+      //ver版本
+      if(strcmp(commandString, "ver") == 0){
+        Serial.print("ver:");
+        Serial.println(ver);
+      }
       //光線
       if(strcmp(commandString, "light") == 0){
         pinMode(23, OUTPUT);
