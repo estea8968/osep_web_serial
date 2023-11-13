@@ -23,6 +23,7 @@ let mic_port;
 let the_locale = null;
 //tone
 let freq_ary=[];
+let serial_isbusy = false;
 for(var i=24;i<96;i++){
     freq_ary.push(i);
 }
@@ -379,7 +380,7 @@ class Scratch3WebserialMicroBitBlocks {
                     arguments: {
                         PIN: {
                             type: ArgumentType.STRING,
-                            menu: 'touchPins',
+                            menu: 'analogPins',
                             defaultValue: '0'
                         }
                     }
@@ -391,7 +392,7 @@ class Scratch3WebserialMicroBitBlocks {
                     arguments: {
                         PIN: {
                             type: ArgumentType.STRING,
-                            menu: 'touchPins',
+                            menu: 'digitalPins',
                             defaultValue: '0'
                         }
                     }
@@ -403,7 +404,7 @@ class Scratch3WebserialMicroBitBlocks {
                     arguments: {
                         PIN: {
                             type: ArgumentType.STRING,
-                            menu: 'touchPins',
+                            menu: 'analogPins',
                             defaultValue: '0'
                         },
                         VALUE: {
@@ -419,7 +420,7 @@ class Scratch3WebserialMicroBitBlocks {
                     arguments: {
                         PIN: {
                             type: ArgumentType.STRING,
-                            menu: 'touchPins',
+                            menu: 'digitalPins',
                             defaultValue: '0'
                         },
                         VALUE: {
@@ -550,6 +551,14 @@ class Scratch3WebserialMicroBitBlocks {
                     acceptReporters: true,
                     items: ['0', '1', '2']
                 },
+                analogPins: {
+                    acceptReporters: true,
+                    items: ['0', '1', '2','3','4','10']
+                },
+                digitalPins: {
+                    acceptReporters: true,
+                    items: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20']
+                },
                 num05:{
                     acceptReporters: true,
                     items: ['0', '1', '2','3','4']
@@ -596,28 +605,37 @@ class Scratch3WebserialMicroBitBlocks {
      * @return {boolean} - true if the button is pressed.
      */
     async isButtonPressed (args) {
-        this.serialSend('b#');
-        const r_data = await this.serialRead();
-        console.log("r_data",r_data);
-        const v_ary = r_data.split(':');
-        //console.log("v_ary[0]",v_ary[0]);
-        if(v_ary[0]=='b'){
-              const btn_ary = v_ary[1].split(',');
-              switch (args.BTN){
-                case 'A':
-                    return Boolean(btn_ary[0]==0);
+        
+            await this.serialSend('b#');
+            new Promise(resolve => {
+                setTimeout(() => {
+                    resolve();
+                }, 5);
+            });
+            const r_data = await this.serialRead();
+            console.log("r_data",r_data);
+            const v_ary = r_data.split(':');
+            //console.log("v_ary[0]",v_ary[0]);
+            if(v_ary[0]=='b'){
+                const btn_ary = v_ary[1].split(',');
+                if(btn_ary.length==2){
+                    switch (args.BTN){
+                        case 'A':
+                            return Boolean(btn_ary[0]==0);
+                            
+                        case 'B':
+                            return Boolean(btn_ary[1]==0);
+                        case 'any':
+                            return Boolean(btn_ary[0]==0 || btn_ary[1]==0);
+                        case 'A+B':
+                            return Boolean(btn_ary[0]==0 && btn_ary[1]==0);
+                        default :
+                            return false;             
+                    }
+                }
                     
-                case 'B':
-                    return Boolean(btn_ary[1]==0);
-                case 'any':
-                    return Boolean(btn_ary[0]==0 || btn_ary[1]==0);
-                case 'A+B':
-                    return Boolean(btn_ary[0]==0 && btn_ary[1]==0);
-                default :
-                    return false;             
-              }
-                  
-        }  
+            }
+          
         
     }
 
@@ -1199,30 +1217,38 @@ class Scratch3WebserialMicroBitBlocks {
     }
 
     async serialSend(sendData) {
-        console.log("serial sendData=",sendData);
-        const encoder = new TextEncoder();
-        const writer = mic_port.writable.getWriter();
-        await writer.write(encoder.encode(sendData));
-        writer.releaseLock();
+        
+            console.log("serial sendData=",sendData);
+            const encoder = new TextEncoder();
+            serial_isbusy = true;
+            const writer = mic_port.writable.getWriter();
+            await writer.write(encoder.encode(sendData));
+            writer.releaseLock();
+            serial_isbusy = false;
+        
     }
 
     async serialRead() {
-        let mic_reader = mic_port.readable.getReader();
-        try{
-            let value = await mic_reader.read();
-            //console.log('value',value);
-            //let uint8array = new TextEncoder().encode();
-            let string = new TextDecoder().decode(value.value);
-            string = string.split('\r\n');
-            mic_reader.releaseLock();
-            console.log("string[0]=",string[0]);
-            return string[0];
-        }catch (error) {
-            console.log(error);
-        }// finally {
-         //   reader.releaseLock();
-        //}
-        mic_reader.releaseLock();    
+        
+            serial_isbusy = true;
+            let mic_reader = mic_port.readable.getReader();
+            try{
+                let value = await mic_reader.read();
+                //console.log('value',value);
+                //let uint8array = new TextEncoder().encode();
+                let string = new TextDecoder().decode(value.value);
+                string = string.split('\r\n');
+                mic_reader.releaseLock();
+                console.log("string[0]=",string[0]);
+                return string[0];
+            }catch (error) {
+                console.log(error);
+            }// finally {
+            //   reader.releaseLock();
+            //}
+            mic_reader.releaseLock(); 
+            serial_isbusy = false;
+        
     }
 
     async listener(){
