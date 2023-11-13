@@ -614,6 +614,7 @@ class Scratch3WebserialMicroBitBlocks {
             });
             const r_data = await this.serialRead();
             console.log("r_data",r_data);
+            if(r_data.length>4){
             const v_ary = r_data.split(':');
             //console.log("v_ary[0]",v_ary[0]);
             if(v_ary[0]=='b'){
@@ -635,7 +636,7 @@ class Scratch3WebserialMicroBitBlocks {
                 }
                     
             }
-          
+            }
         
     }
 
