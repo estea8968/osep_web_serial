@@ -1,17 +1,31 @@
-//版本日期 112 11 02
+//版本日期 112 11 20
+//版號
+char *ver = "1121120";
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 //#include "MMA8653.h"
+#include <LiquidCrystal_I2C.h> // LCD_I2C模組程式庫
+//LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 //喇叭
 #include "Tone.h" // Add this line if you use a Microbit V2, also change the pin to 27 which is the speaker on Microbit V2
 //伺服馬達
 #include <Servo.h>
+//ws2812
+#include <Adafruit_NeoPixel.h>
+#define NUMPIXELS 12
+//oled
+#include <U8g2lib.h>
+#include "u8g2_font_e58524b32706dda48e7107fc64bfd183.h"
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
 //溫度
 #include <LSM303AGR_ACC_Sensor.h>
 //廣播
 #include "NRF52_Radio_library.h"
 NRF52_Radio MicrobitRadio = NRF52_Radio();
-
+#include <DHTStable.h>
+DHTStable DHT;
 //mag
 #include <LSM303AGR_MAG_Sensor.h>
 #define DEV_I2C Wire1  //Define which I2C bus is used. Wire1 for the Microbit V2, Wire for the Microbit V1
@@ -21,8 +35,6 @@ Servo myservo;  // create servo object to control a servo
 //mag
 LSM303AGR_MAG_Sensor Mag(&DEV_I2C);
 //const float Pi = 3.14159;
-//版號
-char *ver = "1121102";
 
 const int leveled = 160;  // In order to keep the compass horizontal (leveled).
 int32_t accelerometer[3];
@@ -88,6 +100,10 @@ void setup() {
   MicrobitRadio.enable();  // Radio aanzetten
   MicrobitRadio.setGroup(GROEPCODE);
   MicrobitRadio.setFrequencyBand(FREQUENTIEBAND);
+  //u8g2
+  u8g2.begin();
+  u8g2.enableUTF8Print();  //啟用UTF8文字的功能
+  
   microbit.begin();
   Serial.println("micro:bit s4a");
  
@@ -107,6 +123,7 @@ void loop() {
       char *commandString = strtok(char_str, "#");
       char *b_String = strtok(NULL, "#");
       char *c_String = strtok(NULL, "#");
+      char *d_String = strtok(NULL, "#");
       
       //ver版本
       if(strcmp(commandString, "ver") == 0){
@@ -149,6 +166,15 @@ void loop() {
         delay(atoi(c_String));
         noTone(speaker);
         Serial.println("mm");
+      }
+      //dht11
+      if(strcmp(commandString, "dht11") == 0){
+        pinMode(atoi(b_String),INPUT);
+        DHT.read11(atoi(b_String));
+        Serial.print("dht11:");
+        Serial.print(DHT.getTemperature());
+        Serial.print(",");
+        Serial.println(DHT.getHumidity());
       }
       //led
       if(strcmp(commandString, "led") == 0){
@@ -310,6 +336,147 @@ void loop() {
       //類比寫入
       if(strcmp(commandString, "a_write") == 0){
         analogWrite(atoi(b_String),atoi(c_String));
+      }
+      //ws2812_shu
+    if(strcmp(commandString, "sh") == 0){
+      int r = 0;
+      int g = 0;
+      int b = 0;
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      char *bb ;
+      int i = 0;
+      int sp;
+      bb = strtok(c_String, ",");
+      led_value[i] = atoi(bb);
+      //Serial.println(led_value[i]);
+      i++;
+      while( bb != NULL){
+        bb = strtok(NULL, ",");
+        led_value[i] = atoi(bb);
+        i++;
+      }
+      Adafruit_NeoPixel pixels(NUMPIXELS, atoi(b_String), NEO_GRB + NEO_KHZ800);
+      pixels.begin();
+      for ( i=0;i<32;i++){
+        if (led_value[i] > 0){
+            sp = led_value[i]-1;
+          i++;
+          if( led_value[i] == 0) {
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = 0;
+          }else if( led_value[i] == 1){
+            i++;
+            r = led_value[i]*3;
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 2){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 3){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 4){
+            i++;
+            r = 0;
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 5){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 6){
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 7){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = led_value[i];
+          }
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));
+        }else{
+          i++;
+          i++;
+        }
+      }
+      pixels.show(); 
+      
+    }
+    //lcd
+    if(strcmp(commandString, "l") == 0){
+      //文字inputPin
+      //第幾行inputValue 
+      if(strcmp(b_String, "clear") == 0){
+        lcd.clear(); 
+      }else{
+        lcd.setCursor(0, atoi(c_String));
+        lcd.print(b_String);   
+      }
+    }
+    
+      //ws2812
+    if(strcmp(commandString, "ws") == 0){
+        int r = atoi(strtok(c_String,","));
+        int g = atoi(strtok(NULL, ","));
+        int b = atoi(strtok(NULL, ","));
+        Adafruit_NeoPixel pixels(NUMPIXELS, atoi(b_String), NEO_GRB + NEO_KHZ800);
+        pixels.begin();        
+        //pixels.clear();
+        char* sp = "";
+        for( int i = 0; i<NUMPIXELS ; i++){
+          //sp = inputTime[i];
+          if (d_String[i] == '1') {
+            sp = "0";
+          }else if(d_String[i] == '2'){
+            sp = "1";
+          }else if(d_String[i] == '3'){
+            sp = "2";
+          }else if(d_String[i] == '4'){
+            sp = "3";
+          }else if(d_String[i] == '5'){
+            sp = "4";
+          }else if(d_String[i] == '6'){
+            sp = "5";
+          }else if(d_String[i] == '7'){
+            sp = "6";
+          }else if(d_String[i] == '8'){
+            sp = "7";
+          }else if(d_String[i] == '9'){
+            sp = "8";
+          }else if(d_String[i] == 'a'){
+            sp = "9";
+          }else if(d_String[i] == 'b'){
+            sp = "10";
+          }else if(d_String[i] == 'c'){
+            sp = "11";
+          }
+          pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
+        }
+        pixels.show(); 
+      }
+      //oled u8g2
+      if(strcmp(commandString, "o") == 0) {
+        //u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
+        u8g2.setFont(u8g2_font_unifont_myfonts);
+        u8g2.firstPage();
+        int textlen = strlen(b_String);
+        int ax = atoi(strtok(c_String,","));
+        int ay = atoi(strtok(NULL, ","));
+        do {
+          u8g2.setCursor(ax,ay);
+          u8g2.print(b_String);
+          
+        }while ( u8g2.nextPage() );
+            //delay(1000);
       }
       //delay(1);
     }

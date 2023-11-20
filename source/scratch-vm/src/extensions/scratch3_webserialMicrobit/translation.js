@@ -103,3 +103,65 @@ export const FirmwareVersion ={
     'en': "firmware version",
     'zh-tw':"韌體版本",
 };
+
+export const dht11_read = {
+    'en': "Get pin [PIN] dht11 data",
+    'zh-tw':"取得DHT11在腳位[PIN]資料",
+};
+
+export const FormDht11Read ={
+    'en': 'DHT11 [TH]',
+    'zh-tw': 'DHT11的[TH]',
+};
+
+export const Dht11data ={
+    'en': ['temperature', 'humidity'],
+    'zh-tw': ['溫度', '溼度'],
+};
+
+export const FormOledShow ={
+    'en': 'OLED at x:[ROWX] y:[ROWY] show text [VALUE]',
+    'zh-tw': 'OLED x:[ROWX],y:[ROWY],顯示文字[VALUE]',
+};
+
+export const FormWs2812SetPin = {
+    'en': "WS2812 pin [PIN] ",
+    'zh-tw': "設定LED陣列在腳位[PIN]",
+};
+
+export const FormWs2812SetNum = {
+    'en': 'WS2812 light #[NUM] color [RGB] value [VALUE]',
+    'zh-tw': 'LED 陣列，亮第[NUM]顆，顏色:[RGB]，值:[VALUE]',
+};
+
+/*export const FormWs2812SetNum1 = {
+    'en': 'WS2812 light #[NUM] color red:[colorR] green:[colorG] blue:[colorB]',
+    'zh-tw': 'LED 陣列，亮第[NUM]顆，顏色:紅:[colorR]綠:[colorG]藍[colorB]',
+};*/
+
+export const FormWs2812Show = {
+    'en': "WS2812 show",
+    'zh-tw': "LED陣列顯示",
+};
+export const Flash_Hex = {
+    'en': "flash firmware [USB]",
+    'zh-tw': "燒錄韌體[USB]",
+};
+
+export const FormRGB = {
+    'en': ['red','oringe', 'yellow','green', 'blue',  'cyan', 'purple', 'white'],
+    'zh-tw': ['紅','橙', '黃','綠', '藍',  '青', '紫', '白'],
+};
+
+export const FormWs2812SetClear = {
+    'en': "clear WS2812",
+    'zh-tw': "清除LED設定",
+};
+export const FormWs2812Write = {
+    'en': 'WS2812 pin [PIN] light #[NUM] red[RED] green[GREEN] blue[BLUE]',
+    'zh-tw': 'LED陣列，腳位[PIN]，亮第[NUM]顆，紅[RED] 綠[GREEN] 藍[BLUE]',
+};
+export const FormLcdShow = {
+    'en': 'LCD show text [VALUE] at [ROW] row',
+    'zh-tw': 'LCD顯示文字[VALUE]在第[ROW]列',
+};

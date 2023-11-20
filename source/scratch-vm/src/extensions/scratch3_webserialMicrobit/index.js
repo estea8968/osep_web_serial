@@ -23,7 +23,8 @@ let mic_port;
 let the_locale = null;
 //tone
 let freq_ary=[];
-let serial_isbusy = false;
+//let serial_isbusy = false;
+let ws2812_pin = '12';
 for(var i=24;i<96;i++){
     freq_ary.push(i);
 }
@@ -41,6 +42,8 @@ for(var i=24;i<96;i++){
 
 const tilt_direction_menu_ary=['front','back','left','right','any'];
 const ledTextAry = ['smile', 'sad', 'led_on','yes','no'];
+const dht11_sensor_ary =['temperature', 'humidity'];
+let dht11_value_ary =[0,0];
 //const direct_ary= ['east', 'northeast', 'north','northwest','west','southwest','south','southeast'];
 
 /**
@@ -512,9 +515,160 @@ class Scratch3WebserialMicroBitBlocks {
                     text: msg.FirmwareVersion[the_locale],
                     blockType: BlockType.REPORTER,
                 },
+                '---',
+                {
+                    opcode: 'ws2812_write',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812Write[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '12',
+                            menu: 'digitalPins'
+                        },
+                        NUM: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '1',
+                        },
+                        RED: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '2',
+                        },
+                        GREEN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '2',
+                        },
+                        BLUE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '2',
+                        },
+
+                    }
+                },
+                {
+                    opcode: 'dht11_read',
+                    blockType: BlockType.COMMAND,
+                    text: msg.dht11_read[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '1',
+                            menu: 'digitalPins'
+                        }
+                    }
+                },
+                {
+                    opcode: 'dht11_data',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormDht11Read[the_locale],
+                    arguments: {
+                        TH: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.Dht11data[the_locale][0],
+                            menu: 'dht_items'
+                        }
+                    }
+                },
+                //oled
+                {
+                    opcode: 'oled_show',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormOledShow[the_locale],
+                    arguments: {
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Hello Word!',
+                        },
+                        ROWX:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'0'
+                        },
+                        ROWY:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'13'
+                        }
+                    }
+                },
+                //ws2812
+                {
+                    opcode: 'ws2812_set_clear',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812SetClear[the_locale],
+                },
+                {
+                    opcode: 'ws2812_set_pin',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812SetPin[the_locale],
+                    arguments: {
+                        PIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '12',
+                            menu: 'digitalPins'
+                        }
+
+                    }
+                },
+                {
+                    opcode: 'ws2812_set_num',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812SetNum[the_locale],
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '1',
+                            menu: 'lednum'
+                        },
+                        RGB: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.FormRGB[the_locale][0],
+                            menu: 'rgb'
+                        },
+                        VALUE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '2',
+                        },
+                    }
+                },
+                {
+                    opcode: 'ws2812_show',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormWs2812Show[the_locale],
+                },
+                //lcd 16x2
+                {
+                    opcode: 'lcd_show',
+                    blockType: BlockType.COMMAND,
+                    text: msg.FormLcdShow[the_locale],
+                    arguments: {
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Hello Word!',
+                        },
+                        ROW: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0',
+                            menu: 'lcd_row'
+                        }
+                    }
+                },
             ],
             menus: {
-                
+                lcd_row: {
+                    acceptReporters: true,
+                    items: ['0', '1']
+                },
+                rgb: {
+                    acceptReporters: true,
+                    items: msg.FormRGB[the_locale]
+                },
+                lednum: {
+                    acceptReporters: true,
+                    items: ['1', '2', '3', '4', '5', '6', '7', '8','9','10','11','12']
+                },
+                dht_items:{
+                    acceptReporters: true,
+                    items: msg.Dht11data[the_locale],
+                },
                 buttons: {
                     acceptReporters: true,
                     items: ['A','B','A+B','any'] //this.BUTTONS_MENU
@@ -995,6 +1149,51 @@ class Scratch3WebserialMicroBitBlocks {
             }
         } 
     }
+    async dht11_read(args){
+        this.serialSend('dht11#'+args.PIN+'#');
+        setTimeout(() => {
+            console.log("delay 15");
+          }, "15");
+        const r_data = await this.serialRead();
+        console.log("r_data",r_data);
+        const v_ary = r_data.split(':');
+        if(v_ary[0]==='dht11'){
+            const sp_ary=v_ary[1].split(',');
+            if(sp_ary[0]>-100){
+            dht11_value_ary[0] = sp_ary[0];
+            dht11_value_ary[1] = sp_ary[1];
+            }
+        }
+    }
+
+    dht11_data(args){
+        if(args.TH === msg.Dht11data[the_locale][0]){
+            return dht11_value_ary[0];
+        }else if (args.TH === msg.Dht11data[the_locale][1]){
+            return dht11_value_ary[1];
+        }
+
+    }
+
+    async oled_show(args){
+        let value = args['VALUE'];
+        value = value.substring(0,32);
+        let rowx = args['ROWX'];
+        rowx = parseInt(rowx,10);
+        if(rowx>120){
+            rowx = 120;
+        }
+        let rowy = args['ROWY'];
+        rowy = parseInt(rowy,10);
+        if(rowy>60){
+            rowy = 60;
+        }
+        //send data format o#string#row  max 20 char
+        let sendData;
+        sendData = 'o#'+value+'#'+rowx+','+rowy;
+        console.log('sendData=',sendData);
+        this.serialSend(sendData);
+    }
 
     async mag3110_direct(){
         this.serialSend('mag#');
@@ -1187,7 +1386,72 @@ class Scratch3WebserialMicroBitBlocks {
         this.serialSend(sendData);
         await new Promise(resolve => setTimeout(resolve, duration));
     }
+    //I2C lcd
+    async lcd_show(args) {
+        let value = args['VALUE'];
+        value = value.substring(0, 16);
+        let row = args['ROW']
+        row = parseInt(row, 10);
+        //send data format l#string#row  max 20 char
+        let sendData;
+        sendData = 'l#' + value + '#' + row;
+        console.log('sendData=', sendData);
+        this.serialSend(sendData);
+    }
+    //shu
+    ws2812_set_pin(args) {
+        ws2812_pin = args['PIN'].substring(0, 2);       
+    }
 
+    ws2812_set_num(args) {
+        let led_num = args['NUM'];
+        let led_value = args['VALUE'];
+        led_value = parseInt(led_value, 10);
+        let max_value =85;
+        //console.log(led_num,led_value);
+        let color_set = args['RGB'];
+        let color_set_num;
+        for (i = 0; i < msg.FormRGB[the_locale].length; i++) {
+            if (msg.FormRGB[the_locale][i] == color_set) {
+                color_set_num = i;
+                if (color_set_num == 1){
+                    max_value = 28;
+                }
+                break;
+            }
+        }
+        if (led_value > max_value){
+            led_value = max_value;
+        }
+        
+        send_color_data = send_color_data + led_num + ',' + color_set_num.toString() + ',' + led_value.toString() + ',';
+        console.log(send_color_data);
+    }
+
+    async ws2812_show() {
+        const sendData = 'sh#' + ws2812_pin + '#' + send_color_data;
+        console.log(sendData);
+        this.serialSend(sendData);
+    }
+
+    ws2812_set_clear() {
+        send_color_data = '';
+    }
+
+    async ws2812_write(args) {
+        let pin = args['PIN'];
+        pin = pin.toString().substring(0,2);
+        let num = args['NUM'];
+        let red = args['RED'];
+        red = parseInt(red, 10);
+        let green = args['GREEN'];
+        green = parseInt(green, 10);
+        let blue = args['BLUE'];
+        blue = parseInt(blue, 10);
+        const sendData = 'ws#' + pin + '#' + red.toString() + ',' + green.toString() + ',' + blue.toString() + '#' + num;
+        console.log(sendData);
+        this.serialSend(sendData);
+    }
 
     async w_content(){
         mic_port='';
