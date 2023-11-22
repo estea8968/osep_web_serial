@@ -3,10 +3,10 @@ export const openai_apikey = {
     'zh-tw': 'OpenAI金鑰[KEY]'
 };
 
-export const talktext = {
+/*export const talktext = {
     'en': 'ask OpenAI max tokens:[MAX_tokens],text:[TEXT] ',
     'zh-tw': 'AI會話回覆最大字數[MAX_tokens],訊息:[TEXT],'
-};
+};*/
 
 export const ananswer ={
     'en': 'response',
@@ -28,19 +28,31 @@ export const drawimage = {
 
 };
 
-export const set_system35 ={
-    'en': '*35configure system of[SYSTEM]',
-    'zh-tw': '*35設定AI身份為[SYSTEM]'
+export const set_ai_user ={
+    'en': 'configure system of[USER]',
+    'zh-tw': '設定AI身份為[USER]'
+};
+export const set_ai_modle ={
+    'en': 'configure modle of[MODLE]',
+    'zh-tw': '設定AI模型為[MODLE]'
+};
+export const set_max_token ={
+    'en': 'configure max token of[TOKEN]',
+    'zh-tw': '設定最大代幣[TOKEN]'
 };
 
-export const set_assistant35 ={
-    'en': '*35configure assistant of [ASSISTANT]',
-    'zh-tw': '*35設定問題形容詞、字數等等[ASSISTANT]'
+export const set_temperature ={
+    'en': 'configure temperature of[TEMP]',
+    'zh-tw': '輸出溫度(0真實與1創意)[TEMP]'
+};
+export const set_assistant ={
+    'en': 'configure assistant of [ASSISTANT]',
+    'zh-tw': '設定問題形容詞、字數等等[ASSISTANT]'
 };
 
-export const set_question35 ={
-    'en': '*35talk text of [QUESTION]',
-    'zh-tw': '*35聊天內容[QUESTION]'
+export const set_question ={
+    'en': 'talk text of [QUESTION]',
+    'zh-tw': '聊天內容[QUESTION]'
 };
 
 export const error_ai35 ={
