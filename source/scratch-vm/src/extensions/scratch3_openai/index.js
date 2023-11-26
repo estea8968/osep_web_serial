@@ -77,10 +77,10 @@ MTcwNTc3IEw5OS45ODA2NTU0LDE0NS45NTMyMTggTDk5LjkyOTQ5NjUsMTEzLjUxODUgWiIgZmls\
 bD0iIzAwMDAwMCI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4K';
 const blockIconURI = menuIconURI;
 let theLocale = null;
-ai_user='';
-ai_assistant='';
+ai_user='一般人';
+ai_assistant='簡單回答問題';
 ai_question='';
-ai_model='';
+ai_model='gpt-4';
 //this.prompt='';
 ai_temperature=0.5;
 max_tokens=500;
@@ -330,7 +330,8 @@ class openai {
           const  image_url = draw_respone.data.data[0].url  
           console.log('response.data=',draw_respone.data);
           const w_size = image_size.split('x');
-          window.open(image_url, 'openAI 擴充功能', 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          window.open(image_url, 'openAI 生圖功能', 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          
         }catch (error) {
             if (error.response) {
               console.log(error.draw_respone.status);
@@ -394,7 +395,7 @@ class openai {
     async do_question(args){
         ai_question = args.QUESTION;
         console.log('ai_question=',ai_question+ai_assistant);
-        if(this.api_key=='' || this.api_key=='api key' || ai_user==''||ai_assistant==''||this.ai_question==''){
+        if(this.api_key=='' || this.api_key=='api key' || this.ai_question==''){
             this.ai_answer= msg.error_ai35[theLocale];//'api_key system assistant user can not empty';
         }else{
 
