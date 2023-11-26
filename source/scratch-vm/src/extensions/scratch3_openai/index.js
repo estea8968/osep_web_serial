@@ -142,6 +142,11 @@ class openai {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
                         },
+                        NUM: {
+                            type: ArgumentType.STRING,
+                            menu:'num13',
+                            defaultValue: '1'
+                        },
                         SIZE: {
                             type: ArgumentType.STRING,
                             defaultValue: msg.size[theLocale][1],
@@ -265,6 +270,10 @@ class openai {
                     acceptReporters: true,
                     items: msg.size[theLocale],
                 },
+                num13:{
+                    acceptReporters: true,
+                    items: ['1','2','3'],
+                },
                 modleItem:{
                     acceptReporters: true,
                     items: ['gpt-3.5-turbo','gpt-4'],
@@ -301,6 +310,13 @@ class openai {
     }
     async drawimage(args){
         let image_size = args.SIZE;
+        let n_num = parseInt(args.NUM,10);
+        if(n_num<1){
+            n_num=1;
+        }
+        if(n_num>3){
+            n_num = 3;
+        }
         for(var i=0;i<this.image_size_ary.length;i++){
             if(image_size==msg.size[theLocale][i]){
                 image_size = this.image_size_ary[i];
@@ -323,14 +339,17 @@ class openai {
             const draw_respone = await openai_draw.createImage({
                 model: "dall-e-2",
                 prompt:prompt_text,
-                n:1,
+                n:n_num,
                 size: image_size
             })
           //const  image_url = draw_respone.data.data[0].url
-          const  image_url = draw_respone.data.data[0].url  
+          const  image_url = draw_respone.data.data  
           console.log('response.data=',draw_respone.data);
           const w_size = image_size.split('x');
-          window.open(image_url, 'openAI 生圖功能', 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          for(n=0;n<draw_respone.data.data.length;n++){
+            window.open(image_url[n].url, 'openAI 生圖功能'+n, 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          }
+          
           
         }catch (error) {
             if (error.response) {

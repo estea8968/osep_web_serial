@@ -23,8 +23,8 @@ export const size  ={
 };
 
 export const drawimage = {
-    'en': 'create an image of[SIZE] size based upon text[TEXT] ',
-    'zh-tw': 'AI繪圖大小[SIZE] 圖片描述[TEXT] '
+    'en': 'create [NUM] image of[SIZE] size  based upon text[TEXT] ',
+    'zh-tw': 'AI繪圖[SIZE]大小[NUM]張 圖片描述[TEXT] '
 
 };
 
