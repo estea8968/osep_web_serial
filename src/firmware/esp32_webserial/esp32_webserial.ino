@@ -1,8 +1,8 @@
 /*
- * 111/02/02
+ * 111/12/19
  */
 //#include<WiFi.h>
-//#include <Servo.h>
+#include <ESP32Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
@@ -46,8 +46,11 @@ const int resolution = 8;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
 DHTStable DHT;
-//Servo myservo;  // create servo object to control a servo
-
+//伺服馬達
+Servo myservo;  // create servo object to control a servo
+// Published values for SG90 servos; adjust if needed
+int minUs = 700;
+int maxUs = 2500;
 //qrcode
 SSD1306 display(0x3c, 21, 22);
 QRcode qrcode (&display);
@@ -112,9 +115,16 @@ void setup() {
   lc.shutdown(0,false);  // 關閉省電模式
   lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
   lc.clearDisplay(0);    // 清除螢幕
+  //伺服馬達
+  // Allow allocation of all timers
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
+  myservo.setPeriodHertz(50);
 }
 //tone
-const int PIN = 16;
+int PIN = 16;
 hw_timer_t* timer = NULL;
 bool value = true;
 int frequency = 20; // 20 to 20000
@@ -173,6 +183,14 @@ void loop() {
       lc.shutdown(0,false);  // 關閉省電模式
       lc.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
       lc.clearDisplay(0);    // 清除螢幕
+    }
+
+    //伺服馬達
+    if(strcmp(commandString, "servoWrite") == 0){
+      myservo.attach(atoi(inputPin), minUs, maxUs);
+      delay(15);
+      myservo.write(atoi(inputValue));
+      delay(15);
     }
     
     if(strcmp(commandString, "mashow") == 0){
@@ -465,9 +483,9 @@ void loop() {
       
       if(strcmp(commandString, "tonePlay") == 0){
         int toneTime = atoi(inputTime);
-        int tonePin = atoi(inputPin);
+        PIN = atoi(inputPin);
         int toneValue = atoi(inputValue) ;
-        pinMode(tonePin,OUTPUT);
+        pinMode(PIN,OUTPUT);
         setFrequency(toneValue);
         timerAlarmDisable(timer);
         //timerAlarmWrite(timer, 1000000l / frequencyHz, true);

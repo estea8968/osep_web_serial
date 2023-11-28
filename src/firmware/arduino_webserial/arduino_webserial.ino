@@ -1,34 +1,44 @@
 /*
- * 更新日期111/01/24 estea chen
+ * 更新日期112/03/29 estea chen
+ * 0326 add hx711
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
+#include <LiquidCrystal_I2C.h> // LCD_I2C模組程式庫
 //ws2812
 #include <Adafruit_NeoPixel.h>
 //max7219
-//#include <MD_Parola.h>
-//#include "MD_MAX72xx.h"
-//#include <SPI.h>
-
+#include <LedControl.h>
+//hx711
+#include <HX711.h>
 //PMS5003T
 #include <SoftwareSerial.h>
+//ntc
+#include "thermistor.h"
+//版本號
+char* version="1120420";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
+//hx711
+HX711 scale;
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
 static float HCHO,Temperature,Humidity;
+
+//LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
   static char str[64]; // For strings of max length=20
   if (!Serial.available()) return NULL;
-  delay(16); // wait for all characters to arrive
+  delay(6); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
   byte count=0;
   while (Serial.available())
@@ -46,6 +56,7 @@ char* serialString()
   return str;
 }
 
+
 void setup() {
   Serial.begin(115200);
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
@@ -54,6 +65,10 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
+
+  // 初始化LCD
+  lcd.init();
+  lcd.backlight();
   
 }
 
@@ -80,28 +95,39 @@ void loop()
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
 
+    //版本
+    if(strcmp(commandString, "ver") == 0){
+      Serial.println(version);
+    }
     //max7219
-    /*if(strcmp(commandString, "max") == 0){
-      char* max_devices = strtok(inputPin, ",");
-      char* cs_pin = strtok(NULL, ",");
-      char* clk_pin = strtok(NULL, ",");
-      char* data_pin = strtok(NULL, ",");
-      #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-      #define MAX_DEVICES atoi(max_devices)
-      #define CS_PIN atoi(cs_pin)
-      #define DATA_PIN atoi(data_pin)
-      #define CLK_PIN atoi(clk_pin)
-      MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
-      myDisplay.begin();
-      // Set the intensity (brightness) of the display (0-15):
-      myDisplay.setIntensity(0);
-      // Clear the display:
-      myDisplay.displayClear();
-      myDisplay.setTextAlignment(PA_CENTER);
-      //myDisplay.displayText(inputValue, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
-      myDisplay.print(inputValue);
-    }*/
+    if(strcmp(commandString, "maxshow") == 0){      
+      char* datapin= strtok(inputValue,",");
+      char* clockpin= strtok(NULL,",");
+      char* cspin=strtok(NULL,",");
+      //char* bnum=strtok(NULL,",");
+      LedControl leddisplay = LedControl(atoi(datapin),atoi(clockpin),atoi(cspin),1);
+      leddisplay.clearDisplay(0);    // 清除螢幕
+      leddisplay.shutdown(0, false);  // 關閉省電模式
+      leddisplay.setIntensity(0, 5); // 設定亮度為 5 (介於0~15之間)
       
+      //LedControl leddisplay = LedControl(12,10,11,1);
+      //把inputPin最後一字元移動到第1字元圖形才會正確
+        char new_str[18];
+        //new_str[0]=inputPin[16];
+        for(int i=0;i<18;i++){
+          new_str[i]=inputPin[i+1];
+          //new_str[i]=inputPin[i];
+        }
+        //new_str[18]='\0';
+        //leddisplayImage(stringToUint_64(new_str));
+        for (int i = 0; i < 8; i++) {
+          byte row = (stringToUint_64(new_str) >> i * 8) & 0xFF;
+          for (int j = 0; j < 8; j++) {
+            leddisplay.setLed(0, i, j, bitRead(row, j));
+          }
+        }
+      }
+    
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
       //bool isloop = true;
@@ -118,6 +144,34 @@ void loop()
         //isloop = false;
       
     }
+    //ntc
+    if(strcmp(commandString, "ntc") == 0){
+      
+      THERMISTOR thermistor(atoi(inputPin),        // Analog pin
+                      10000,          // Nominal resistance at 25 ºC
+                      3950,           // thermistor's beta coefficient
+                      10000);         // Value of the series resistor
+
+      // Global temperature reading
+      uint16_t temp;
+      Serial.print("N");
+      Serial.print(inputPin);
+      Serial.print(":");      
+      Serial.println(thermistor.read());
+    }
+
+    //lcd
+    if(strcmp(commandString, "l") == 0){
+      //文字inputPin
+      //第幾行inputValue 
+      if(strcmp(inputPin, "clear") == 0){
+        lcd.clear(); 
+      }else{
+        lcd.setCursor(0, atoi(inputValue));
+        lcd.print(inputPin);   
+      }
+      
+    }
     
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
@@ -130,7 +184,7 @@ void loop()
       int sp;
       bb = strtok(inputValue, ",");
       led_value[i] = atoi(bb);
-      Serial.println(led_value[i]);
+      //Serial.println(led_value[i]);
       i++;
       while( bb != NULL){
         bb = strtok(NULL, ",");
@@ -252,11 +306,13 @@ void loop()
        pinMode(echoPin, INPUT);             // 讀取 echo 的電位
        duration = pulseIn(echoPin, HIGH);   // 收到高電位時的時間
        cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
+       Serial.print("HC,");
        Serial.println(cm);        
     }
     
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
+      pinMode(atoi(inputPin),INPUT);
       DHT.read11(atoi(inputPin));
     }
     
@@ -296,13 +352,45 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      //pinMode(atoi(inputPin),INPUT);
+      pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));
       Serial.print(":");
       Serial.println(digitalRead(atoi(inputPin)));
     }
+    //hx711
+    if(strcmp(commandString, "hx0") == 0){
+      scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+    }
+    if(strcmp(commandString, "hx1") == 0){
+      //scale.begin(DT_PIN, SCK_PIN);
+      /*scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+      digitalWrite(13,1);   //13腳位亮燈給使用者放東西，時間2秒
+      delay(2000);
+      digitalWrite(13,0);*/
+      //scale.power_up();               // 結束睡眠模式
+      Serial.print("hx:");
+      Serial.println(scale.get_units(10), 0);       
+      //scale.power_down();             // 進入睡眠模式
+      //delay(500);
+      //scale.power_up();               // 結束睡眠模式
+    }
+    
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
       analogWrite(atoi(inputPin),atoi(inputValue));
@@ -352,5 +440,77 @@ void getG5(unsigned char ucData)//取G5的值
     }
     ucRxCnt = 0;
     return;
+  }
+}
+
+uint64_t stringToUint_64(String value) {
+  int stringLenght = value.length();
+
+  uint64_t uint64Value = 0x0;
+  for(int i = 0; i<=stringLenght-1; i++) {
+    char charValue = value.charAt(i);
+    uint64Value = 0x10 * uint64Value;
+    uint64Value += stringToHexInt(charValue);
+  }
+
+  return uint64Value;
+}
+
+int stringToHexInt(char value) {
+  switch(value) {
+    case '0':
+      return 0;
+      break;
+    case '1':
+      return 0x1;
+      break;
+    case '2':
+      return 0x2;
+      break;
+    case '3':
+      return 0x3;
+      break;
+    case '4':
+      return 0x4;
+      break;
+    case '5':
+      return 0x5;
+      break;
+    case '6':
+      return 0x6;
+      break;
+    case '7':
+      return 0x7;
+      break;
+    case '8':
+      return 0x8;
+      break;
+    case '9':
+      return 0x9;
+      break;
+    case 'A':
+    case 'a':
+      return 0xA;
+      break;
+    case 'B':
+    case 'b':
+      return 0xB;
+      break;
+    case 'C':
+    case 'c':
+      return 0xC;
+      break;
+    case 'D':
+    case 'd':
+      return 0xD;
+      break;
+    case 'E':
+    case 'e':
+      return 0xE;
+      break;
+    case 'F':
+    case 'f':
+      return 0xF;
+      break;
   }
 }

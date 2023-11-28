@@ -28,11 +28,11 @@ var boards = [
   },
   {
     name: 'leonardo',
-    baud: 57600,
+    baud: 115200,
     signature: new Buffer([0x43, 0x41, 0x54, 0x45, 0x52, 0x49, 0x4e]),
     productId: ['0x0036', '0x8036', '0x800c'],
     productPage: 'https://store.arduino.cc/leonardo',
-    protocol: 'avr109'
+    protocol: 'stk500v1'
   },
   {
     name: 'arduboy',
