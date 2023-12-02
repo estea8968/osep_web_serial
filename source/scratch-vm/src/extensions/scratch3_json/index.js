@@ -244,6 +244,25 @@ class gasoJSON {
                 },
                 "---",
                 {
+                    opcode: "useTextSearchGetData2",
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        data: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'data',
+                        },
+                        column: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'column',
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'value',
+                        },
+                    },
+                    text: msg.useTextSearchGetData2[theLocale],
+                },
+                {
                     opcode: "useTextSearchGetData",
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -584,7 +603,7 @@ class gasoJSON {
     }
 
     useTextSearchGetData(args) {
-        const data = args.data;
+        const data = args.data; //
         const column = args.column;
         const column2 = args.column2;
         const value = args.value;
@@ -601,6 +620,21 @@ class gasoJSON {
         } catch (err) {
             return `Error: ${err}`;
         }
+    }
+
+    useTextSearchGetData2(args){
+        const data = args.data; //
+        const column = args.column;
+        const value = args.value;
+
+        const parsed = JSON.parse(data);
+        const size = parsed.length;
+        var getData = [];
+        for (var i = 0; i < size; i++) {
+            const d = parsed[i][column];
+            if (d.includes(value)) getData.push(parsed[i]);
+        }
+        return JSON.stringify(getData);
     }
 
     useNumberCompareGetData(args) {

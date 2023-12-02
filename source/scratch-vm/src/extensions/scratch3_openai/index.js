@@ -77,6 +77,16 @@ MTcwNTc3IEw5OS45ODA2NTU0LDE0NS45NTMyMTggTDk5LjkyOTQ5NjUsMTEzLjUxODUgWiIgZmls\
 bD0iIzAwMDAwMCI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4K';
 const blockIconURI = menuIconURI;
 let theLocale = null;
+ai_user='一般人';
+ai_assistant='簡單回答問題';
+ai_question='';
+ai_model='gpt-4';
+//this.prompt='';
+ai_temperature=0.5;
+max_tokens=500;
+ai_top_p=0.9;  //>0 <1
+ai_frequency_penalty=0.8; //>0.1 <0.9
+ai_presence_penalty=0.5;  //>0 <1         
 
 class openai {
     constructor(runtime) {
@@ -84,11 +94,10 @@ class openai {
         this.runtime = runtime;
         this.api_key ='';
         this.ai_answer = '';
-        this.system35='';
-        this.assistant35='';
-        this.question35='';
         this.image_size_ary=['1024x1024','512x512','256x256'];
         //this.runtime.registerPeripheralExtension('openai', this);
+
+ 
     }
 
     _setLocale() {
@@ -133,6 +142,11 @@ class openai {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
                         },
+                        NUM: {
+                            type: ArgumentType.STRING,
+                            menu:'num13',
+                            defaultValue: '1'
+                        },
                         SIZE: {
                             type: ArgumentType.STRING,
                             defaultValue: msg.size[theLocale][1],
@@ -141,6 +155,7 @@ class openai {
                     },
                     text: msg.drawimage[theLocale]
                 },
+                /*
                 {
                     opcode: 'talktext',
                     blockType: BlockType.COMMAND,
@@ -155,21 +170,56 @@ class openai {
                         }
                     },
                     text: msg.talktext[theLocale]
-                },
+                },*/
                 '---',
                 {
-                    opcode: 'set_system35',
+                    opcode: 'set_ai_modle',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        SYSTEM: {
+                        MODLE: {
+                            type: ArgumentType.STRING,
+                            menu:'modleItem',
+                            defaultValue: 'gpt-4'
+                        },
+                    },
+                    text: msg.set_ai_modle[theLocale]
+                },
+                {
+                    opcode: 'set_ai_user',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        USER: {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
                         },
                     },
-                    text: msg.set_system35[theLocale]
+                    text: msg.set_ai_user[theLocale]
                 },
                 {
-                    opcode: 'set_assistant35',
+                    opcode: 'set_max_token',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        TOKEN: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '500'
+                        },
+                    },
+                    text: msg.set_max_token[theLocale]
+                },
+                //temperature
+                {
+                    opcode: 'set_temperature',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        TEMP: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '0.5'
+                        },
+                    },
+                    text: msg.set_temperature[theLocale]
+                },
+                {
+                    opcode: 'set_assistant',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         ASSISTANT: {
@@ -177,10 +227,10 @@ class openai {
                             defaultValue: ' '
                         },
                     },
-                    text: msg.set_assistant35[theLocale]
+                    text: msg.set_assistant[theLocale]
                 },
                 {
-                    opcode: 'do_question35',
+                    opcode: 'do_question',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         QUESTION:{
@@ -188,7 +238,7 @@ class openai {
                             defaultValue: ' '
                         },
                     },
-                    text: msg.set_question35[theLocale]
+                    text: msg.set_question[theLocale]
                 },
                 '---',
                 {
@@ -220,6 +270,14 @@ class openai {
                     acceptReporters: true,
                     items: msg.size[theLocale],
                 },
+                num13:{
+                    acceptReporters: true,
+                    items: ['1','2','3'],
+                },
+                modleItem:{
+                    acceptReporters: true,
+                    items: ['gpt-3.5-turbo','gpt-4'],
+                },
             }
         };
     }
@@ -229,8 +287,36 @@ class openai {
         console.log('api_key=',this.api_key);
     }
 
+    set_ai_modle(args){
+        ai_model =args.MODLE;
+        console.log('ai_modle=',ai_model);
+    }
+    set_max_token(args){
+        max_tokens=parseInt(args.TOKEN,10);
+        if(max_tokens>2000){
+            max_tokens=2000;
+        }
+        console.log('max_tokens=',max_tokens);
+    }
+    set_temperature(args){
+        this.temperature=parseFloat(args.TEMP);
+        if(this.temperature<0){
+            this.temperature=0;
+        } 
+        if(this.temperature>1){
+            this.temperature=1;
+        }
+        console.log('temperature=',this.temperature);
+    }
     async drawimage(args){
         let image_size = args.SIZE;
+        let n_num = parseInt(args.NUM,10);
+        if(n_num<1){
+            n_num=1;
+        }
+        if(n_num>3){
+            n_num = 3;
+        }
         for(var i=0;i<this.image_size_ary.length;i++){
             if(image_size==msg.size[theLocale][i]){
                 image_size = this.image_size_ary[i];
@@ -247,18 +333,24 @@ class openai {
             //apiKey: process.env.OPENAI_API_KEY,
           });
         let openai_draw = new OpenAIApi(configuration);
-        console.log('openai_draw=',openai_draw);
+        //console.log('openai_draw=',openai_draw);
         console.log('prompt_text=',prompt_text,image_size);
         try{
             const draw_respone = await openai_draw.createImage({
+                model: "dall-e-2",
                 prompt:prompt_text,
-                n:1,
+                n:n_num,
                 size: image_size
             })
-          const  image_url = draw_respone.data.data[0].url
+          //const  image_url = draw_respone.data.data[0].url
+          const  image_url = draw_respone.data.data  
           console.log('response.data=',draw_respone.data);
           const w_size = image_size.split('x');
-          window.open(image_url, 'openAI 擴充功能', 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          for(n=0;n<draw_respone.data.data.length;n++){
+            window.open(image_url[n].url, 'openAI 生圖功能'+n, 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          }
+          
+          
         }catch (error) {
             if (error.response) {
               console.log(error.draw_respone.status);
@@ -272,7 +364,7 @@ class openai {
         }  
     }
 
-    async talktext(args){
+    /*async talktext(args){
         const input_text = args.TEXT;
         const max_tokens = parseInt(args.MAX_tokens,10);
         if(this.api_key=='' || this.api_key=='api key'){
@@ -309,52 +401,51 @@ class openai {
             }
           }
         }
+    }*/
+
+    set_ai_user(args){
+        ai_user = args.USER;
     }
 
-    set_system35(args){
-        this.system35 = args.SYSTEM;
+    set_assistant(args){
+        ai_assistant = args.ASSISTANT;
     }
 
-    set_assistant35(args){
-        this.assistant35 = args.ASSISTANT;
-    }
-
-    async do_question35(args){
-        this.question35 = args.QUESTION;
-        if(this.api_key=='' || this.api_key=='api key' || this.system35==''||this.assistant35==''||this.question35==''){
+    async do_question(args){
+        ai_question = args.QUESTION;
+        console.log('ai_question=',ai_question+ai_assistant);
+        if(this.api_key=='' || this.api_key=='api key' || this.ai_question==''){
             this.ai_answer= msg.error_ai35[theLocale];//'api_key system assistant user can not empty';
         }else{
+
         const configuration = new Configuration({
             apiKey: this.api_key,
             //apiKey: process.env.OPENAI_API_KEY,
           });
-        //gpt 3.5 turbo
-        // Using GPT-3.5-Turbo
+        
         const openai = new OpenAIApi(configuration);
-        //const model = “gpt-3.5-turbo”;
-        const model = "gpt-3.5-turbo";
-        const tokens = 1024;
-        //const TurboGPT = async (prompt) => {
+        
         try {
-        const completion = await openai.createChatCompletion({
-        model: model,
-        messages: [
-        { role: "system", content: this.system35 },
-        { role: "assistant", content: this.assistant35 },
-        { role: "user", content: this.question35 },
-        ],
-        temperature: 0.5,
-        max_tokens: tokens,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        n: 1,
-        stop: "",
-        });
-        this.ai_answer = completion.data.choices[0].message.content;
+            const completion = await openai.createChatCompletion({
+            model: ai_model,
+            messages: [
+                { role: "system", content: ai_user},
+                { role: "assistant", content: ai_assistant },
+                { role: "user", content: ai_question },
+                ],
+            temperature: ai_temperature,
+            max_tokens: max_tokens,
+            top_p: ai_top_p,
+            frequency_penalty: ai_frequency_penalty,
+            presence_penalty: ai_presence_penalty,
+            n: 1,
+            stop: "",
+            });
+            this.ai_answer = completion.data.choices[0].message.content;
         } catch (error) {
             console.error(error); 
         };
+        
         }
     }
 

@@ -89,6 +89,8 @@ import webserialEsp32InsetIconURL from "./webserialEsp32/webserialEsp-small.png"
 
 import webserialPicoboardImage from "./webserialPicoboard/webserialPicoboard.png";
 import webserialPicoboardInsetIconURL from "./webserialPicoboard/webserialPicoboard-small.png";
+import webserialmicrobitIconURL from "./webserialMicrobit/microbit.png";
+import webserialmicrobitInsetIconURL from "./webserialMicrobit/microbit-small.svg";
 
 import mqttImage from "./mqtt/mqtt.png";
 import mqttInsetIconURL from "./mqtt/mqtt-small.png";
@@ -119,6 +121,9 @@ import webserialLinkit7697Image from "./webserialLinkit7697/webserialLinkit7697.
 import webserialLinkit7697InsetIconURL from "./webserialLinkit7697/webserialLinkit7697-small.png";
 import openaiImage from "./openai/openai.png";
 import openaiInsetIconURL from "./openai/openai-small.svg";
+
+import googlebardImage from "./googlebard/googlebard.svg";
+import googlebardInsetIconURL from "./googlebard/googlebard-small.svg";
 
 import facemesh2scratchIconURL from "./facemesh2scratch/facemesh2scratch.png";
 import facemesh2scratchInsetIconURL from "./facemesh2scratch/facemesh2scratch-small.png";
@@ -1065,6 +1070,57 @@ const extensions = [
     useAutoScan: false,
     helpLink: "https://openai.com/",
   },
+  {
+    name: "webserialmicro:bit",
+    extensionId: "webserialmicrobit",
+    collaborator: "webserial micro:bit",
+    iconURL: webserialmicrobitIconURL,
+    insetIconURL: webserialmicrobitInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect your projects with the world."
+        description="Description for the 'micro:bit' extension"
+        id="gui.extension.microbit.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    //bluetoothRequired: true,
+    internetConnectionRequired: true,
+    launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    connectionIconURL: microbitConnectionIconURL,
+    connectionSmallIconURL: microbitConnectionSmallIconURL,
+    connectingMessage: (
+      <FormattedMessage
+        defaultMessage="Connecting"
+        description="Message to help people connect to their micro:bit."
+        id="gui.extension.microbit.connectingMessage"
+      />
+    ),
+    //helpLink: "https://scratch.mit.edu/microbit",
+  },  
+  /*{
+    name: "GoogleBard",
+    extensionId: "googlebard",
+    collaborator: "estea chen",
+    iconURL: googlebardImage,
+    insetIconURL: googlebardInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Use Google Bard’s models to process natural language and generate images."
+        description="Use Google Bard’s models to process natural language and generate images."
+        id="gui.extension.googlebard.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    //helpLink: "https://openai.com/",
+  }*/
 ];
 export { extensions };
 export default extensions;
