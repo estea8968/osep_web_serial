@@ -173,10 +173,6 @@ void loop() {
                   i++;
                 }
               }
-        }else if(strcmp(b_String, "matrixone")==0){
-          char *a0 = strtok(c_String, ",");
-          char *a1 = strtok(NULL, ",");
-          microbit.drawPixel(atoi(a0), atoi(a1), atoi(d_String));
         }else {
           microbit.print(b_String);   
         }
