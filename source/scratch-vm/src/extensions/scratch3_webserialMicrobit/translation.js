@@ -78,7 +78,10 @@ export const ledDisplayLine ={
     'en': 'LED line on x:[BX] y:[BY] ,to x:[EX] y:[EY]',
     'zh-tw': 'x:[BX] y:[BY],到點x:[EX] y:[EY]亮燈'
 };
-
+export const ledDisplayOne ={
+    'en': 'LED  x:[X] y:[Y] on or off[OF]',
+    'zh-tw': 'x:[X] y:[Y],亮息:[OF]'
+}
 export const displaydrawPixel = {
     'en': 'x:[X] y:[Y] LED [ONOFF]',
     'zh-tw': 'x:[X] y:[Y]亮熄[ONOFF]'
