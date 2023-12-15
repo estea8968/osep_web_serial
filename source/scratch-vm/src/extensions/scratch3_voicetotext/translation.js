@@ -23,3 +23,12 @@ export const beginVoice = {
     'zh-tw': "語音辨識開始"
 };
 
+export const lang_List = {
+    'en': ['cmn-Hant-TW','en-US','ja-JP','ko-KR','cmn-Hans-CN','yue-Hant-HK'],
+    'zh-tw': ['繁中文','英文','日文','韓文','簡中文','粵語'],
+};
+
+export const setLang ={
+    'en': "Lang set [LANG]",
+    'zh-tw': "語音設為[LANG]"
+}

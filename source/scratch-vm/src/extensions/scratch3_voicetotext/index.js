@@ -8,18 +8,20 @@ const menuIconURI =
 const blockIconURI =
     "data:image/png;base64,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";
 
-const defaultId = "default";
+//const defaultId = "default";
 
 let theLocale = null;
 
 var speechText = "";
-
+var recognizing = false; // 是否辨識中
 var recognition = new webkitSpeechRecognition();
 
 recognition.continuous = true;
 recognition.interimResults = true;
-recognition.lang = "cmn-Hant-TW";
-
+var u_set_lang="cmn-Hant-TW";
+const lang_ary=['cmn-Hant-TW','en-US','ja-JP','ko-KR','cmn-Hans-CN','yue-Hant-HK'];
+recognition.lang = u_set_lang;
+//cmn-en-US
 recognition.onresult = function (event) {
     var resultIndex = event.resultIndex;
     var length = event.results[resultIndex].length - 1;
@@ -46,6 +48,7 @@ class voicetoTEXT {
         // string op
         this.decoder = new TextDecoder();
         this.lineBuffer = "";
+
     }
 
     onclose() {
@@ -115,9 +118,22 @@ class voicetoTEXT {
             blockIconURI: blockIconURI,
             blocks: [
                 {
+                    opcode: "setLang",
+                    blockType: BlockType.COMMAND,
+                    text: msg.setLang[theLocale],
+                    arguments: {
+                        LANG:{
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.lang_List[theLocale][0],
+                            menu:'lang'
+                        }
+                    }
+                },
+                {
                     opcode: "beginVoice",
                     blockType: BlockType.COMMAND,
                     text: msg.beginVoice[theLocale],
+                    
                 },
                 {
                     opcode: "pauseVoice",
@@ -141,13 +157,28 @@ class voicetoTEXT {
                     text: msg.voicetoTEXT[theLocale],
                 },
             ],
+            menus: {
+                lang: {
+                    acceptReporters: true,
+                    items: msg.lang_List[theLocale],
+                },
+            }
         };
     }
 
+    setLang(args){
+        let s_lang=args.LANG;
+        console.log('lang=',s_lang);
+        console.log('lang_set=',lang_ary[msg.lang_List[theLocale].indexOf(s_lang)]);
+        u_set_lang =lang_ary[msg.lang_List[theLocale].indexOf(s_lang)];
+    }
+
     beginVoice() {
-        recognition.abort();
         speechText = "";
-        recognition.start();
+        console.log('u_set_lang=',u_set_lang);
+        recognition.abort();
+        recognition.lang = u_set_lang;
+        recognition.start()        
     }
 
     pauseVoice() {
