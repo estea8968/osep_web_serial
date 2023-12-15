@@ -1,6 +1,6 @@
-//版本日期 112 11 20 
+//版本日期 112 12 12 
 //版號
-char *ver = "1121120";
+char *ver = "1121212";
 #include "Wire.h"
 #include <Adafruit_Microbit.h>
 #include "MMA8653.h"

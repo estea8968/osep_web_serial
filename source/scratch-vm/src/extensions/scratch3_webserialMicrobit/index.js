@@ -289,6 +289,26 @@ class Scratch3WebserialMicroBitBlocks {
                     }    
                 },
                 {
+                    opcode: 'displayOne',
+                    text: msg.ledDisplayOne[the_locale],
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        X: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                        Y: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                        OF: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '1',
+                                menu:'onoff'
+                            },
+                    }    
+                },
+                {
                     opcode: 'displayClear',
                     text: formatMessage({
                         id: 'microbit.clearDisplay',
@@ -865,6 +885,14 @@ class Scratch3WebserialMicroBitBlocks {
         await this.serialSend(sendData);
         //new Promise(resolve => setTimeout(resolve, 1000));
     }
+    async displayOne(args){
+        const xx=this.my_range(args.X,0,4);
+        const yy=this.my_range(args.Y,0,4);
+        const of=this.my_range(args.OF,0,4);
+        const sendData = 'led#matrixone#'+xx+','+yy+'#'+of;
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+    }
     /**
      * Turn all 5x5 matrix LEDs off.
      * @return {Promise} - a Promise that resolves after a tick.
@@ -882,6 +910,7 @@ class Scratch3WebserialMicroBitBlocks {
             }, 100);
         });*/
     }
+    
     my_range(in_value,mix,max){
         if(in_value < mix)
             return mix;
