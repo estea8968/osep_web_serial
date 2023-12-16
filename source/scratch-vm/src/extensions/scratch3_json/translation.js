@@ -112,6 +112,11 @@ export const value = {
     'zh-tw': '文字'
 };
 
+export const value2 = {
+    'en': 'value',
+    'zh-tw': '值'
+};
+
 export const splitString = {
     'en': 'Split the [data] and extract the [n] data record.',
     'zh-tw': '分割[data]取第[n]筆資料'

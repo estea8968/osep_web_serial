@@ -25,7 +25,7 @@ export const beginVoice = {
 
 export const lang_List = {
     'en': ['cmn-Hant-TW','en-US','ja-JP','ko-KR','cmn-Hans-CN','yue-Hant-HK'],
-    'zh-tw': ['繁中文','英文','日文','韓文','簡中文','粵語'],
+    'zh-tw': ['繁中文','English','日文','한국어','简中文','粵語'],
 };
 
 export const setLang ={
