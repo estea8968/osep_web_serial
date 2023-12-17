@@ -67,3 +67,8 @@ export const lowerCase = {
     'en': 'lowercase [data]',
     'zh-tw': '[data]轉成小寫'
 };
+
+export const FormConverNum = {
+    'en': "convert[VALUE]from ([F_BEGIN],[F_END]) to ([T_BEGIN],[T_END])",
+    'zh-tw': "轉換[VALUE]從([F_BEGIN],[F_END])到([T_BEGIN],[T_END])",
+};

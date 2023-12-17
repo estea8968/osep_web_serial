@@ -82,7 +82,7 @@ export const useNumberCompareGetData = {
 };
 
 export const useTextSearchGetData2 = {
-    'en': 'Retrieve all data in the data [data] where the field [column] contains the value [value].',
+    'en': 'Retrieve all data in the data [data] where the field [column] contains the value [value]',
     'zh-tw': '查詢資料[data]中欄位[column]包含特定值[value]的所有資料'
 };
 
@@ -118,6 +118,6 @@ export const value2 = {
 };
 
 export const splitString = {
-    'en': 'Split the [data] and extract the [n] data record.',
+    'en': 'Split the [data] and extract the [n] data record',
     'zh-tw': '分割[data]取第[n]筆資料'
 };
