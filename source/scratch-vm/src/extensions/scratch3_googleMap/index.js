@@ -738,7 +738,9 @@ class googleMap {
                 var lat = this.recordCoordinate[i][1];
                 var lng = this.recordCoordinate[i][2];
                 var photo = this.recordCoordinate[i][3];
-                openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + ', color:"EA4335", photo:"'+ photo +'"},');
+                var width = this.width;
+                var length = this.length;
+                openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + ', color:"EA4335", photo:"'+ photo +'", length: ' + length +', width: '+ width +'},');
             }
             openGoogleMapWindow.document.write('];');
 
@@ -801,21 +803,23 @@ class googleMap {
                 function setData(markerData) {
                     var sidebar_html = '座標清單：<br>';
                     for (var i = 0; i < markerData.length; i++) {
-                        addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label, markerData[i].color, markerData[i].photo);
+                        addMarker(i, markerData[i].lat, markerData[i].lng, markerData[i].label, markerData[i].color, markerData[i].photo, markerData[i].length, markerData[i].width);
                         var name = markerData[i]["label"];
                         sidebar_html += '<b>' + (i + 1) + '.</b> <a href="javascript:openWindow(' + i + ')">' + name + '</a><br />';
                     }
                     document.getElementById("sidebar").innerHTML = sidebar_html;
                 }
 
-                function addMarker(i, lat, lng, label, color, photo) {
+                function addMarker(i, lat, lng, label, color, photo, length, width) {
                     var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinColor = color.substr(1); // remove '#' from color code
                     var pinImage = photo;
                     marker[i] = new google.maps.Marker({
                         position: markerLatLng,
                         map: map,
-                        icon: pinImage
+                        icon: {
+                            url: pinImage,
+                            scaledSize: new google.maps.Size(width, length)
+                        }
                     });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;"></p>';
                     infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
@@ -1024,7 +1028,6 @@ class googleMap {
         openGoogleMapWindow.document.close();
     }
 
-    
     showMarker3(args) {
         var data = JSON.parse(args.data);
 
