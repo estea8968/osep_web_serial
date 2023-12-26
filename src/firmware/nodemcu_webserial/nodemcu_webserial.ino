@@ -1,4 +1,4 @@
-/*update 111/12/19 
+/*update 112/12/22 
 estea chen estea8968@gmail.com
 */
 #include <ESP8266WiFi.h>
@@ -11,7 +11,8 @@ estea chen estea8968@gmail.com
 #include <string.h>
 #include <Arduino.h>
 #include <U8g2lib.h>
-
+//#include "u8g2_font_e58524b32706dda48e7107fc64bfd183.h"
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //qrcode
 #include <SSD1306.h>
 #include <qrcode.h>
@@ -26,17 +27,16 @@ estea chen estea8968@gmail.com
 #include <MD_Parola.h>
 #include <MD_MAX72xx.h>
 #include <SPI.h>
+
 //LedControl lc=LedControl(0,5,4,1);
-LedControl lc=LedControl(D3,D2,D1,1);
+LedControl lc=LedControl(D7,D5,D6,1);
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 //MD_Parola maDisplay=MD_Parola(HARDWARE_TYPE, D3,D1,D2,1);
-MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, D2, 1);
+MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, D5, 1);
 //ws2812
 #define NUMPIXELS 12 // Popular NeoPixel ring size
 //Adafruit_NeoPixel pixels(NUMPIXELS, 5, NEO_GRB + NEO_KHZ800);
 
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-//oled end
 //設定LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);  
 DHTStable DHT;
@@ -339,6 +339,7 @@ void loop() {
     //format: l#string#row
     if(strcmp(commandString, "o") == 0) {
         u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
+        //u8g2.setFont(u8g2_font_unifont_myfonts);
         u8g2.firstPage();
         do {
           

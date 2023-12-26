@@ -1,6 +1,6 @@
 {
-  "name": "ESP 韌體",
-  "version": "v:112.12.23",
+  "name": "ESPHome",
+  "version": "2021.12.0-dev",
   "home_assistant_domain": "esphome",
   "builds": [
     {
@@ -9,7 +9,7 @@
         { "path": "bootloader.bin", "offset": 4096 },
         { "path": "partitions.bin", "offset": 32768 },
         { "path": "ota.bin", "offset": 57344 },
-        { "path": "esp32.bin", "offset": 65536 }
+        { "path": "firmware.bin", "offset": 65536 }
       ]
     },
     {
