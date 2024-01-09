@@ -7,6 +7,8 @@ var KoleksiItemset = require('simple-apriori/KoleksiItemset')
 var Itemset = require('simple-apriori/Itemset.js')
 var Apriori = require('simple-apriori/Apriori')
 
+var DecisionTree = require('decision-tree')
+
 const menuIconURI = null;
 const blockIconURI = null;
 
@@ -27,12 +29,11 @@ class dataMining {
         this.onclose = this.onclose.bind(this);
         this.write = this.write.bind(this);
 
-        this.dataset = [];
-        this.support = 50;
-        this.confidence = 50;
-
-        this.itemset = "";
-        this.ruleset = "";
+        this.dataset;
+        this.featureColumn = [];
+        this.targetPredictionColumn;
+        this.PredictionColumn = {};
+        this.predicted = "";
     }
 
     onclose() {
@@ -99,149 +100,190 @@ class dataMining {
             blockIconURI: blockIconURI,
             blocks: [
                 {
-                    opcode: 'minimumSupport',
+                    opcode: 'setUpTheDataset',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        support: {
+                        dataset: {
                             type: ArgumentType.STRING,
-                            defaultValue: "50"
+                            defaultValue: msg.dataset[theLocale]
                         },
                     },
-                    text: msg.minimumSupport[theLocale]
+                    text: msg.setUpDataset[theLocale]
                 },
                 {
-                    opcode: 'minimumConfidence',
+                    opcode: 'setFeatureColumns',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        confidence: {
+                        column: {
                             type: ArgumentType.STRING,
-                            defaultValue: "50"
+                            defaultValue: msg.column[theLocale]
                         },
                     },
-                    text: msg.minimumConfidence[theLocale]
+                    text: msg.setFeatureColumns[theLocale]
                 },
                 {
-                    opcode: 'trainAssociationRules',
+                    opcode: 'setTargetPredictionColumn',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        data: {
+                        column: {
                             type: ArgumentType.STRING,
-                            defaultValue: "資料"
+                            defaultValue: msg.column[theLocale]
                         },
                     },
-                    text: msg.trainAssociationRules[theLocale]
+                    text: msg.setTargetPredictionColumn[theLocale]
                 },
                 {
-                    opcode: 'showItemset',
-                    blockType: BlockType.REPORTER,
-                    text: msg.itemset[theLocale]
+                    opcode: 'trainDecisionTreeModel',
+                    blockType: BlockType.COMMAND,
+                    text: msg.trainDecisionTreeModel[theLocale]
                 },
                 {
-                    opcode: 'showAssociationRules',
-                    blockType: BlockType.REPORTER,
-                    text: msg.associationRules[theLocale]
+                    opcode: 'visualizeDecisionTree',
+                    blockType: BlockType.COMMAND,
+                    text: msg.visualizeDecisionTree[theLocale]
                 },
             ],
         };
     }
 
-    minimumSupport(arg) {
-        if (0 <= arg.support && arg.support <= 100) this.support = arg.support;
-        else return "請輸入 0 到 100 的最小支持度"
+    setUpTheDataset(args) {
+        this.dataset = args.dataset;
+        this.featureColumn = [];
     }
 
-    minimumConfidence(arg) {
-        if (0 <= arg.confidence && arg.confidence <= 100) this.confidence = arg.confidence;
-        else return "請輸入 0 到 100 的最小信賴度"
+    setFeatureColumns(args) {
+        this.featureColumn = this.featureColumn.concat(args.column);
     }
 
-    trainAssociationRules(arg) {
-        var data = JSON.parse(arg.data);        // 資料來源
-        var keys = Object.keys(data[0]);        // 欄位名稱
-        var dataset = [];                       // 資料集
-        var itemset = [];                       // 項目集
-        var ruleset = [];                       // 關聯規則集
-        var support = this.support;             // 最小支持度
-        var confidence = this.confidence;       // 最小信賴度
-
-        console.log("最小支持度：", support, " 最小信賴度：", confidence);
-
-        alert(msg.pleaseWait[theLocale]);
-
-        // 整理資料集
-        for (var i = 0; i < data.length; i++) {
-            var tmpData = "";
-            for (var j = 0; j < keys.length; j++) {
-                if (data[i][keys[j]] != "")
-                    tmpData += `${data[i][keys[j]]}, `;
-            }
-            dataset.push(tmpData.slice(0, -2));
-        }
-
-        // 處理資料
-        var db = new KoleksiItemset();
-
-        for (var i in dataset) {
-            var items = dataset[i].split(', ');
-            db.push(Itemset.from(items));
-        }
-
-        // 計算項目集的支持度
-        var supportData = parseFloat(support);
-        var itemSupport = Apriori.getSupport(db, supportData);
-
-        // 整理項目集
-        for (var i = 0; i < itemSupport.length; i++) {
-            var itemsKeys = Object.keys(itemSupport[i]);
-            var tmpData = "";
-            var tmpSupport = this.formatNumber(itemSupport[i]["Support"].toFixed(2));
-
-            for (var j = 0; j < itemsKeys.length; j++) {
-                if (itemsKeys[j] != "Support")
-                    tmpData += itemSupport[i][j] + ",";
-            }
-
-            itemset.push({ ["項目"]: tmpData.slice(0, -1), ["支持度"]: tmpSupport });
-        }
-
-        this.itemset = JSON.stringify(itemset);
-        console.log("項目集：");
-        console.table(itemset);
-
-        // 建立關聯規則
-        var confidenceData = parseFloat(confidence);
-        var rules = Apriori.getConfidence(db, itemSupport, confidenceData);
-
-        // 整理關聯規則
-        for (var i = 0; i < rules.length; i++) {
-            var tmpData = "";
-            var X = rules[i]["X"];
-            var Y = rules[i]["Y"];
-            var tmpSupport = this.formatNumber(rules[i]["Support"].toFixed(2));
-            var tmpConfidence = this.formatNumber(rules[i]["Confidence"].toFixed(2));
-
-            ruleset.push({ ["規則"]: `{${X}} -> {${Y}}`, ["支持度"]: tmpSupport, ["信賴度"]: tmpConfidence });
-        }
-
-        this.ruleset = JSON.stringify(ruleset);
-        console.log("關聯規則：");
-        console.table(ruleset);
-
-        alert(msg.complete[theLocale]);
+    setTargetPredictionColumn(args) {
+        this.targetPredictionColumn = args.column;
     }
 
-    formatNumber(str) {
-        if (str.endsWith('.00')) { return str.slice(0, -3); }
-        if (str.endsWith('0')) { return str.slice(0, -1); }
-        return str;
+    trainDecisionTreeModel(args) {
+        var class_name = this.targetPredictionColumn;
+        var features = this.featureColumn;
+        var training_data = JSON.parse(this.dataset);
+
+        this.dt = new DecisionTree(class_name, features);
+        this.dt.train(training_data);
+
+        var treeJson = this.dt.toJSON();
+        this.treeJsonmodel = treeJson.model;
+
+        this.PredictionColumn = {};
+
+        console.log(this.treeJsonmodel);
     }
 
-    showItemset() {
-        return this.itemset;
-    }
+    visualizeDecisionTree(args) {
+        var width = screen.width / 2;
+        var height = screen.height / 2;
+        var dataMiningWindow = window.open('', '資料探勘擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
 
-    showAssociationRules() {
-        return this.ruleset;
+        var treeJsonmodel = JSON.stringify(this.treeJsonmodel);
+
+        dataMiningWindow.document.write(`
+        <html>
+
+        <head>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"
+                integrity="sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        </head>
+
+        <body>
+
+            <script>
+
+                var data = ${treeJsonmodel};
+                function buildTreeWithRoot(rootNode) {
+                    var treeData = [];
+                    var root = { name: rootNode.name, type: rootNode.type, val: undefined, depth: 0, parent: null };
+                    treeData.push(root);
+
+                    function buildTree(node, parent, depth) {
+                        if (node.vals) {
+                            node.vals.forEach(function (child) {
+                                var newNode = { name: child.name, type: child.type, val: child.child.val, depth: depth, parent: parent };
+                                treeData.push(newNode);
+                                if (child.child.vals) {
+                                    buildTree(child.child, newNode, depth + 1);
+                                }
+                            });
+                        }
+                    }
+
+                    buildTree(rootNode, root, 1);
+                    return treeData;
+                }
+
+                var treeData = buildTreeWithRoot(data);
+                console.log(treeData);
+
+                var width = 600;
+                var height = 400;
+                var margin = { left: 100, right: 50, top: 100, bottom: 0 };
+
+                var svg = d3.select('body').append('svg').attr('width', '100%').attr('height', '100%');
+                var chartGroup = svg.append('g').attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+                var treeLayout = d3.tree().size([width - 100, height - 100]);
+
+                var root = d3.stratify()
+                    .id(function (d) { return d.name; })
+                    .parentId(function (d) { return d.parent ? d.parent.name : null; })
+                    (treeData);
+
+                var tree = treeLayout(root);
+
+                var links = chartGroup.selectAll(".link")
+                    .data(tree.links())
+                    .enter().append("line")
+                    .attr("class", "link")
+                    .attr("x1", function (d) { return d.source.x; })
+                    .attr("y1", function (d) { return d.source.y; })
+                    .attr("x2", function (d) { return d.target.x; })
+                    .attr("y2", function (d) { return d.target.y; });
+
+                var nodes = chartGroup.selectAll(".node")
+                    .data(tree.descendants())
+                    .enter().append("circle")
+                    .attr("class", "node")
+                    .attr("cx", function (d) { return d.x; })
+                    .attr("cy", function (d) { return d.y; })
+                    .attr("r", 10);
+
+                var labels = chartGroup.selectAll(".label")
+                    .data(tree.descendants())
+                    .enter().append("text")
+                    .attr("class", "label")
+                    .attr("x", function (d, i) {
+                        if (i == 0) {
+                            return d.x - 10;
+                        } else {
+                            return d.x - 30;
+                        }
+                    })
+                    .attr("y", function (d, i) {
+                        if (i == 0) {
+                            return d.y - 20;
+                        } else {
+                            return d.y + 20;
+                        }
+                    })
+                    .text(function (d) {
+                        if (d.data.val != undefined) {
+                            return d.data.name + '(' + d.data.val + ')';
+                        } else {
+                            return d.data.name;
+                        }
+                    });
+
+            </script>
+        </body>
+
+        </html>
+        `);
     }
 }
 module.exports = dataMining;
