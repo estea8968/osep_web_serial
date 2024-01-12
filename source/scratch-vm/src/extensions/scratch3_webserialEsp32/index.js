@@ -1126,6 +1126,16 @@ class Scratch3Esp32WebSerial {
     }
 
     // end of block handlers
+    async listener(){
+        navigator.serial.addEventListener('disconnect', (event) => {
+            esp32_port = null;
+            //connected = false;
+            console.log('disconnect斷線了');
+            //alert(msg.FormDisconnect[the_locale]);
+        // TODO: Remove |event.target| from the UI.
+        // If the serial port was opened, a stream error would be observed as well.
+       });
+    }
 
     // helpers
     async connect() {
@@ -1138,7 +1148,7 @@ class Scratch3Esp32WebSerial {
          esp32_port = await navigator.serial.requestPort({});
          await esp32_port.open({ baudRate: 115200 });
     	 console.log('esp32_port:',esp32_port);
-
+         this.listener();
     }
     //ws2812 sh
     ws2812_set_clear() {
