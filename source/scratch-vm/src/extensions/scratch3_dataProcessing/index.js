@@ -228,6 +228,33 @@ class dataProcessing {
                     },
                     text: msg.lowerCase[theLocale]
                 },
+                {
+                    opcode: 'conver_num',
+                    blockType: BlockType.REPORTER,
+                    text: msg.FormConverNum[theLocale],
+                    arguments: {
+                        VALUE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '50',
+                        },
+                        F_BEGIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0',
+                        },
+                        F_END: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '1023',
+                        },
+                        T_BEGIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0',
+                        },
+                        T_END: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '100',
+                        },
+                    }
+                },
 
             ],
             menus: {
@@ -330,6 +357,33 @@ class dataProcessing {
     lowerCase(args){
         return args.data.toLowerCase();
     }
+
+    conver_num(args){
+        const value = parseInt(args.VALUE,10) ;
+        let f_begin = parseInt(args.F_BEGIN,10);
+        let f_end = parseInt(args.F_END,10);
+        let f_range;
+        if(f_end>f_begin){
+            f_range = f_end-f_begin;
+        }else{
+            f_range = f_begin-f_end;
+        }
+        const t_begin = parseInt(args.T_BEGIN,10);
+        const t_end = parseInt(args.T_END,10);
+        let t_range;
+        let t_add;
+        if(t_end>t_begin){
+            t_range = t_end -t_begin;
+            t_add = t_begin;
+        }else{
+            t_range = t_begin-t_end;
+            t_add = t_end;
+        }
+        const conver_value = Math.round(((value/f_range)*t_range)+t_add); 
+        console.log('conver_value',conver_value);
+        return conver_value;
+    }
+
     
 }
 

@@ -249,15 +249,15 @@ class gasoJSON {
                     arguments: {
                         data: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'data',
+                            defaultValue: msg.data[theLocale],
                         },
                         column: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'column',
+                            defaultValue: msg.Column_name[theLocale],
                         },
                         value: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'value',
+                            defaultValue: msg.value2[theLocale],
                         },
                     },
                     text: msg.useTextSearchGetData2[theLocale],
