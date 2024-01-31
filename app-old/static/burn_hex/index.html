@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <title>upload firmware</title>
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Cabin+Sketch|Fugaz+One|Itim|Sacramento&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+  <div class="main">
+      <div class="wrapper">
+        <div class="bot">
+          <h1>Upload-o-matic 上傳韌體</h1>
+          <p>選擇 Arduino 開發板</p>
+
+          <form id="uploadForm"> 
+            <label>開發板：
+              <select id="boardType">
+                <option value="uno">Uno</option>
+                <!--<option value="leonardo">leonardo</option>-->
+                <option value="mega">mega</option>
+                <option value="nano">Nano</option>                
+                <option value="picoboard">Picoboard</option>
+              </select>
+            </label>
+
+            <!--label>Program:
+              <div class="fileButtonWrapper">
+                <button id="fileButton" type="button" aria-controls="fileInput">Choose file</button>
+                <input id="fileInput" tabindex="-1" type="file"/>
+                <span id="fileName">no file chosen</span>
+              </div>
+            </label-->
+
+            <button type="submit" id="uploadBtn">上傳</button>
+          </form>
+        </div>
+        <div class="board">
+          <img src="images/ArduinoUno.svg"/>
+        </div>
+        <div id="pipe"></div>
+        <div id="go"></div>
+        <div id="progress"></div>
+        <div id="gear"><img src="images/gear4.svg"/></div>
+      </div>
+    </div>
+    <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
+    <script src="js/uno_hex.js" charset="UTF-8"></script>
+    <script src="js/mega_hex.js" charset="UTF-8"></script>
+    <script src="js/picoboard_hex.js" charset="UTF-8"></script>
+    <!--<script src="js/leonardo_hex.js" charset="UTF-8"></script>-->
+    <script src="js/nano_hex.js" charset="UTF-8"></script>
+    
+    <script>
+      function handleSubmit(e) {
+        e.preventDefault();
+	
+        const board = boardType.value;
+        console.log('board:',board);
+	if (board =='uno'){
+	   hexStr = unoHex;
+	}else if(board =='leonardo'){
+	   hexStr = leonardoHex;	
+	}else if(board == 'nano'){
+	   hexStr = nanoHex;
+	}else if(board == 'picoboard'){
+	   hexStr = picoboardHex;
+	}else if(board =='mega'){
+	   hexStr = megaHex;
+	}
+	console.log(hexStr);
+	console.log('board:',board);
+        let avrgirl = new AvrgirlArduino({
+          board: board,
+          debug: true
+        });
+
+        gear.classList.add('spinning');
+        const filecontents = new TextEncoder().encode(hexStr);
+
+        avrgirl.flash(filecontents, (error) =>  {
+          gear.classList.remove('spinning');
+          progress.textContent = "done!";
+          if (error) {
+            console.error(error);
+            alert('fail 失敗');
+          } else {
+            console.info('done correctly.');
+            alert('upload complate 上傳完成');
+          }
+        });
+      }
+
+      const uploadForm = document.getElementById('uploadForm');
+      // const fileInput = document.getElementById('fileInput');
+      // const fileButton = document.getElementById('fileButton');
+      // const fileName = document.getElementById('fileName');
+      const boardType = document.getElementById('boardType');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const log = document.getElementById('log');
+      const progress = document.getElementById('progress');
+      const gear = document.getElementById('gear');
+
+      uploadForm.addEventListener('submit', handleSubmit, false);
+      /*fileButton.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) fileName.textContent = file.name;
+      });*/
+    </script>
+  </body>
+</html>
