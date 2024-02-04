@@ -361,7 +361,8 @@ class dataMining {
     }
 
     correctRate(args) {
-        return ((this.treeJsonmodel.gain) * 100).toFixed(2);
+        if(this.treeJsonmodel === undefined) return "";
+        else return ((this.treeJsonmodel.gain) * 100).toFixed(2);
     }
 
     // evaluateDecisionTreeModel(args) {
