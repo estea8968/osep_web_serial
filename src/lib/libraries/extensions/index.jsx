@@ -122,8 +122,8 @@ import webserialLinkit7697InsetIconURL from "./webserialLinkit7697/webserialLink
 import openaiImage from "./openai/openai.png";
 import openaiInsetIconURL from "./openai/openai-small.svg";
 
-import googlebardImage from "./googlebard/googlebard.svg";
-import googlebardInsetIconURL from "./googlebard/googlebard-small.svg";
+import geminiImage from "./gemini/gemini.png";
+import geminiInsetIconURL from "./gemini/gemini-small.svg";
 
 import facemesh2scratchIconURL from "./facemesh2scratch/facemesh2scratch.png";
 import facemesh2scratchInsetIconURL from "./facemesh2scratch/facemesh2scratch-small.png";
@@ -1071,9 +1071,30 @@ const extensions = [
     helpLink: "https://openai.com/",
   },
   {
+    name: "Gemini",
+    extensionId: "gemini",
+    collaborator: "estea chen",
+    iconURL: geminiImage,
+    insetIconURL: geminiInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Use Gemini’s models to process natural language and generate images."
+        description="Use Gemini’s models to process natural language and generate images."
+        id="gui.extension.gemini.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    helpLink: "https://www.gemini.com/",
+  },
+  {
     name: "webserialmicro:bit",
     extensionId: "webserialmicrobit",
-    collaborator: "webserial micro:bit",
+    collaborator: "micro:bit estea chen",
     iconURL: webserialmicrobitIconURL,
     insetIconURL: webserialmicrobitInsetIconURL,
     description: (
@@ -1100,27 +1121,7 @@ const extensions = [
     ),
     //helpLink: "https://scratch.mit.edu/microbit",
   },  
-  /*{
-    name: "GoogleBard",
-    extensionId: "googlebard",
-    collaborator: "estea chen",
-    iconURL: googlebardImage,
-    insetIconURL: googlebardInsetIconURL,
-    description: (
-      <FormattedMessage
-        defaultMessage="Use Google Bard’s models to process natural language and generate images."
-        description="Use Google Bard’s models to process natural language and generate images."
-        id="gui.extension.googlebard.description"
-      />
-    ),
-    featured: true,
-    disabled: false,
-    // bluetoothRequired: false,
-    internetConnectionRequired: true,
-    // launchPeripheralConnectionFlow: false,
-    useAutoScan: false,
-    //helpLink: "https://openai.com/",
-  }*/
+  
 ];
 export { extensions };
 export default extensions;

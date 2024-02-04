@@ -33,6 +33,11 @@ export const showMarker1 ={
     'zh-tw': '顯示在 Google 地圖'
 }
 
+export const calculateDistance = {
+    'en':'select [traffic] as the transportation mode to calculate the distance between two points',
+    'zh-tw': '選擇[traffic]交通方式計算兩點的距離'
+}
+
 export const setFieldNames ={
     'en': 'set Name [name], Longitude [longitude], Latitude [latitude], and Description [note] fields',
     'zh-tw': '設定名稱[name]經度[longitude]緯度[latitude]及備註[note]等欄位名稱'
@@ -73,6 +78,16 @@ export const tmpData3 = {
     'zh-tw': '名稱,經度,緯度,圖片連結,備註'
 }
 
+export const readErr = {
+    'en': 'Error: no data on distance between two points',
+    'zh-tw': '錯誤：沒有兩點距離的資料'
+}
+
+export const distance = {
+    'en': 'distance',
+    'zh-tw': '距離'
+}
+
 export const name = {
     'en': 'name',
     'zh-tw': '名稱'
@@ -111,4 +126,19 @@ export const green = {
 export const blue = {
     'en': 'blue',
     'zh-tw': '藍色'
+}
+
+export const driving = {
+    'en': 'driving',
+    'zh-tw': '開車'
+}
+
+export const transit = {
+    'en': 'transit',
+    'zh-tw': '大眾運輸'
+}
+
+export const walking = {
+    'en': 'walking',
+    'zh-tw': '步行'
 }
