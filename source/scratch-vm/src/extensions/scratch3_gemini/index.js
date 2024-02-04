@@ -124,7 +124,7 @@ class scratch3_gemini {
                     arguments: {
                         TOKEN: {
                             type: ArgumentType.STRING,
-                            defaultValue: '200'
+                            defaultValue: '2048'
                         },
                     },
                     text: msg.set_max_token[theLocale]
@@ -135,7 +135,7 @@ class scratch3_gemini {
                     arguments: {
                         TEMP: {
                             type: ArgumentType.STRING,
-                            defaultValue: '0.9'
+                            defaultValue: '0.5'
                         },
                     },
                     text: msg.set_temperature[theLocale]
@@ -214,8 +214,8 @@ class scratch3_gemini {
     }
     set_max_token(args){
         max_tokens=parseInt(args.TOKEN,10);
-        if(max_tokens>2000){
-            max_tokens=2000;
+        if(max_tokens<2048){
+            max_tokens=2048;
         }
         console.log('max_tokens=',max_tokens);
     }

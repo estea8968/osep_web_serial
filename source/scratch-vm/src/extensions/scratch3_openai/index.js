@@ -344,7 +344,7 @@ class openai {
             n_num = 3;
         }
         for(var i=0;i<this.image_size_d3_ary.length;i++){
-            if(image_size==msg.size[theLocale][i]){
+            if(image_size==msg.size_d3[theLocale][i]){
                 image_size = this.image_size_d3_ary[i];
                 break;
             }
@@ -374,7 +374,7 @@ class openai {
                 size: image_size
             })
           //const  image_url = draw_respone.data.data[0].url
-          const  image_url = draw_respone.data  
+          const  image_url = draw_respone.data;
           console.log('response.data=',draw_respone.data);
           const w_size = image_size.split('x');
           for(n=0;n<draw_respone.data.length;n++){
@@ -405,7 +405,7 @@ class openai {
             n_num = 3;
         }
         for(var i=0;i<this.image_size_d2_ary.length;i++){
-            if(image_size==msg.size[theLocale][i]){
+            if(image_size==msg.size_d2[theLocale][i]){
                 image_size = this.image_size_d2_ary[i];
                 break;
             }
@@ -415,29 +415,35 @@ class openai {
         if(this.api_key=='' ||  this.api_key=='api key'){
             alert('api_key is null');
         }
-        const configuration = new Configuration({
+        let openai_draw = new OpenAIApi({
             apiKey: this.api_key,
-            //apiKey: process.env.OPENAI_API_KEY,
-          });
-        let openai_draw = new OpenAIApi(configuration);
+            dangerouslyAllowBrowser: true,
+        });
         //console.log('openai_draw=',openai_draw);
         console.log('prompt_text=',prompt_text,image_size);
         try{
-            const draw_respone = await openai_draw.createImage({
+            const draw_respone = await openai_draw.images.generate({
                 model: "dall-e-2",
                 prompt:prompt_text,
                 n:n_num,
+                quality: "hd",
                 size: image_size
             })
           //const  image_url = draw_respone.data.data[0].url
-          const  image_url = draw_respone.data.data  
+          const  image_url = draw_respone.data ; 
+          console.log('response.data=',draw_respone.data);
+          const w_size = image_size.split('x');
+          for(n=0;n<draw_respone.data.length;n++){
+            window.open(image_url[n].url, 'openAI 生圖功能'+n, 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
+          }
+            
+          //const  image_url = draw_respone.data.data[0].url
+          /*const  image_url = draw_respone.data.data  
           console.log('response.data=',draw_respone.data);
           const w_size = image_size.split('x');
           for(n=0;n<draw_respone.data.data.length;n++){
             window.open(image_url[n].url, 'openAI 生圖功能'+n, 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
-          }
-          
-          
+          }*/
         }catch (error) {
             if (error.response) {
               console.log(error.draw_respone.status);
