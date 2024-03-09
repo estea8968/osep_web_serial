@@ -60577,5 +60577,7 @@ export default {
     "gui.extension.WebSerialLinkit7697.description":"使用 Web Serial API 連接 LinkIt7697 與 Googel Chrome 瀏覽器",
     "gui.extension.dataMining.title":"資料探勘",
     "gui.extension.dataMining.description":"挖掘大量資料進行知識探索，並使用分析模型來評估與預測",
+    "gui.menuBar.farmware":"韌體",
+    "gui.extension.gemini.description":"使用 Google Gemini 的人工智慧模型進行自然語言處理任務",
   }
 };

@@ -16,15 +16,26 @@ export const copyTEXT_memory ={
     'en': 'copy [TEXT]to clipboard',
     'zh-tw': '複製[TEXT]到剪貼簿'
 };
-
-export const size  ={
+export const size_d2  ={
     'en': ['large','medium','small'],
     'zh-tw': ['大','中','小']
 };
 
-export const drawimage = {
+export const drawimage_d2 = {
     'en': 'create [NUM] image of[SIZE] size  based upon text[TEXT] ',
-    'zh-tw': 'AI繪圖[SIZE]大小[NUM]張 圖片描述[TEXT] '
+    'zh-tw': 'dall-e-2繪圖[SIZE]大小[NUM]張 圖片描述[TEXT] '
+
+};
+
+
+export const size_d3  ={
+    'en': ['square','Horizontal','vertical'],
+    'zh-tw': ['正方形','横','直']
+};
+
+export const drawimage_d3 = {
+    'en': 'create [NUM] image of[SIZE] size  based upon text[TEXT] ',
+    'zh-tw': 'dall-e-3繪圖[SIZE][NUM]張 圖片描述[TEXT] '
 
 };
 
