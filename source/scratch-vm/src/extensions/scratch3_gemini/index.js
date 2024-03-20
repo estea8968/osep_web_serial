@@ -313,9 +313,10 @@ class scratch3_gemini {
             const model = genAI.getGenerativeModel({ model: "gemini-pro",generationConfig});
                  //const prompt = "Write a story about a magic backpack."
             const result = await model.generateContent(ai_question);
-            const response = await result.response;
-            this.ai_answer = response.text();
-            console.log(text);        
+            this.ai_answer = await result.response.text();
+            //console.log('response=',response.text());
+            //this.ai_answer = response.text();
+            console.log('ai_answer=',this.ai_answer);        
         }
     }
 
