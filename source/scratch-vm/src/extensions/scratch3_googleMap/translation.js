@@ -34,8 +34,8 @@ export const showMarker1 ={
 }
 
 export const calculateDistance = {
-    'en':'select [traffic] as the transportation mode to calculate the distance between two points',
-    'zh-tw': '選擇[traffic]交通方式計算兩點的距離'
+    'en':'window [display] selection [traffic] calculate the distance between two points',
+    'zh-tw': '視窗[display]選擇[traffic]交通方式計算兩點的距離'
 }
 
 export const setFieldNames ={
@@ -141,4 +141,14 @@ export const transit = {
 export const walking = {
     'en': 'walking',
     'zh-tw': '步行'
+}
+
+export const open = {
+    'en': 'open',
+    'zh-tw': '開啟'
+}
+
+export const close = {
+    'en': 'close',
+    'zh-tw': '關閉'
 }

@@ -2,6 +2,8 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const msg = require('./translation');
 const formatMessage = require('format-message');
+const { Client } = require('@googlemaps/google-maps-services-js');
+const googleMapsClient = new Client({ key: "AIzaSyDQyvBdtQG4wBygmCMLjNhniJXd55PXLyA" });
 
 const menuIconURI = null;
 const blockIconURI = null;
@@ -201,6 +203,11 @@ class googleMap {
                     opcode: 'calculateDistance',
                     blockType: BlockType.COMMAND,
                     arguments: {
+                        display: {
+                            type: ArgumentType.STRING,
+                            menu: 'selectDisplay',
+                            defaultValue: 0
+                        },
                         traffic: {
                             type: ArgumentType.STRING,
                             menu: 'selectTraffic',
@@ -326,6 +333,19 @@ class googleMap {
                         },
                     ]
                 },
+                selectDisplay: {
+                    acceptReporters: true,
+                    items: [
+                        {
+                            text: msg.open[theLocale],
+                            value: 1
+                        },
+                        {
+                            text: msg.close[theLocale],
+                            value: 0
+                        },
+                    ]
+                },
             }
         };
     }
@@ -413,7 +433,7 @@ class googleMap {
             var width = screen.width / 2;
             var height = screen.height / 2;
             var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
-    
+
             openGoogleMapWindow.document.write(`
             <head>
                 <meta charset="utf-8" />
@@ -453,17 +473,17 @@ class googleMap {
                     defer></script>
                 <script>
             `);
-    
+
             openGoogleMapWindow.document.write('var markerData = [');
             for (var i = 0; i < this.recordCoordinate.length; i++) {
                 var label = this.recordCoordinate[i][0];
                 var lat = this.recordCoordinate[i][1];
                 var lng = this.recordCoordinate[i][2];
-    
+
                 openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + '},');
             }
             openGoogleMapWindow.document.write('];');
-    
+
             openGoogleMapWindow.document.write(`
                     var map;
                     var marker = [];
@@ -557,7 +577,7 @@ class googleMap {
             </body>
             </html>
             `);
-    
+
             openGoogleMapWindow.document.close();
         }
 
@@ -687,7 +707,8 @@ class googleMap {
                 function addMarker(i, lat, lng, label, color) {
                     var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
                     var pinColor = color.substr(1); // remove '#' from color code
-                    var pinImage = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + color;
+                    var pinImage = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#' + color + '"><path d="M12 2C7.6 2 4 5.6 4 10c0 4.4 8 13 8 13s8-8.6 8-13c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>');
+
                     marker[i] = new google.maps.Marker({
                         position: markerLatLng,
                         map: map,
@@ -778,7 +799,7 @@ class googleMap {
                 var photo = this.recordCoordinate[i][3];
                 var width = this.width;
                 var length = this.length;
-                openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + ', color:"EA4335", photo:"'+ photo +'", length: ' + length +', width: '+ width +'},');
+                openGoogleMapWindow.document.write('{ label:"' + label + '", lat: ' + lat + ', lng: ' + lng + ', color:"EA4335", photo:"' + photo + '", length: ' + length + ', width: ' + width + '},');
             }
             openGoogleMapWindow.document.write('];');
 
@@ -901,124 +922,153 @@ class googleMap {
         if (traffic == "TRANSIT") traffic_Text = msg.transit[theLocale]
         if (traffic == "WALKING") traffic_Text = msg.walking[theLocale]
 
-        var width = screen.width / 2;
-        var height = screen.height / 2;
-        var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
+        if(args.display == 1){
 
-        openGoogleMapWindow.document.write(`
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Calculate Distance, Mark Locations, Display Path and InfoWindow</title>
-            <script
-                src="https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API_KEY}&libraries=geometry,directions"></script>
-            <style>
-                #map {
-                    height: 100%;
+            var width = screen.width / 2;
+            var height = screen.height / 2;
+
+            var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
+
+            openGoogleMapWindow.document.write(`
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Calculate Distance, Mark Locations, Display Path and InfoWindow</title>
+                <script
+                    src="https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API_KEY}&libraries=geometry,directions"></script>
+                <style>
+                    #map {
+                        height: 100%;
+                    }
+
+                    html,
+                    body {
+                        height: 100%;
+                        margin: 0;
+                        padding: 0;
+                    }
+                </style>
+            </head>
+
+            <body>
+
+                <div id="map"></div>
+
+                <script>
+                    var map;
+                    var directionsService;
+                    var directionsRenderer;
+
+                    function initMap() {
+
+                        map = new google.maps.Map(document.getElementById('map'), {
+                            center: { lat: ${this.recordCoordinate[0][1]}, lng: ${this.recordCoordinate[0][2]} },
+                            zoom: 10
+                        });
+
+                        var location1 = new google.maps.LatLng(${this.recordCoordinate[0][1]}, ${this.recordCoordinate[0][2]});
+                        var location2 = new google.maps.LatLng(${this.recordCoordinate[1][1]}, ${this.recordCoordinate[1][2]});
+
+                        var marker1 = new google.maps.Marker({
+                            position: location1,
+                            map: map,
+                            title: '${this.recordCoordinate[0][0]}'
+                        });
+
+                        var marker2 = new google.maps.Marker({
+                            position: location2,
+                            map: map,
+                            title: '${this.recordCoordinate[1][0]}'
+                        });
+
+                        directionsService = new google.maps.DirectionsService();
+                        directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true });
+
+                        var request = {
+                            origin: location1,
+                            destination: location2,
+                            travelMode: '${traffic}'
+                        };
+
+                        directionsService.route(request, function (result, status) {
+                            if (status == 'OK') {
+                                directionsRenderer.setDirections(result);
+
+                                var route = result.routes[0];
+                                var distance = 0;
+                                for (var i = 0; i < route.legs.length; i++) { distance += route.legs[i].distance.value; }
+
+                                var distanceInKm = distance / 1000;
+
+                                var infoWindow1 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[0][0]}' });
+                                var infoWindow2 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[1][0]}' });
+
+                                google.maps.event.addListener(marker1, 'click', function () { infoWindow1.open(map, marker1); });
+                                google.maps.event.addListener(marker2, 'click', function () { infoWindow2.open(map, marker2); });
+
+                                var distanceInfoWindow = new google.maps.InfoWindow({ content: '從${this.recordCoordinate[0][0]}到${this.recordCoordinate[1][0]}的${traffic_Text}距離是' + distanceInKm.toFixed(2) + ' 公里' });
+
+                                distanceInfoWindow.setPosition(route.legs[0].end_location);
+                                distanceInfoWindow.open(map);
+
+                                window.opener.postMessage({ distance: distanceInKm.toFixed(2) }, '*');
+                            }
+                        });
+                    }
+
+                    google.maps.event.addDomListener(window, 'load', initMap);
+
+                </script>
+
+            </body>
+            `);
+
+            openGoogleMapWindow.document.close();
+
+            var that = this;
+
+            var promise = new Promise(function (resolve) { promiseResolver = resolve; });
+
+            window.removeEventListener('message', that.messageHandler);
+
+            that.messageHandler = function (event) {
+                if (event.source === openGoogleMapWindow) {
+                    var distanceValue = event.data.distance;
+                    distanceKMValue = distanceValue;
+
+                    promiseResolver();
                 }
+            };
 
-                html,
-                body {
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                }
-            </style>
-        </head>
+            window.addEventListener('message', that.messageHandler);
 
-        <body>
+            promise.then(function () { that.distanceKM = distanceKMValue; });
 
-            <div id="map"></div>
+        }
 
-            <script>
-                var map;
-                var directionsService;
-                var directionsRenderer;
+        if(args.display == 0){
 
-                function initMap() {
-
-                    map = new google.maps.Map(document.getElementById('map'), {
-                        center: { lat: ${this.recordCoordinate[0][1]}, lng: ${this.recordCoordinate[0][2]} },
-                        zoom: 10
-                    });
-
-                    var location1 = new google.maps.LatLng(${this.recordCoordinate[0][1]}, ${this.recordCoordinate[0][2]});
-                    var location2 = new google.maps.LatLng(${this.recordCoordinate[1][1]}, ${this.recordCoordinate[1][2]});
-
-                    var marker1 = new google.maps.Marker({
-                        position: location1,
-                        map: map,
-                        title: '${this.recordCoordinate[0][0]}'
-                    });
-
-                    var marker2 = new google.maps.Marker({
-                        position: location2,
-                        map: map,
-                        title: '${this.recordCoordinate[1][0]}'
-                    });
-
-                    directionsService = new google.maps.DirectionsService();
-                    directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true });
-
-                    var request = {
-                        origin: location1,
-                        destination: location2,
-                        travelMode: '${traffic}'
-                    };
-
-                    directionsService.route(request, function (result, status) {
-                        if (status == 'OK') {
-                            directionsRenderer.setDirections(result);
-
-                            var route = result.routes[0];
-                            var distance = 0;
-                            for (var i = 0; i < route.legs.length; i++) { distance += route.legs[i].distance.value; }
-
-                            var distanceInKm = distance / 1000;
-
-                            var infoWindow1 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[0][0]}' });
-                            var infoWindow2 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[1][0]}' });
-
-                            google.maps.event.addListener(marker1, 'click', function () { infoWindow1.open(map, marker1); });
-                            google.maps.event.addListener(marker2, 'click', function () { infoWindow2.open(map, marker2); });
-
-                            var distanceInfoWindow = new google.maps.InfoWindow({ content: '從${this.recordCoordinate[0][0]}到${this.recordCoordinate[1][0]}的${traffic_Text}距離是' + distanceInKm.toFixed(2) + ' 公里' });
-
-                            distanceInfoWindow.setPosition(route.legs[0].end_location);
-                            distanceInfoWindow.open(map);
-
-                            window.opener.postMessage({ distance: distanceInKm.toFixed(2) }, '*');
-                        }
-                    });
-                }
-
-                google.maps.event.addDomListener(window, 'load', initMap);
-
-            </script>
-
-        </body>
-        `);
-
-        openGoogleMapWindow.document.close();
-
-        var that = this;
-
-        var promise = new Promise(function (resolve) { promiseResolver = resolve; });
-    
-        window.removeEventListener('message', that.messageHandler);
-    
-        that.messageHandler = function (event) {
-            if (event.source === openGoogleMapWindow) {
-                var distanceValue = event.data.distance;
-                distanceKMValue = distanceValue;
-    
-                promiseResolver();
-            }
-        };
-    
-        window.addEventListener('message', that.messageHandler);
-    
-        promise.then(function () { that.distanceKM = distanceKMValue; });
+            const origin = "'"+ this.recordCoordinate[0][1] +"," + this.recordCoordinate[0][2] + "'";
+            const destination = "'"+ this.recordCoordinate[1][1] +"," + this.recordCoordinate[1][2] + "'";
+            
+            // 可选参数，例如交通模式（driving, walking, transit等）
+            const params = {
+              origin: origin,
+              destination: destination,
+              mode: traffic, // 交通模式：驾车
+            };
+            
+            // 调用Google Maps Directions API
+            googleMapsClient.directions({
+              params: params,
+            }).then(response => {
+              const route = response.data.routes[0];
+              const distance = route.legs[0].distance.text;
+              console.log(`Distance: ${distance}`);
+            }).catch(error => {
+              console.error(error);
+            });
+        }
 
         this.recordCoordinate = [];
     }
@@ -1205,10 +1255,10 @@ class googleMap {
         var data = JSON.parse(args.data);
 
         var width = screen.width / 2;
-            var height = screen.height / 2;
-            var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
+        var height = screen.height / 2;
+        var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
 
-            openGoogleMapWindow.document.write(`
+        openGoogleMapWindow.document.write(`
         <html lang="en">
 
         <head>
@@ -1271,7 +1321,7 @@ class googleMap {
                 var width = this.width;
                 var length = this.length;
             }
-            openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ', color:"'+ color +'", remark:"' + remark + '", length: ' + length +', width: '+ width +'},');
+            openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ', color:"' + color + '", remark:"' + remark + '", length: ' + length + ', width: ' + width + '},');
         }
         openGoogleMapWindow.document.write('];');
 
@@ -1379,17 +1429,17 @@ class googleMap {
         </html>
         `);
 
-            openGoogleMapWindow.document.close();
+        openGoogleMapWindow.document.close();
     }
 
     showMarker4(args) {
         var data = JSON.parse(args.data);
 
         var width = screen.width / 2;
-            var height = screen.height / 2;
-            var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
+        var height = screen.height / 2;
+        var openGoogleMapWindow = window.open('', 'Google Map 擴充功能', 'width=' + width + ', height=' + height + ', toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
 
-            openGoogleMapWindow.document.write(`
+        openGoogleMapWindow.document.write(`
         <html lang="en">
 
         <head>
@@ -1452,12 +1502,12 @@ class googleMap {
                 var width = this.width;
                 var length = this.length;
             }
-            openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ', link:"'+ link +'", remark:"' + remark + '", length: ' + length +', width: '+ width +'},');
+            openGoogleMapWindow.document.write('{label:"' + label + '",lat:' + lat + ',lng:' + lng + ', link:"' + link + '", remark:"' + remark + '", length: ' + length + ', width: ' + width + '},');
         }
-        
+
         openGoogleMapWindow.document.write('];');
 
-            openGoogleMapWindow.document.write(`
+        openGoogleMapWindow.document.write(`
                 var map;console.log(markerData);
                 var marker = [];
                 var infoWindow = [];
@@ -1561,7 +1611,7 @@ class googleMap {
         </html>
         `);
 
-            openGoogleMapWindow.document.close();
+        openGoogleMapWindow.document.close();
     }
 
 }
