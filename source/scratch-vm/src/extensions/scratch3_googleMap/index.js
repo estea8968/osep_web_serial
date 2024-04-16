@@ -1393,7 +1393,7 @@ class googleMap {
 
                 function addMarker(i, lat, lng, label, color, remark, length, width) {
                     var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinImage = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + color;
+                    var pinImage = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#' + color + '"><path d="M12 2C7.6 2 4 5.6 4 10c0 4.4 8 13 8 13s8-8.6 8-13c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>');
                     marker[i] = new google.maps.Marker({
                         position: markerLatLng,
                         map: map,
