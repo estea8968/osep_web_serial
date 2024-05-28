@@ -623,17 +623,23 @@ class gasoJSON {
     }
 
     useTextSearchGetData2(args){
-        const data = args.data; //
+        const data = args.data;
         const column = args.column;
         const value = args.value;
 
         const parsed = JSON.parse(data);
         const size = parsed.length;
+
         var getData = [];
+
         for (var i = 0; i < size; i++) {
             const d = parsed[i][column];
-            if (d.includes(value)) getData.push(parsed[i]);
+
+            if (d !== undefined && d.includes(value)) {
+                getData.push(parsed[i]);
+            }
         }
+
         return JSON.stringify(getData);
     }
 
