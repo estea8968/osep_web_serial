@@ -310,7 +310,8 @@ class scratch3_gemini {
                 topP: ai_top_p,  //0.1,
                 topK: 16,
               };
-            const model = genAI.getGenerativeModel({ model: "gemini-pro",generationConfig});
+            //const model = genAI.getGenerativeModel({ model: "gemini-pro",generationConfig});
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest",generationConfig});
                  //const prompt = "Write a story about a magic backpack."
             const result = await model.generateContent(ai_question);
             this.ai_answer = await result.response.text();
