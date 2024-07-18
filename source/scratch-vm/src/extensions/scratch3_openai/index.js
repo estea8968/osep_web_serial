@@ -201,7 +201,7 @@ class openai {
                         MODLE: {
                             type: ArgumentType.STRING,
                             menu:'modleItem',
-                            defaultValue: 'gpt-4'
+                            defaultValue: 'gpt-4o'
                         },
                     },
                     text: msg.set_ai_modle[theLocale]
@@ -302,7 +302,7 @@ class openai {
                 },
                 modleItem:{
                     acceptReporters: true,
-                    items: ['gpt-3.5-turbo','gpt-4'],
+                    items: ['gpt-3.5-turbo','gpt-4o'],
                 },
             }
         };
