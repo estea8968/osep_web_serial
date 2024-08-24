@@ -60579,5 +60579,8 @@ export default {
     "gui.extension.dataMining.description":"挖掘大量資料進行知識探索，並使用分析模型來評估與預測",
     "gui.menuBar.farmware":"韌體",
     "gui.extension.gemini.description":"使用 Google Gemini 的人工智慧模型進行自然語言處理任務",
+    "gui.extension.davinci.description":"使用聯發科答哥DaVinci AI的人工智慧模型進行自然語言處理任務",
+    "gui.extension.davinci.title":"答哥DaVinci AI",
+    
   }
 };

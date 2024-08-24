@@ -51,7 +51,8 @@ const builtinExtensions = {
     gemini: () => require('../extensions/scratch3_gemini'),
     facemesh2scratch:() => require('../extensions/scratch3_facemesh2scratch'),
     handpose2scratch:() => require('../extensions/scratch3_handpose2scratch'), 
-    dataMining:() => require('../extensions/scratch3_dataMining'),    
+    dataMining:() => require('../extensions/scratch3_dataMining'), 
+    davinci:() => require('../extensions/scratch3_davinci'),    
     //tmpose2scratch: () => require('../extensions/scratch3_tmpose2scratch'),
     //qrcode: () => require('../extensions/scratch3_qrcode'),
 };

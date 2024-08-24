@@ -130,6 +130,9 @@ import facemesh2scratchInsetIconURL from "./facemesh2scratch/facemesh2scratch-sm
 import handpose2scratchIconURL from "./handpose2scratch/handpose2scratch.png";
 import handpose2scratchInsetIconURL from "./handpose2scratch/handpose2scratch-small.png";
 
+import davinciImage from "./davinci/davinci.png";
+import davinciInsetIconURL from "./davinci/davinci-small.png";
+
 const version = "v2-0.2.4";
 
 const translationMap = {
@@ -1121,7 +1124,33 @@ const extensions = [
     ),
     //helpLink: "https://scratch.mit.edu/microbit",
   },  
-  
+  {
+    name:(
+      <FormattedMessage
+        defaultMessage="DaVinci"
+        description="MediaTek DaVinci extension"
+        id="gui.extension.davinci.title"
+      />
+    ),
+    extensionId: "davinci",
+    collaborator: "estea chen ",
+    iconURL: davinciImage,
+    insetIconURL: davinciInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="MediaTek DaVinci AI."
+        description="MediaTek DaVinci AI. extension"
+        id="gui.extension.davinci.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    helpLink: "https://prod.dvcbot.net/",
+    },
 ];
 export { extensions };
 export default extensions;
