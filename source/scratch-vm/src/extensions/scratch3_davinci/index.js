@@ -256,6 +256,7 @@ class scratch3_davinci {
         url: THREAD_URL,
         headers:this.myheaders,
         data:'{} | jq .id | tr -d " ',
+        error:this.ai_anaswer=msg.thread_id_error[theLocale],
       });
       this.ai_anaswer='post_thread:'+mythread.status;
       this.thread_id=mythread.id;
@@ -266,8 +267,8 @@ class scratch3_davinci {
                 console.log("Delayed for 0.1 second.");
             }, "100");
             loop_n++;
-        }while(this.thread_id=='' && loop_n<100);
-        if(loop_n>90){
+        }while(this.thread_id=='' && loop_n<50);
+        if(this.thread_id===''){
             this.ai_anaswer=msg.thread_id_error[theLocale];
             return this.ai_anaswer;
         }
@@ -310,18 +311,25 @@ class scratch3_davinci {
                 headers:this.myheaders,
             })
             run_staus=run_resp.status;
-            console.log('11run_staus=',run_staus);
+            console.log('314run_staus=',run_staus);
             required_action=run_resp.required_action;
-            console.log('run_resp=',run_resp);
-            console.log('run_resp.required_action=',run_resp.required_action);
+            console.log('316run_resp=',run_resp);
+            console.log('317run_resp.required_action=',run_resp.required_action);
 
-            if (run_staus === 'requires_action' && required_action) {
+            if (run_staus == 'requires_action' && required_action) {
                 let TOOL_OUTPUTS = [];
                 for (const toolCall of required_action.submit_tool_outputs.tool_calls) {
                     const FUNC_NAME = toolCall.function.name;
                     let ARGS = toolCall.function.arguments;
                     const PLUGINAPI_URL = `${this.BASE_URL}/pluginapi?tid=${this.thread_id}&aid=${this.ASSISTANT_ID}&pid=${FUNC_NAME}`;
                     console.log('PLUGINAPI_URL=',PLUGINAPI_URL);
+                    /*const OUTPUT = await jQuery.ajax({
+                        type: 'POST',
+                        url:PLUGINAPI_URL,
+                        headers:this.myheaders,
+                        body: JSON.stringify(ARGS),
+                    })
+                    .then(res => res.text());*/
                     const OUTPUT = await fetch(PLUGINAPI_URL, {
                         method: 'POST',
                         headers: this.myheaders,
@@ -331,10 +339,23 @@ class scratch3_davinci {
                         tool_call_id: toolCall.id,
                         output: OUTPUT.slice(0, 8000)
                     });
-                    console.log('tool_out=',TOOL_OUTPUTS);
+                    console.log('342tool_out=',TOOL_OUTPUTS);
                 }
-            }
 
+                const SUBMIT_TOOL_OUTPUT_RUN_URL = `${this.BASE_URL}/threads/${this.thread_id}/runs/${this.run_id}/submit_tool_outputs`;
+                const TOOL_OUTPUTS_DATA = { tool_outputs: TOOL_OUTPUTS };
+                await fetch(SUBMIT_TOOL_OUTPUT_RUN_URL, {
+                method: 'POST',
+                headers: this.myheaders,/*{
+                    'OpenAI-Beta': 'assistants=v2',
+                    'Content-Type': 'application/json',
+                    'Authorization': AUTH_HEADER
+                },*/
+                body: JSON.stringify(TOOL_OUTPUTS_DATA)
+                });
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));  // Sleep 1 second
+        }
 
             const responseMsgResponse = await jQuery.ajax({
                 type: 'GET',
@@ -348,11 +369,18 @@ class scratch3_davinci {
             console.log(`you: ${this.INPUT_MSG}`);
 
             this.ai_anaswer=RESPONSE_MSG;
+            const index_http= this.ai_anaswer.indexOf('http');
+            if(index_http>0){
+                const one=this.ai_anaswer.split('(');
+                const two=one[1].split(')');
+                const url_text=two[0];
+                const open_img=window.open(url_text);
+            }
             this.API_KEY='';
             this.ASSISTANT_ID='';
             console.log(`\ndavinci bot: ${RESPONSE_MSG}`);    
             
-        }
+        //}
             //console.log('run_resp=',run_resp);
             //console.log('run_resp.required_action=',run_resp.required_action);
             //console.log('run_staus=',run_staus);
