@@ -53,6 +53,7 @@ const builtinExtensions = {
     handpose2scratch:() => require('../extensions/scratch3_handpose2scratch'), 
     dataMining:() => require('../extensions/scratch3_dataMining'), 
     davinci:() => require('../extensions/scratch3_davinci'),    
+    llmstudio:() => require('../extensions/scratch3_llmstudio'),
     //tmpose2scratch: () => require('../extensions/scratch3_tmpose2scratch'),
     //qrcode: () => require('../extensions/scratch3_qrcode'),
 };

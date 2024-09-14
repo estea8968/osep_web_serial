@@ -132,6 +132,8 @@ import handpose2scratchInsetIconURL from "./handpose2scratch/handpose2scratch-sm
 
 import davinciImage from "./davinci/davinci.png";
 import davinciInsetIconURL from "./davinci/davinci-small.png";
+import llmstudioImage from "./llmstudio/llmstudio.svg";
+import llmstudioInsetIconURL from "./llmstudio/llmstudio-small.png";
 
 const version = "v2-0.2.4";
 
@@ -1123,7 +1125,7 @@ const extensions = [
       />
     ),
     //helpLink: "https://scratch.mit.edu/microbit",
-  },  
+  }, 
   {
     name:(
       <FormattedMessage
@@ -1150,6 +1152,33 @@ const extensions = [
     // launchPeripheralConnectionFlow: false,
     useAutoScan: false,
     helpLink: "https://prod.dvcbot.net/",
+    },   
+    {
+    name:(
+      <FormattedMessage
+        defaultMessage="LLM Studio"
+        description="LLM Studio extension"
+        id="gui.extension.llmstudio.title"
+      />
+    ),
+    extensionId: "llmstudio",
+    collaborator: "estea chen ",
+    iconURL: llmstudioImage,
+    insetIconURL: llmstudioInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="LLM Studio AI."
+        description="LLM Studio AI. extension"
+        id="gui.extension.llmstudio.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    // bluetoothRequired: false,
+    internetConnectionRequired: true,
+    // launchPeripheralConnectionFlow: false,
+    useAutoScan: false,
+    helpLink: "https://lmstudio.ai/",
     },
 ];
 export { extensions };

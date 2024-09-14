@@ -60581,6 +60581,8 @@ export default {
     "gui.extension.gemini.description":"使用 Google Gemini 的人工智慧模型進行自然語言處理任務",
     "gui.extension.davinci.description":"使用聯發科技達哥DaVinci AI的人工智慧模型進行自然語言處理任務",
     "gui.extension.davinci.title":"達哥DaVinci AI",
+    "gui.extension.llmstudio.description":"使用LLM Studio AI的人工智慧模型進行自然語言處理任務",
+    "gui.extension.llmstudio.title":"LLM Studio AI",
     
   }
 };
