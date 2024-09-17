@@ -11,7 +11,11 @@
 //max7219
 #include <LedControl.h>
 //hx711
-#include <HX711.h>
+//#include <HX711.h>
+//rfid
+#include <SPI.h>
+#include <MFRC522.h>
+
 //PMS5003T
 #include <SoftwareSerial.h>
 //ntc
@@ -24,7 +28,9 @@ DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
 #define NUMPIXELS 12 
 //hx711
-HX711 scale;
+//HX711 scale;
+//rfid
+MFRC522 mfrc522;   // 建立MFRC522實體
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -69,7 +75,6 @@ void setup() {
   // 初始化LCD
   lcd.init();
   lcd.backlight();
-  
 }
 
 
@@ -309,7 +314,30 @@ void loop()
        Serial.print("HC,");
        Serial.println(cm);        
     }
-    
+    //rfid begin
+    if(strcmp(commandString, "mfr0") == 0){
+      //MFRC522 mfrc522;   // 建立MFRC522實體
+      SPI.begin();        // 初始化SPI介面
+      mfrc522.PCD_Init(atoi(inputPin), atoi(inputValue)); // 初始化MFRC522卡
+      //mfrc522.PCD_Init(10, 9); // 初始化MFRC522卡
+      mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
+      //Serial.println("ok");
+      }
+    //get uid  
+    if(strcmp(commandString, "mfr1") == 0){
+        if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+            Serial.print("mfr:");
+            for (byte i = 0; i < mfrc522.uid.size; i++) {
+              Serial.print(mfrc522.uid.uidByte[i]);
+              //Serial.print(buffer[i]);
+              //Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+              //Serial.print(buffer[i], HEX);
+            }
+            Serial.println("");
+            //dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size); // 顯示卡片的UID
+            mfrc522.PICC_HaltA();  // 卡片進入停止模式
+        }
+      }
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
       pinMode(atoi(inputPin),INPUT);
@@ -360,7 +388,7 @@ void loop()
       Serial.println(digitalRead(atoi(inputPin)));
     }
     //hx711
-    if(strcmp(commandString, "hx0") == 0){
+    /*if(strcmp(commandString, "hx0") == 0){
       scale.begin(atoi(inputPin),atoi(inputValue));
       const int scale_factor = -1674; //比例參數，從校正程式中取得
       //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
@@ -369,8 +397,8 @@ void loop()
       scale.tare();               // 歸零
       //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
       scale.get_units(5);
-    }
-    if(strcmp(commandString, "hx1") == 0){
+    }*/
+    ///if(strcmp(commandString, "hx1") == 0){
       //scale.begin(DT_PIN, SCK_PIN);
       /*scale.begin(atoi(inputPin),atoi(inputValue));
       const int scale_factor = -1674; //比例參數，從校正程式中取得
@@ -384,12 +412,14 @@ void loop()
       delay(2000);
       digitalWrite(13,0);*/
       //scale.power_up();               // 結束睡眠模式
+      /*
       Serial.print("hx:");
       Serial.println(scale.get_units(10), 0);       
+      */
       //scale.power_down();             // 進入睡眠模式
       //delay(500);
       //scale.power_up();               // 結束睡眠模式
-    }
+    ///}
     
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
@@ -405,7 +435,15 @@ void loop()
   }
   
 }
-
+/*
+ * 這個副程式把讀取到的UID，用16進位顯示出來
+ */
+/*void dump_byte_array(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], HEX);
+  }
+}*/
 
 void getG5(unsigned char ucData)//取G5的值
 {
