@@ -90,7 +90,7 @@ let analog_inputs = new Array(8);
 let the_locale = null;
 //pms5003
 let pms_array =[0,0,0,0,0];
-
+let nfc_id=0; //nfc card id
 let theDHTSensorMap = { 0: 'Temperature', 1: 'Humidity' };
 let max7219_config = ['','','',''];
 const max7219_img={
@@ -500,7 +500,35 @@ class Scratch3ArduinoWebSerial {
                         }
                     }
                 },
+                '---',
                 {
+                    opcode: 'mfr_set',
+                    blockType: BlockType.COMMAND,
+                    text: msg.mfr_set[the_locale],
+                    arguments:{
+                        SDA:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'10',
+                            menu:'pwm_pins',
+                        },
+                        RST:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'9', 
+                            menu:'pwm_pins',
+                        }
+                    }
+                },
+                {
+                    opcode: 'mfr_read',
+                    blockType: BlockType.COMMAND,
+                    text: msg.mfr_read[the_locale],
+                },
+                {
+                    opcode: 'mfr_id',
+                    blockType: BlockType.REPORTER,
+                    text: msg.mfr_id[the_locale],
+                },
+                /*{
                     opcode: 'hx711_set',
                     blockType: BlockType.COMMAND,
                     text: msg.hx711_set[the_locale],
@@ -532,8 +560,8 @@ class Scratch3ArduinoWebSerial {
                             defaultValue:'6', 
                             menu:'pwm_pins',
                         }
-                    }*/
-                },
+                    }
+                },*/
                 /*{
                     opcode: 'ntc_read',
                     blockType: BlockType.REPORTER,
@@ -551,7 +579,7 @@ class Scratch3ArduinoWebSerial {
                     opcode: 'firmwareversion',
                     blockType: BlockType.REPORTER,
                     text: msg.FirmwareVersion[the_locale],
-                }
+                },
                 
             ],
             menus: {
@@ -1107,6 +1135,33 @@ class Scratch3ArduinoWebSerial {
         const sendData = "maxshow#0x"+hextext+'#'+max7219_config[0]+','+max7219_config[2]+','+max7219_config[1];
         console.log('sendData=',sendData);
         await this.serialSend(sendData);
+    }
+    //mfr522
+    async  mfr_set(args){
+        const sda_pin=parseInt(args.SDA);
+        const rst_pin=parseInt(args.RST);
+        const sendData = 'mfr0#'+sda_pin+'#'+rst_pin+'#';
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    async  mfr_read(args){
+        nfc_id = '';
+        const sendData = 'mfr1#';
+        console.log('sendData=',sendData);
+        await this.serialSend(sendData);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        let serial_data = (await this.serialRead()).split(':');
+        if (serial_data[0] == 'mfr') {
+            console.log('mfr=',serial_data[1]);
+            if(serial_data[1].length>0){
+                nfc_id = serial_data[1];
+            }
+            return nfc_id;
+        }
+    }
+    mfr_id(){
+        return nfc_id;
     }
     async hx711_set(args){
         const dat_pin = parseInt(args.DAT);

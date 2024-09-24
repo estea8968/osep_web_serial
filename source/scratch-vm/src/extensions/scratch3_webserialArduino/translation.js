@@ -159,7 +159,7 @@ export const FormRGB = {
 export const FormDisconnect = {
     'en': 'Arduino dicconnected',
     'zh-tw': 'Arduino已離線',
-}
+};
 
 export const FormWs2812SetClear = {
     'en': "clear WS2812",
@@ -206,6 +206,18 @@ export const Form7219_show ={
 export const Max7219_matrix ={
     'en': "show value: [VALUE]",
     'zh-tw':"顯示01值 [VALUE]",
+};
+export const mfr_set = {
+    'en': "mfrc522 zero-setting, SDA pin:[SDA] RST pin:[RST]",
+    'zh-tw': "mfrc522設定,SDA腳位:[SDA] RST腳位:[RST]",
+};
+export const mfr_read = {
+    'en': "mfrc522 read card id",
+    'zh-tw': "mfrc522讀取卡片ID",
+};
+export const mfr_id = {
+    'en': "NFC card id",
+    'zh-tw': "NFC卡片ID",
 };
 export const hx711_set = {
     'en': "hx711 zero-setting, DAT pin:[DAT] SCK pin:[SCK]",
