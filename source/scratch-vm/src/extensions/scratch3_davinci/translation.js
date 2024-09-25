@@ -1,6 +1,6 @@
 export const name = {
     'en': 'davinci',
-    'zh-tw': '答哥AI'
+    'zh-tw': '達哥AI'
 };
 
 export const sendDavinci = {

@@ -372,9 +372,12 @@ class scratch3_davinci {
             const index_http= this.ai_anaswer.indexOf('http');
             if(index_http>0){
                 const one=this.ai_anaswer.split('(');
-                const two=one[1].split(')');
-                const url_text=two[0];
-                const open_img=window.open(url_text);
+                    let two = '';
+                    for(i=1;i<one.length;i++){
+                     two=one[i].split(')');
+                    window.open(two[0]);
+                    }
+                
             }
             this.API_KEY='';
             this.ASSISTANT_ID='';
