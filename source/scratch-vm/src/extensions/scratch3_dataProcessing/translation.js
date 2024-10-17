@@ -43,9 +43,9 @@ export const endsWith = {
     'zh-tw': '[data]用[text]結尾?'
 };
 
-export const replace = {
-    'en': 'replace [data] [originalText] with [replaceText]',
-    'zh-tw': '把[data]內的[originalText]換成[replaceText]'
+export const replaceAll = {
+    'en': 'replace all the [originalText] in [data] with [replaceText]',
+    'zh-tw': '把[data]內所有的[originalText]取代成[replaceText]'
 };
 
 export const repeat = {

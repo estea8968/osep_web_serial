@@ -162,7 +162,7 @@ class dataProcessing {
                 },
                 "---",
                 {
-                    opcode: 'replace',
+                    opcode: 'replaceAll',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         data: {
@@ -178,7 +178,7 @@ class dataProcessing {
                             defaultValue: 'a'
                         },
                     },
-                    text: msg.replace[theLocale]
+                    text: msg.replaceAll[theLocale]
                 },
                 {
                     opcode: 'repeat',
@@ -316,75 +316,75 @@ class dataProcessing {
         return text;
     }
 
-    startsWith(args){
+    startsWith(args) {
         var data = args.data;
         var text = args.text;
 
         return data.startsWith(text);
     }
 
-    endsWith(args){
+    endsWith(args) {
         var data = args.data;
         var text = args.text;
 
         return data.endsWith(text);
     }
 
-    replace(args) {
+    replaceAll(args) {
         var data = args.data;
         var originalText = args.originalText;
         var replaceText = args.replaceText;
-        var text = data.replace(originalText, replaceText);
+        var text = data.replaceAll(originalText, replaceText);
 
         return text;
     }
 
-    repeat(args){
+    repeat(args) {
         var data = args.data;
         var number = args.number;
 
         return data.repeat(number);
     }
 
-    trim(args){
+    trim(args) {
         return args.data.trim();
     }
 
-    uppercase(args){
+    uppercase(args) {
         return args.data.toUpperCase();
     }
 
-    lowerCase(args){
+    lowerCase(args) {
         return args.data.toLowerCase();
     }
 
-    conver_num(args){
-        const value = parseInt(args.VALUE,10) ;
-        let f_begin = parseInt(args.F_BEGIN,10);
-        let f_end = parseInt(args.F_END,10);
+    conver_num(args) {
+        const value = parseInt(args.VALUE, 10);
+        let f_begin = parseInt(args.F_BEGIN, 10);
+        let f_end = parseInt(args.F_END, 10);
         let f_range;
-        if(f_end>f_begin){
-            f_range = f_end-f_begin;
-        }else{
-            f_range = f_begin-f_end;
+        if (f_end > f_begin) {
+            f_range = f_end - f_begin;
+        } else {
+            f_range = f_begin - f_end;
         }
-        const t_begin = parseInt(args.T_BEGIN,10);
-        const t_end = parseInt(args.T_END,10);
+        const t_begin = parseInt(args.T_BEGIN, 10);
+        const t_end = parseInt(args.T_END, 10);
         let t_range;
         let t_add;
-        if(t_end>t_begin){
-            t_range = t_end -t_begin;
+        if (t_end > t_begin) {
+            t_range = t_end - t_begin;
             t_add = t_begin;
-        }else{
-            t_range = t_begin-t_end;
+        } else {
+            t_range = t_begin - t_end;
             t_add = t_end;
         }
-        const conver_value = Math.round(((value/f_range)*t_range)+t_add); 
-        console.log('conver_value',conver_value);
+        const conver_value = Math.round(((value / f_range) * t_range) + t_add);
+        console.log('conver_value', conver_value);
         return conver_value;
     }
 
-    
+
 }
 
 module.exports = dataProcessing;
