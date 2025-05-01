@@ -18,7 +18,7 @@
 #include <MD_Parola.h>
 #include <MD_MAX72xx.h>
 #include <SPI.h>
-#include <LedControl.h>
+//#include <LedControl.h>
 
 //ws2812
 #include <Adafruit_NeoPixel.h>
@@ -32,7 +32,7 @@
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 //oled end
 //max7219
-LedControl lc=LedControl(16,18,17,1);
+//LedControl lc=LedControl(16,18,17,1);
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 //MD_Parola maDisplay=MD_Parola(HARDWARE_TYPE, D3,D1,D2,1);
 MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, 16,17,18,1);

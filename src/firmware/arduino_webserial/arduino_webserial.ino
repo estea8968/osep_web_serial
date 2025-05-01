@@ -1,5 +1,6 @@
 /*
- * 更新日期112/01/11 estea chen
+ * 更新日期113/09/17 estea chen
+ * 0326 add hx711
  */
 #include <Servo.h>
 #include <DHTStable.h>
@@ -9,16 +10,27 @@
 #include <Adafruit_NeoPixel.h>
 //max7219
 #include <LedControl.h>
-
-//#include <stdlib.h>
+//hx711
+//#include <HX711.h>
+//rfid
+#include <SPI.h>
+#include <MFRC522.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
+//ntc
+#include "thermistor.h"
+//版本號
+char* version="1130917";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
-#define NUMPIXELS 25 
+#define NUMPIXELS 12 
+//hx711
+//HX711 scale;
+//rfid
+MFRC522 mfrc522;   // 建立MFRC522實體
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -27,32 +39,29 @@ static float HCHO,Temperature,Humidity;
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-//LedControl datapin,clockpin,cspin,num
-LedControl leddisplay = LedControl(12,11,10,1);
-
-//serialEvent
-static char str[161];
-bool serial_chang = false;
-
-void serialEvent() {
-  //一次只能讀64字元需要5微秒
+char* serialString()
+{
+  //static char str[21]; // For strings of max length=20
+  static char str[64]; // For strings of max length=20
+  if (!Serial.available()) return NULL;
+  delay(6); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
-  int count=0;
-  for(int i=0 ;i <3;i++){
-    Serial.flush();
-    delay(5); // wait for all characters to arrive  
-    while (Serial.available())
-    {
-      byte c=Serial.read();
+  byte count=0;
+  while (Serial.available())
+  {
+    char c=Serial.read();
+    //if (c>=32 && count<sizeof(str)-1)
+    //c最大35
+    //if (c>=32 && count<sizeof(str)-1)
+    //{
       str[count]=c;
       count++;
-    }
+    //}
   }
   str[count]='\0'; // make it a zero terminated string
-  serial_chang = true;
-  //Serial.println(count);
-  Serial.flush();
+  return str;
 }
+
 
 void setup() {
   Serial.begin(115200);
@@ -62,71 +71,68 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
+
   // 初始化LCD
   lcd.init();
   lcd.backlight();
-  //max7219
-  digitalWrite(10,0);
-  //leddisplay.shutdown(0, false);  // 關閉省電模式
-  //leddisplay.setIntensity(0, 5); // 設定亮度為 5 (介於0~15之間)
 }
 
-void leddisplayImage(uint64_t image) {
-  for (int i = 0; i < 8; i++) {
-    byte row = (image >> i * 8) & 0xFF;
-    for (int j = 0; j < 8; j++) {
-      leddisplay.setLed(0, i, j, bitRead(row, j));
-    }
-  }
-}
+
 
 void loop() 
 {
-  //char* inputData;
-  if (serial_chang)
+  static boolean needPrompt=true;
+  char* inputData;
+  if (needPrompt)
   {
     //Serial.print("Please enter inputs and press enter at the end:\n");
-   serial_chang =false;
-   //Serial.println(str);
-   //inputData= str;
-  if (str!=NULL)
+    needPrompt=false;
+  }
+  inputData= serialString();
+
+  if (inputData!=NULL)
   {
     //取出命令、腳位、值、時間
-    char* commandString = strtok(str, "#"); 
+    char* commandString = strtok(inputData, "#"); 
     char* inputPin = strtok(NULL, "#");
     //取出第3個值
     char* inputValue = strtok(NULL, "#");
     //取出第4個值
     char* inputTime = strtok(NULL, "#");
 
+    //版本
+    if(strcmp(commandString, "ver") == 0){
+      Serial.println(version);
+    }
     //max7219
-    if(strcmp(commandString, "maxset") == 0){
-      char* datapin= strtok(inputPin,",");
+    if(strcmp(commandString, "maxshow") == 0){      
+      char* datapin= strtok(inputValue,",");
       char* clockpin= strtok(NULL,",");
       char* cspin=strtok(NULL,",");
-      char* bnum=strtok(NULL,",");
-      leddisplay = LedControl(atoi(datapin),atoi(clockpin),atoi(cspin),atoi(bnum));
+      //char* bnum=strtok(NULL,",");
+      LedControl leddisplay = LedControl(atoi(datapin),atoi(clockpin),atoi(cspin),1);
       leddisplay.clearDisplay(0);    // 清除螢幕
       leddisplay.shutdown(0, false);  // 關閉省電模式
       leddisplay.setIntensity(0, 5); // 設定亮度為 5 (介於0~15之間)
-      //Serial.println(cspin);
-    }
-    
-    if(strcmp(commandString, "maxshow") == 0){
-      if(strcmp(inputPin, "clear") == 0){
-        leddisplay.clearDisplay(0);
-      }else{
+      
+      //LedControl leddisplay = LedControl(12,10,11,1);
       //把inputPin最後一字元移動到第1字元圖形才會正確
         char new_str[18];
-        new_str[0]=inputPin[16];
-        for(int i=1;i<19;i++){
-          new_str[i]=inputPin[i-1];
+        //new_str[0]=inputPin[16];
+        for(int i=0;i<18;i++){
+          new_str[i]=inputPin[i+1];
+          //new_str[i]=inputPin[i];
         }
-        //new_str[17]='\0';
-        leddisplayImage(stringToUint_64(new_str));
+        //new_str[18]='\0';
+        //leddisplayImage(stringToUint_64(new_str));
+        for (int i = 0; i < 8; i++) {
+          byte row = (stringToUint_64(new_str) >> i * 8) & 0xFF;
+          for (int j = 0; j < 8; j++) {
+            leddisplay.setLed(0, i, j, bitRead(row, j));
+          }
+        }
       }
-    }
-      
+    
     //pm5003
     if(strcmp(commandString, "pm") == 0){ 
       //bool isloop = true;
@@ -142,6 +148,21 @@ void loop()
         Serial.println(Humidity);
         //isloop = false;
       
+    }
+    //ntc
+    if(strcmp(commandString, "ntc") == 0){
+      
+      THERMISTOR thermistor(atoi(inputPin),        // Analog pin
+                      10000,          // Nominal resistance at 25 ºC
+                      3950,           // thermistor's beta coefficient
+                      10000);         // Value of the series resistor
+
+      // Global temperature reading
+      uint16_t temp;
+      Serial.print("N");
+      Serial.print(inputPin);
+      Serial.print(":");      
+      Serial.println(thermistor.read());
     }
 
     //lcd
@@ -162,13 +183,10 @@ void loop()
       int r = 0;
       int g = 0;
       int b = 0;
-      int w = 0;
-      int led_num =75 ;//25顆led
-      int led_value[led_num]={0};
-      char* bb ;
+      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+      char *bb ;
       int i = 0;
-      int spp;
-      //Serial.println(inputValue);
+      int sp;
       bb = strtok(inputValue, ",");
       led_value[i] = atoi(bb);
       //Serial.println(led_value[i]);
@@ -176,29 +194,59 @@ void loop()
       while( bb != NULL){
         bb = strtok(NULL, ",");
         led_value[i] = atoi(bb);
-        //Serial.println(led_value[i]);
         i++;
       }
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
       pixels.begin();
-      pixels.setBrightness(100);
-      for ( int j=0;j<i-1;j++){
-        if (led_value[j] > 0){
-            spp = led_value[j]-1;
-            j++;
-            //int rgb_num = atoi(led_value[j]);
-            r = (int)(led_value[j]/100);
-            g = (int)((led_value[j]-r*100)/10);
-            b = (int)(led_value[j]-r*100-g*10);
-            //j++;
-            //w = led_value[j];
-            //Serial.println(w);
-            //Serial.println(acolor[0]);
-            //pixels.setBrightness(w);
-            pixels.setPixelColor(spp, pixels.Color(r, g, b));     
+      for ( i=0;i<32;i++){
+        if (led_value[i] > 0){
+            sp = led_value[i]-1;
+          i++;
+          if( led_value[i] == 0) {
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = 0;
+          }else if( led_value[i] == 1){
+            i++;
+            r = led_value[i]*3;
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 2){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 3){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = 0;
+          }else if( led_value[i] == 4){
+            i++;
+            r = 0;
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 5){
+            i++;
+            r = 0;
+            g = led_value[i];
+            b = led_value[i];
+          }else if( led_value[i] == 6){
+            i++;
+            r = led_value[i];
+            g = 0;
+            b = led_value[i];
+          }else if( led_value[i] == 7){
+            i++;
+            r = led_value[i];
+            g = led_value[i];
+            b = led_value[i];
+          }
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));
         }else{
-          j++;
-          j++;
+          i++;
+          i++;
         }
       }
       pixels.show(); 
@@ -240,15 +288,7 @@ void loop()
             sp = "10";
           }else if(inputTime[i] == 'c'){
             sp = "11";
-          }else if(inputTime[i] == 'd'){
-            sp = "12";
-          }else if(inputTime[i] == 'e'){
-            sp = "13";
-          }else if(inputTime[i] == 'f'){
-            sp = "14";
-          }else if(inputTime[i] == 'g'){
-            sp = "15";
-          }          
+          }
           pixels.setPixelColor(atoi(sp), pixels.Color(r, g, b));
         }
         pixels.show(); 
@@ -274,9 +314,33 @@ void loop()
        Serial.print("HC,");
        Serial.println(cm);        
     }
-    
+    //rfid begin
+    if(strcmp(commandString, "mfr0") == 0){
+      //MFRC522 mfrc522;   // 建立MFRC522實體
+      SPI.begin();        // 初始化SPI介面
+      mfrc522.PCD_Init(atoi(inputPin), atoi(inputValue)); // 初始化MFRC522卡
+      //mfrc522.PCD_Init(10, 9); // 初始化MFRC522卡
+      mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
+      //Serial.println("ok");
+      }
+    //get uid  
+    if(strcmp(commandString, "mfr1") == 0){
+        if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+            Serial.print("mfr:");
+            for (byte i = 0; i < mfrc522.uid.size; i++) {
+              Serial.print(mfrc522.uid.uidByte[i]);
+              //Serial.print(buffer[i]);
+              //Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+              //Serial.print(buffer[i], HEX);
+            }
+            Serial.println("");
+            //dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size); // 顯示卡片的UID
+            mfrc522.PICC_HaltA();  // 卡片進入停止模式
+        }
+      }
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
+      pinMode(atoi(inputPin),INPUT);
       DHT.read11(atoi(inputPin));
     }
     
@@ -316,13 +380,47 @@ void loop()
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
-      //pinMode(atoi(inputPin),INPUT);
+      pinMode(atoi(inputPin),INPUT);
       //2-19
       Serial.print("D");
       Serial.print(atoi(inputPin));
       Serial.print(":");
       Serial.println(digitalRead(atoi(inputPin)));
     }
+    //hx711
+    /*if(strcmp(commandString, "hx0") == 0){
+      scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+    }*/
+    ///if(strcmp(commandString, "hx1") == 0){
+      //scale.begin(DT_PIN, SCK_PIN);
+      /*scale.begin(atoi(inputPin),atoi(inputValue));
+      const int scale_factor = -1674; //比例參數，從校正程式中取得
+      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
+      scale.get_units(5);
+      scale.set_scale(scale_factor);       // 設定比例參數
+      scale.tare();               // 歸零
+      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
+      scale.get_units(5);
+      digitalWrite(13,1);   //13腳位亮燈給使用者放東西，時間2秒
+      delay(2000);
+      digitalWrite(13,0);*/
+      //scale.power_up();               // 結束睡眠模式
+      /*
+      Serial.print("hx:");
+      Serial.println(scale.get_units(10), 0);       
+      */
+      //scale.power_down();             // 進入睡眠模式
+      //delay(500);
+      //scale.power_up();               // 結束睡眠模式
+    ///}
+    
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
       analogWrite(atoi(inputPin),atoi(inputValue));
@@ -332,11 +430,20 @@ void loop()
          pinMode(atoi(inputPin),OUTPUT);
          digitalWrite(atoi(inputPin),atoi(inputValue));
      }
+    needPrompt=true;
     //delay(1000);
-   }
   }
+  
 }
-
+/*
+ * 這個副程式把讀取到的UID，用16進位顯示出來
+ */
+/*void dump_byte_array(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], HEX);
+  }
+}*/
 
 void getG5(unsigned char ucData)//取G5的值
 {

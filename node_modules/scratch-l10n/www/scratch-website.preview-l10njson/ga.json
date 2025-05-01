@@ -12,7 +12,7 @@
     "project.comments.header": "Nótaí Tráchta",
     "project.comments.toggleOff": "Trácht múchta",
     "project.comments.toggleOn": "Trácht ar siúl",
-    "project.comments.turnedOff": "Ár leithscéal, múchadh trácht don tionscadal seo.",
+    "project.comments.turnedOff": "Commenting for this project has been turned off.",
     "project.comments.turnedOffGlobally": "Project comments across Scratch are turned off, but don't worry, your comments are saved and will be back soon.",
     "project.share.notShared": "Níl an tionscadal poiblí — tusa amháin atá in ann é a fheiceáil. Cliceáil Comhroinn lena chur os comhair an tsaoil!",
     "project.share.sharedLong": "Comhghairdeas leat as do thionscadal a chomhroinnt! Beidh daoine eile in ann triail a bhaint as, trácht a dhéanamh air, agus athmheascadh.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Breathnaigh ar na Sonraí",
     "project.usernameBlockAlert": "Is féidir leis an tionscadal seo na daoine atá á úsáid a fheiceáil leis an mbloc \"ainm úsáideora\". Chun d'aitheantas a choinneáil faoi rún, ba chóir duit logáil amach sula n-úsáidfidh tú an tionscadal.",
     "project.inappropriateUpdate": "Hmm, creideann an braiteoir eascainí go bhfuil fadhb leis an téacs seo. Athraigh an nóta agus bíodh meas agat ar úsáideoirí eile.",
-    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}."
+    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }

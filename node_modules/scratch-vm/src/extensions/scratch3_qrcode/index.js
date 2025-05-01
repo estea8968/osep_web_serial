@@ -89,11 +89,15 @@ const Message = {
         'zh-tw': '相機透明度設定為[TRANSPARENCY]'
     },
     changeUsbWebcam:{
-        'en': 'Use another webcam',
+        'en': 'use another camera',
         'zh-tw': '切換鏡頭'
     },
+    ue_cam:{
+        'en': 'use the [WEBCAM] camera',
+        'zh-tw': '使用[WEBCAM]鏡頭',
+    },
     ue_Webcam:{
-        'en': ['environment','user'],
+        'en': ['back','front'],
         'zh-tw':['後','前']
     }
 };
@@ -165,10 +169,7 @@ class Scratch3QRCodeBlocks {
                 },
                 {
                     opcode:'ue_cam',
-                    text:formatMessage({
-                        id:'videoSensing.ue_cam',
-                        description:'environment or user webcam'
-                    }),
+                    text: Message.ue_cam[this.locale],
                     blockType:BlockType.COMMAND,
                     arguments: {
                         WEBCAM: {

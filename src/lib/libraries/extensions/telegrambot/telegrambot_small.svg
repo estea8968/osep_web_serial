@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="176.38889mm"
+   height="176.38889mm"
+   viewBox="0 0 176.38889 176.38889"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="telegrambot_small.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-239.52381"
+     inkscape:cy="259.04762"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1856"
+     inkscape:window-height="1016"
+     inkscape:window-x="64"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="圖層 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-13.859128,-46.275794)">
+    <g
+       style="fill:#0066ff"
+       id="g826"
+       transform="matrix(8.8194444,0,0,8.8194444,-3.7797611,28.636905)">
+      <path
+         id="path815"
+         d="M 22,12 C 22,17.5228 17.5228,22 12,22 6.47715,22 2,17.5228 2,12 2,6.47715 6.47715,2 12,2 17.5228,2 22,6.47715 22,12 Z M 12.3583,9.38244 C 11.3857,9.787 9.44177,10.6243 6.52657,11.8944 6.05318,12.0827 5.8052,12.2669 5.78263,12.4469 c -0.03815,0.3044 0.34296,0.4242 0.86192,0.5874 0.0706,0.0222 0.14374,0.0452 0.21872,0.0695 0.51058,0.166 1.19741,0.3602 1.55446,0.3679 0.32388,0.007 0.68537,-0.1265 1.08446,-0.4006 2.72381,-1.8386 4.12981,-2.7679 4.21801,-2.788 0.0623,-0.0141 0.1486,-0.0319 0.2071,0.0201 0.0585,0.052 0.0527,0.1504 0.0465,0.1768 -0.0377,0.161 -1.5337,1.5518 -2.3079,2.2715 -0.2413,0.2244 -0.4125,0.3835 -0.4475,0.4199 -0.0784,0.0814 -0.1583,0.1584 -0.2351,0.2324 -0.4743,0.4573 -0.8301,0.8002 0.0197,1.3602 0.4084,0.2691 0.7351,0.4916 1.0611,0.7136 0.356,0.2425 0.7111,0.4843 1.1706,0.7855 0.117,0.0767 0.2288,0.1564 0.3377,0.234 0.4143,0.2954 0.7865,0.5608 1.2464,0.5184 0.2672,-0.0245 0.5432,-0.2758 0.6834,-1.0252 0.3313,-1.771 0.9825,-5.6083 1.133,-7.18949 C 16.6484,8.66228 16.6318,8.48498 16.6185,8.40715 16.6051,8.32932 16.5773,8.21842 16.4761,8.13633 16.3563,8.03911 16.1714,8.01861 16.0886,8.02 15.7125,8.0267 15.1354,8.22735 12.3583,9.38244 Z"
+         inkscape:connector-curvature="0"
+         style="clip-rule:evenodd;fill:#0066ff;fill-rule:evenodd" />
+    </g>
+  </g>
+</svg>

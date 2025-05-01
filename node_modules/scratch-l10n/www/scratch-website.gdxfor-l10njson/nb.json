@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Force and Acceleration sensor",
+    "gdxfor.deviceNameShort": "sensor",
     "gdxfor.headerText": "{gdxforLink} er et måleinstrument som åpner nye muligheter for å koble Scratch sammen med den fysiske verden. Du kan måle skyvkraft og trekkraft, og i tillegg kan du måle instrumentets egen akselerasjon, for eksempel når det ristes, roterer eller faller.",
     "gdxfor.gettingStarted": "Kom i gang",
     "gdxfor.connectingGdxfor": "Koble kraft- og akselerasjonssensoren til Scratch",
@@ -16,7 +18,7 @@
     "gdxfor.checkOSVersionTitle": "Datamaskinen må ha et operativsystem som virker med ScratchLink",
     "gdxfor.checkOSVersionText": "Minstekravene vises øverst på denne siden. Se tips om hvordan du sjekker din versjon av {winOSVersionLink} eller {macOSVersionLink}.",
     "gdxfor.winOSVersionLinkText": "Windows",
-    "gdxfor.macOSVersionLinkText": "Mac OS",
+    "gdxfor.macOSVersionLinkText": "macOS",
     "gdxfor.closeScratchCopiesTitle": "Steng andre Scratch-vinduer",
     "gdxfor.closeScratchCopiesText": "Bare ett Scratch-vindu kan være koblet til sensoren om gangen. Hvis du har andre vinduer eller faner med Scratch så lukk dem og prøv igjen.",
     "gdxfor.otherComputerConnectedTitle": "Pass på at ikke en annen datamaskin er koblet til din sensor.",

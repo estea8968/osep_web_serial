@@ -58,7 +58,8 @@ import {
     languageMenuOpen,
     openLoginMenu,
     closeLoginMenu,
-    loginMenuOpen
+    loginMenuOpen,
+    farmwareMenuOpen
 } from '../../reducers/menus';
 
 import collectMetadata from '../../lib/collect-metadata';
@@ -529,7 +530,10 @@ class MenuBar extends React.Component {
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
+                        
+
                     </div>
+
                     <Divider className={classNames(styles.divider)} />
                     <div
                         className={classNames(
@@ -561,7 +565,22 @@ class MenuBar extends React.Component {
                             id="gui.menuBar.burnFirmware_e"
                             />
                     </div>
-                    
+                    <div
+                        className={classNames(
+                            styles.menuBarItem,
+                            styles.hoverable
+                        )}
+                        onClick={() => (
+                            window.open('./static/microbit/')
+                        )}
+                    >
+                        <FormattedMessage
+                            defaultMessage="Load Firmware microbit"
+                            description="Load Firmware microbit"
+                            id="gui.menuBar.burnFirmware_m"
+                            />
+                    </div>
+
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -824,6 +843,7 @@ MenuBar.propTypes = {
     ]),
     onClickAccount: PropTypes.func,
     onClickEdit: PropTypes.func,
+    onClickFarmware:PropTypes.func,
     onClickFile: PropTypes.func,
     onClickLanguage: PropTypes.func,
     onClickLogin: PropTypes.func,
@@ -870,6 +890,7 @@ const mapStateToProps = (state, ownProps) => {
         accountMenuOpen: accountMenuOpen(state),
         fileMenuOpen: fileMenuOpen(state),
         editMenuOpen: editMenuOpen(state),
+        farmwareOpen: farmwareMenuOpen(state),
         isRtl: state.locales.isRtl,
         isUpdating: getIsUpdating(loadingState),
         isShowingProject: getIsShowingProject(loadingState),
@@ -893,6 +914,7 @@ const mapDispatchToProps = dispatch => ({
     onClickFile: () => dispatch(openFileMenu()),
     onRequestCloseFile: () => dispatch(closeFileMenu()),
     onClickEdit: () => dispatch(openEditMenu()),
+    onClickFarmware: () => dispatch(openFarmwareMenu()),
     onRequestCloseEdit: () => dispatch(closeEditMenu()),
     onClickLanguage: () => dispatch(openLanguageMenu()),
     onRequestCloseLanguage: () => dispatch(closeLanguageMenu()),

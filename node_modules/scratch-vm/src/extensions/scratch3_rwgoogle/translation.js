@@ -144,9 +144,19 @@ export const value = {
     'zh-tw': '文字'
 };
 
+export const value2 = {
+    'en': 'value',
+    'zh-tw': '值'
+};
+
 export const useTextSearchGetData = {
     'en': 'in JSON data [data] get all the values of the column [column2], when the column [column] of contains value [value] ',
     'zh-tw': '查詢資料[data]的欄位[column]若包含[value]的值，取得欄位[column2]的值'
+};
+
+export const useTextSearchGetData2 = {
+    'en': 'Retrieve all data in the data [data] where the field [column] contains the value [value]',
+    'zh-tw': '查詢資料[data]中欄位[column]包含特定值[value]的所有資料'
 };
 
 export const useNumberCompareGetData = {
@@ -155,7 +165,7 @@ export const useNumberCompareGetData = {
 };
 
 export const selectData = {
-    'en': 'Query data [data] Filter field [Field] whether [symbol] value [value]',
+    'en': 'Query data [data] Filter field [field] whether [symbol] value [value]',
     'zh-tw': '查詢資料[data]篩選欄位[field]是否[symbol]數值[value]'
 };
 

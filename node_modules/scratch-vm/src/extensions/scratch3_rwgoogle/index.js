@@ -316,6 +316,25 @@ class rwGoogle {
                 },
                 '---',
                 {
+                    opcode: "useTextSearchGetData2",
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        data: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.data[theLocale],
+                        },
+                        column: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.Column_name[theLocale],
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.value2[theLocale],
+                        },
+                    },
+                    text: msg.useTextSearchGetData2[theLocale],
+                },
+                {
                     opcode: "queryTheNumber",
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -925,6 +944,21 @@ class rwGoogle {
         } catch (err) {
             return `Error: ${err}`;
         }
+    }
+
+    useTextSearchGetData2(args){
+        const data = args.data; //
+        const column = args.column;
+        const value = args.value;
+
+        const parsed = JSON.parse(data);
+        const size = parsed.length;
+        var getData = [];
+        for (var i = 0; i < size; i++) {
+            const d = parsed[i][column];
+            if (d.includes(value)) getData.push(parsed[i]);
+        }
+        return JSON.stringify(getData);
     }
 
     useNumberCompareGetData(args) {

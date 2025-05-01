@@ -12,7 +12,7 @@
     "project.comments.header": "Ditshwayotshwayo",
     "project.comments.toggleOff": "Ditshwayotshwayo di timilwe",
     "project.comments.toggleOn": "Go swayaswaya ka",
-    "project.comments.turnedOff": "Tshwarelo, thomelo ya ditshwayotshwayo e timilwe go projeke ye.",
+    "project.comments.turnedOff": "Commenting for this project has been turned off.",
     "project.comments.turnedOffGlobally": "Project comments across Scratch are turned off, but don't worry, your comments are saved and will be back soon.",
     "project.share.notShared": "Projeke ye ga se ya abelanwa —  ke wena fela o ka kgonago go e bona. Kgotla abela gore batho ka moka ba e bone!",
     "project.share.sharedLong": "Re a go lebogiša ka go abelana ka projeke ya gago! Batho ba bangwe ba ka e leka, efa ditshwayotshwayo , gomme o e hlakantšhe.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Bona datha",
     "project.usernameBlockAlert": "Projeke ye e kgona go humana gore ke mang yo a e šomišago ka poloko ya \" leinatšhomišo\". Go khutiša boitsebišo bja gago, etšwa pele o šomiša projeke.",
     "project.inappropriateUpdate": "Hmm... selekola mantšu a mabe se nagana gore go na le bothata ka sengwalwa sa gago. Hle fetola se gomme o gopole go ba hlompho.",
-    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}."
+    "project.mutedAddToStudio": "You will be able to add to studios again {inDuration}.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }

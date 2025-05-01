@@ -85,6 +85,11 @@
     "defaultMessage": "Load Firmware E"
   },
   {
+    "id": "gui.menuBar.burnFirmware_m",
+    "description": "Load Firmware microbit",
+    "defaultMessage": "Load Firmware microbit"
+  },
+  {
     "id": "gui.menuBar.joinScratch",
     "description": "Link for creating a Scratch account",
     "defaultMessage": "Join Scratch"

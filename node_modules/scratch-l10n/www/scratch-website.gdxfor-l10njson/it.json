@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Sensore di Forza e Accelerazione",
+    "gdxfor.deviceNameShort": "sensore",
     "gdxfor.headerText": "Il sensore {gdxforLink} sensor è un potente strumento scientifico che rende disponibili nuovi modi per collegare il mondo fisico al tuo progetto Scratch. Misura la forza mentre tiri e spingi qualcosa e interagisci scuotendo, ruotando e facendo cadere qualcosa.",
     "gdxfor.gettingStarted": "Per Iniziare",
     "gdxfor.connectingGdxfor": "Collegare il sensore Forza & Accelerazione a Scratch",
@@ -16,7 +18,7 @@
     "gdxfor.checkOSVersionTitle": "Assicurati che il tuo sistema operativo sia compatibile con Scratch Link",
     "gdxfor.checkOSVersionText": "Le versioni minime dei diversi sistemi operativi sono elencate in cima alla pagina. Vedi le istruzioni per verificare la tua versione di {winOSVersionLink} o {macOSVersionLink}.",
     "gdxfor.winOSVersionLinkText": "Windows",
-    "gdxfor.macOSVersionLinkText": "Mac OS",
+    "gdxfor.macOSVersionLinkText": "macOS",
     "gdxfor.closeScratchCopiesTitle": "Chiudi le altre copie di Scratch",
     "gdxfor.closeScratchCopiesText": "Solo una copia alla volta di Scratch può collegarsi con il sensore Forza e Accelerazione. Se hai Scratch aperto in altre schede del browser chiudile e prova di nuovo.",
     "gdxfor.otherComputerConnectedTitle": "Assicurati che nessun altro computer sia connesso al tuo sensore",

@@ -1,6 +1,6 @@
 {
   "name": "ESP 韌體",
-  "version": "v:111.02.03",
+  "version": "v:112.12.23",
   "home_assistant_domain": "esphome",
   "builds": [
     {

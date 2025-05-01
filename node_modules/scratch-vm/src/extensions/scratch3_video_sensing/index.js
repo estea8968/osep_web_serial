@@ -440,17 +440,19 @@ class Scratch3VideoSensingBlocks {
             blocks: [
                 {
                     opcode:'changewebcam',
-                    text:formatMessage({
-                        id:'videoSensing.changeUsbWebcam',
-                        description:'Change webcam'
+                    text: formatMessage({
+                        id: 'videoSensing.changeUsbWebcam',
+                        default: 'use another camera',
+                        description: 'use another camera'
                     }),
                     blockType:BlockType.COMMAND,
                 },
                 {
                     opcode:'ue_cam',
-                    text:formatMessage({
-                        id:'videoSensing.ue_cam',
-                        description:'environment or user webcam'
+                    text: formatMessage({
+                        id: 'videoSensing.ue_cam',
+                        default: 'use the [WEBCAM] camera',
+                        description: 'use the front/back camera'
                     }),
                     blockType:BlockType.COMMAND,
                     arguments: {

@@ -105,6 +105,51 @@
     "defaultMessage": "Connecting"
   },
   {
+    "id": "gui.extension.chart.title",
+    "description": "Chart extension",
+    "defaultMessage": "Chart"
+  },
+  {
+    "id": "gui.extension.chart.description",
+    "description": "Make charts to visualize data.",
+    "defaultMessage": "Make charts to visualize data."
+  },
+  {
+    "id": "gui.extension.TAIEX.title",
+    "description": "TAIEX extension",
+    "defaultMessage": "TAIEX"
+  },
+  {
+    "id": "gui.extension.stockInfo.description",
+    "description": "Information about Taiwan Capitalization Weighted Stock Index (TAXIE).",
+    "defaultMessage": "Information about Taiwan Capitalization Weighted Stock Index (TAXIE)."
+  },
+  {
+    "id": "gui.extension.googleMap.description",
+    "description": "Display geographic location using the latitude and longitude coordinates (Experimental).",
+    "defaultMessage": "Display geographic location using the latitude and longitude coordinates (Experimental)."
+  },
+  {
+    "id": "gui.extension.dataMining.title",
+    "description": "Data Mining extension",
+    "defaultMessage": "Data Mining"
+  },
+  {
+    "id": "gui.extension.dataMining.description",
+    "description": "Mining a large amount of data for knowledge exploration and using analytical models to evaluate and predict.",
+    "defaultMessage": "Mining a large amount of data for knowledge exploration and using analytical models to evaluate and predict."
+  },
+  {
+    "id": "gui.extension.dataProcessing.title",
+    "description": "Data Processing extension",
+    "defaultMessage": "Data Processing"
+  },
+  {
+    "id": "gui.extension.dataProcessing.description",
+    "description": "Number system conversion and string manipulation.",
+    "defaultMessage": "Number system conversion and string manipulation."
+  },
+  {
     "id": "gui.extension.gasojson.description",
     "description": "Fetch JSON extension",
     "defaultMessage": "Fetch JSON."
@@ -125,19 +170,49 @@
     "defaultMessage": "Send data to ThingSpeak."
   },
   {
-    "id": "gui.extension.voicetotext.description",
-    "description": "Speech To Text extension",
-    "defaultMessage": "Convert speech to text."
-  },
-  {
     "id": "gui.extension.urltxt.description",
     "description": "get url text data extension",
     "defaultMessage": "Read and write text files and open a URL."
   },
   {
+    "id": "gui.extension.rwgoogle.title",
+    "description": "Google Sheets extension",
+    "defaultMessage": "Google Sheets"
+  },
+  {
     "id": "gui.extension.rwgoogle.description",
     "description": "read write google sheets extension",
     "defaultMessage": "Read and write Google Sheets and Google Forms."
+  },
+  {
+    "id": "gui.extension.Mqtt.description",
+    "description": "MQTT extension",
+    "defaultMessage": "Use MQTT for data transfer."
+  },
+  {
+    "id": "gui.extension.linenotify.description",
+    "description": "Use Line Notify to send messages.",
+    "defaultMessage": "Use Line Notify to send messages."
+  },
+  {
+    "id": "gui.extension.telegrambot.description",
+    "description": "Use Line Notify to send messages.",
+    "defaultMessage": "Use Line Notify to send messages."
+  },
+  {
+    "id": "gui.extension.pushnotifyapi.description",
+    "description": "Use Push Notify API app to send messages.",
+    "defaultMessage": "Use Push Notify API app to send messages."
+  },
+  {
+    "id": "gui.extension.qrcodeblocks.name",
+    "description": "Name for the QR Code extension",
+    "defaultMessage": "QR Code"
+  },
+  {
+    "id": "gui.extension.qrcodeblocks.description",
+    "description": "Description for the QR Code extension",
+    "defaultMessage": "Scan QR Code.{credit_en}"
   },
   {
     "id": "gui.extension.WebSerialArduino.description",
@@ -152,22 +227,27 @@
   {
     "id": "gui.extension.WebserialEsp32.description",
     "description": "Webserial ESP-32 extension",
-    "defaultMessage": "Webserial ESP-32"
+    "defaultMessage": "Connect ESP-32 and Google Chrome with Web Serial API."
   },
   {
     "id": "gui.extension.WebSerialPcoboard.description",
-    "description": "WebSerial Picoboard extension",
-    "defaultMessage": "WebSerial Picoboard"
+    "description": "Connect PicoBoard and Google Chrome with Web Serial API.",
+    "defaultMessage": "Connect PicoBoard and Google Chrome with Web Serial API."
   },
   {
-    "id": "gui.extension.Mqtt.description",
-    "description": "MQTT extension",
-    "defaultMessage": "Use MQTT for data transfer."
+    "id": "gui.extension.microbitMore.description",
+    "description": "Description for the 'Microbit More' extension",
+    "defaultMessage": "Play with all functions of micro:bit."
   },
   {
-    "id": "gui.extension.linenotify.description",
-    "description": "Line Notify extension",
-    "defaultMessage": "Use Line Notify send message."
+    "id": "gui.extension.WebSerialLinkit7697.description",
+    "description": "Web serial for the Linkit7697 extension",
+    "defaultMessage": "Connect Linkit7697 and Google Chrome using Web Serial API."
+  },
+  {
+    "id": "gui.extension.voicetotext.description",
+    "description": "Speech To Text extension",
+    "defaultMessage": "Convert speech to text."
   },
   {
     "id": "gui.extension.ml2scratchblocks.description",
@@ -183,5 +263,75 @@
     "id": "gui.extension.tm2scratchblocks.description",
     "description": "画像や音声を学習させよう。",
     "defaultMessage": "Machine learning for images and sound"
+  },
+  {
+    "id": "gui.extension.tmpose2scratchblocks.description",
+    "description": "Recognize your own poses.",
+    "defaultMessage": "Recognize your own poses."
+  },
+  {
+    "id": "gui.extension.facemesh2scratch.description",
+    "description": "Face Tracking",
+    "defaultMessage": "Face Tracking"
+  },
+  {
+    "id": "gui.extension.handpose2scratchblocks.description",
+    "description": "HandPose2Scratch Blocks.",
+    "defaultMessage": "HandPose2Scratch Blocks."
+  },
+  {
+    "id": "gui.extension.openai.description",
+    "description": "Use OpenAI’s models to process natural language and generate images.",
+    "defaultMessage": "Use OpenAI’s models to process natural language and generate images."
+  },
+  {
+    "id": "gui.extension.gemini.description",
+    "description": "Use Gemini’s models to process natural language and generate images.",
+    "defaultMessage": "Use Gemini’s models to process natural language and generate images."
+  },
+  {
+    "id": "gui.extension.davinci.title",
+    "description": "MediaTek DaVinci extension",
+    "defaultMessage": "DaVinci"
+  },
+  {
+    "id": "gui.extension.davinci.description",
+    "description": "MediaTek DaVinci AI. extension",
+    "defaultMessage": "MediaTek DaVinci AI."
+  },
+  {
+    "id": "gui.extension.llmstudio.title",
+    "description": "LLM Studio extension",
+    "defaultMessage": "LLM Studio"
+  },
+  {
+    "id": "gui.extension.llmstudio.description",
+    "description": "LLM Studio AI. extension",
+    "defaultMessage": "LLM Studio AI."
+  },
+  {
+    "id": "gui.extension.ic2scratch.description",
+    "description": "Image Classifier Blocks.",
+    "defaultMessage": "Image Classifier Blocks."
+  },
+  {
+    "id": "gui.extension.textSentiment.title",
+    "description": "Text Sentiment extension",
+    "defaultMessage": "Text Sentiment"
+  },
+  {
+    "id": "gui.extension.textSentiment.description",
+    "description": "Text Sentiment.",
+    "defaultMessage": "Text Sentiment."
+  },
+  {
+    "id": "gui.extension.faceExpressionRecogintion.title",
+    "description": "Face Expression Recogintion extension",
+    "defaultMessage": "Face Expression Recogintion"
+  },
+  {
+    "id": "gui.extension.faceExpressionRecogintion.description",
+    "description": "Face Expression Recogintion.",
+    "defaultMessage": "Face Expression Recogintion"
   }
 ]

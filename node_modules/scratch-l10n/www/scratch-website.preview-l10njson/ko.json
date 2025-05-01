@@ -12,7 +12,7 @@
     "project.comments.header": "댓글",
     "project.comments.toggleOff": "댓글달기 꺼짐",
     "project.comments.toggleOn": "댓글달기 켜짐",
-    "project.comments.turnedOff": "죄송합니다, 이 프로젝트에서 댓글을 다는 것은 차단되어 있습니다",
+    "project.comments.turnedOff": "이 프로젝트에 대한 주석이 해제되었습니다.",
     "project.comments.turnedOffGlobally": "스크래치의 프로젝트 댓글은 꺼져 있지만 걱정 마세요. 댓글은 저장되고 곧 돌아올 것입니다.",
     "project.share.notShared": "이 프로젝트는 공유되지 않았습니다 — 따라서 당신만 볼 수 있습니다. 공유해서 다른 사람도 볼 수 있게 해봅시다!",
     "project.share.sharedLong": "당신의 프로젝트를 공유한 것을 축하합니다! 이제 다른 사람이 실행하고, 댓글을 달고, 리믹스할 수 있습니다.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "데이터 보기",
     "project.usernameBlockAlert": "이 프로젝트는 \"사용자 이름\" 블록을 통해 사용하는 사람을 알아낼 수 있습니다. 당신의 신분을 숨기려면, 프로젝트를 사용하기 전에 로그아웃 하세요.",
     "project.inappropriateUpdate": "흠... 나쁜 단어 탐지기가 글에 문제가 있다고 생각합니다. 글을 수정하고 공손하게 대해야 하는 것을 기억해 주세요.",
-    "project.mutedAddToStudio": "{inDuration}에 스튜디오를 추가할 수 있습니다."
+    "project.mutedAddToStudio": "{inDuration}에 스튜디오를 추가할 수 있습니다.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }

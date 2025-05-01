@@ -1,4 +1,6 @@
 {
+    "gdxfor.deviceName": "Force and Acceleration sensor",
+    "gdxfor.deviceNameShort": "sensor",
     "gdxfor.headerText": "{gdxforLink}传感器是一种强大的科学工具，它解锁了Scratch作品连接物理世界的新方式。它可以测量压力和拉力，并感知晃动、旋转和自由落体等状态。",
     "gdxfor.gettingStarted": "入门",
     "gdxfor.connectingGdxfor": "将力和加速度传感器连接到Scratch",
@@ -16,7 +18,7 @@
     "gdxfor.checkOSVersionTitle": "确保电脑操作系统与Scratch Link兼容",
     "gdxfor.checkOSVersionText": "本页顶端列出了操作系统最低版本要求。详见{winOSVersionLink}和{macOSVersionLink}版本检查指南。",
     "gdxfor.winOSVersionLinkText": "Windows",
-    "gdxfor.macOSVersionLinkText": "Mac OS",
+    "gdxfor.macOSVersionLinkText": "macOS",
     "gdxfor.closeScratchCopiesTitle": "关闭其他Scratch副本",
     "gdxfor.closeScratchCopiesText": "力和加速度传感器一次只能连接一个Scratch副本。如果你在浏览器其他标签页上打开了Scratch，请关闭之后重试。",
     "gdxfor.otherComputerConnectedTitle": "请确保没有其他计算机连接到您的传感器",

@@ -12,7 +12,7 @@
     "project.comments.header": "Комментарии",
     "project.comments.toggleOff": "Комментирование отключено",
     "project.comments.toggleOn": "Комментирование включено",
-    "project.comments.turnedOff": "Сожалеем, публикация комментариев для этого проекта отключена.",
+    "project.comments.turnedOff": "Публикация комментариев была отключена для проекта.",
     "project.comments.turnedOffGlobally": "Комментарии проектов на Scratch выключены, но не волнуйтесь, Ваши комментарии сохранены и будут включены скоро.",
     "project.share.notShared": "Это личный проект, поэтому его можешь видеть только ты. Нажми на «Поделиться», чтобы он стал виден всем!",
     "project.share.sharedLong": "Поздравляем с появлением проекта в общем доступе! Другие люди смогут теперь пробовать его, оставлять комментарии и делать ремиксы.",
@@ -47,5 +47,6 @@
     "project.cloudDataLink": "Смотри данные",
     "project.usernameBlockAlert": "Этот проект может определять, кто его использует, по блоку “имя пользователя”. Чтобы скрыть своё имя, выйди из системы, прежде чем использовать этот проект. ",
     "project.inappropriateUpdate": "Хм... детектор плохих слов считает, что есть проблема с твоим текстом. Пожалуйста, измени его и помни, что надо соблюдать правила вежливости.",
-    "project.mutedAddToStudio": "Вы сможете добавлять к студиям опять {inDuration}."
+    "project.mutedAddToStudio": "Вы сможете добавлять к студиям опять {inDuration}.",
+    "project.cloudDataAndVideoAlert": "For privacy reasons, cloud variables have been disabled in this project because it contains video sensing blocks."
 }
