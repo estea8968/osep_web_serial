@@ -302,20 +302,21 @@ class gasoLASS {
     }
 
     async getEPAStation() {
-        await fetch(AQI_URI).then(res => {
-            if (res.ok) {
-                res.json().then(json => {
-                    var jsonData = JSON.stringify(json);
-                    var parseData = JSON.parse(jsonData);
-                    var length = parseData["records"].length;
-
-                    for (var i = 1; i < length; i++) {
-                        var tmpSitename = parseData["records"][i]["sitename"];
-                        this.siteName.push(tmpSitename);
-                    }
-                });
+        try {
+            const res = await fetch(AQI_URI);
+            if (!res.ok) return;
+            
+            const data = await res.json();
+            const records = Array.isArray(data) ? data : (data.records || []);
+            for (var i = 0; i < records.length; i++) {
+                var tmpSitename = records[i]["sitename"];
+                if (tmpSitename && this.siteName.indexOf(tmpSitename) === -1) {
+                    this.siteName.push(tmpSitename);
+                }
             }
-        })
+        } catch (e) {
+            console.warn('getEPAStation failed:', e);
+        }
     }
 
     EPAStation() {
@@ -326,35 +327,24 @@ class gasoLASS {
     }
 
     async fetchEPAData(siteName, attr) {
-        await fetch(AQI_URI).then(res => {
-            if (res.ok) {
-                res.json().then(json => {
-                    var jsonData = JSON.stringify(json);
-                    var parseData = JSON.parse(jsonData);
-                    var length = parseData["records"].length;
-
-                    for (var i = 0; i < length; i++) {
-                        var tmpSitename = parseData["records"][i]["sitename"];
-
-                        if (siteName == tmpSitename) {
-                            this.EPAData = parseData["records"][i][attr];
-                        }
-                    }
-                });
+        const res = await fetch(AQI_URI);
+        if (!res.ok) return undefined;
+        const data = await res.json();
+        // 環保署 API 直接回傳陣列，不是 { records: [...] }
+        const records = Array.isArray(data) ? data : (data.records || []);
+        for (var i = 0; i < records.length; i++) {
+            if (siteName === records[i]["sitename"]) {
+                return records[i][attr];
             }
-        });
+        }
+        return undefined;
     }
 
     async getEPAData(args) {
         var siteName = args.siteName;
         var attr = args.attr;
-
-        // 待想辦法
-        this.fetchEPAData(siteName, attr);
-        await this.fetchEPAData(siteName, attr);
-        this.fetchEPAData(siteName, attr);
-
-        return this.EPAData;
+        const value = await this.fetchEPAData(siteName, attr);
+        return value !== undefined ? value : '';
     }
 
     authorization(args) {
