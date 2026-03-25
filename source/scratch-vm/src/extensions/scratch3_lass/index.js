@@ -102,9 +102,14 @@ class gasoLASS {
             blockIconURI: blockIconURI,
             blocks: [
                 {
-                    opcode: 'openAirmapG0v',
+                    opcode: 'openEdiGreen',
                     blockType: BlockType.COMMAND,
-                    text: msg.openAirmapG0v[theLocale]
+                    text: msg.openEdiGreen[theLocale]
+                },
+                {
+                    opcode: 'openAirBoxDeviceData',
+                    blockType: BlockType.COMMAND,
+                    text: msg.openAirBoxDeviceData[theLocale]
                 },
                 {
                     opcode: 'fetchLASS',
@@ -112,7 +117,7 @@ class gasoLASS {
                     arguments: {
                         id: {
                             type: ArgumentType.STRING,
-                            defaultValue: "08BEAC245D70"
+                            defaultValue: "74DA38F208E2"
                         }
                     },
                     text: msg.fetchLASS[theLocale]
@@ -252,8 +257,12 @@ class gasoLASS {
         };
     }
 
-    openAirmapG0v() {
-        window.open("http://env.g0v.tw/air/");
+    openEdiGreen() {
+        window.open("https://airbox.edimaxcloud.com/");
+    }
+
+    openAirBoxDeviceData() {
+        window.open("https://pm25.lass-net.org/data/last-all-airbox.json");
     }
 
     async fetchLASS(args) {
@@ -305,7 +314,7 @@ class gasoLASS {
         try {
             const res = await fetch(AQI_URI);
             if (!res.ok) return;
-            
+
             const data = await res.json();
             const records = Array.isArray(data) ? data : (data.records || []);
             for (var i = 0; i < records.length; i++) {
