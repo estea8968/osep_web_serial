@@ -1,5 +1,5 @@
 /*
- * 更新日期112/03/29 estea chen
+ * 更新日期115/05/09 estea chen
  * 0326 add hx711
  */
 #include <Servo.h>
@@ -13,15 +13,15 @@
 //hx711
 //#include <HX711.h>
 //rfid
-#include <SPI.h>
-#include <MFRC522.h>
+//#include <SPI.h>
+//#include <MFRC522.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
 //ntc
 #include "thermistor.h"
 //版本號
-char* version="1120420";
+const char* version="1150503";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
@@ -30,7 +30,7 @@ Servo myservo;  // create servo object to control a servo
 //hx711
 //HX711 scale;
 //rfid
-MFRC522 mfrc522;   // 建立MFRC522實體
+//MFRC522 mfrc522;   // 建立MFRC522實體
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -42,7 +42,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
-  static char str[64]; // For strings of max length=20
+  static char str[64]; // arduino buffer最大64 For strings of max length=20
   if (!Serial.available()) return NULL;
   delay(6); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
@@ -71,10 +71,10 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
-
+  
   // 初始化LCD
   lcd.init();
-  lcd.backlight();
+  lcd.backlight();  
 }
 
 
@@ -141,10 +141,10 @@ void loop()
       //if (pmsSerial.available()) {
         getG5(pmsSerial.read());
         }
-        Serial.print(pm_cf_10);Serial.print(",");
-        Serial.print(pm_cf_25);Serial.print(",");
-        Serial.print(pm_cf_100);Serial.print(",");
-        Serial.print(Temperature);Serial.print(",");
+        Serial.print(pm_cf_10);Serial.print(F(","));
+        Serial.print(pm_cf_25);Serial.print(F(","));
+        Serial.print(pm_cf_100);Serial.print(F(","));
+        Serial.print(Temperature);Serial.print(F(","));
         Serial.println(Humidity);
         //isloop = false;
       
@@ -159,9 +159,9 @@ void loop()
 
       // Global temperature reading
       uint16_t temp;
-      Serial.print("N");
+      Serial.print(F("N"));
       Serial.print(inputPin);
-      Serial.print(":");      
+      Serial.print(F(":"));      
       Serial.println(thermistor.read());
     }
 
@@ -182,75 +182,60 @@ void loop()
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
       int g = 0;
-      int b = 0;
-      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-      char *bb ;
-      int i = 0;
+      int b = 0;      
+      char *bb ;      
       int sp;
-      bb = strtok(inputValue, ",");
-      led_value[i] = atoi(bb);
-      //Serial.println(led_value[i]);
-      i++;
-      while( bb != NULL){
-        bb = strtok(NULL, ",");
-        led_value[i] = atoi(bb);
-        i++;
-      }
+      int color = 0;//顏色
+      int v = 0; //值
       Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
-      pixels.begin();
-      for ( i=0;i<32;i++){
-        if (led_value[i] > 0){
-            sp = led_value[i]-1;
-          i++;
-          if( led_value[i] == 0) {
-            i++;
-            r = led_value[i];
+      pixels.begin(); 
+      //取出第1個值//大於999表示第10個燈
+      bb = strtok(inputValue, ",");            
+      while( atoi(bb) > 99 ){        
+        sp = atoi(bb)/100;
+        color = (atoi(bb)-sp*100)/10;
+        v = atoi(bb)%10; 
+        if (sp > 0){
+            sp = sp-1;
+            //Serial.println(sp);          
+          if( color == 0) {            
+            r = v;
             g = 0;
             b = 0;
-          }else if( led_value[i] == 1){
-            i++;
-            r = led_value[i]*3;
-            g = led_value[i];
+          }else if( color == 1){            
+            r = v*3;
+            g = v;
             b = 0;
-          }else if( led_value[i] == 2){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
+          }else if( color == 2){            
+            r = v;
+            g = v;
             b = 0;
-          }else if( led_value[i] == 3){
-            i++;
+          }else if( color == 3){            
             r = 0;
-            g = led_value[i];
+            g = v;
             b = 0;
-          }else if( led_value[i] == 4){
-            i++;
+          }else if( color == 4){            
             r = 0;
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 5){
-            i++;
+            b = v;
+          }else if( color == 5){            
             r = 0;
-            g = led_value[i];
-            b = led_value[i];
-          }else if( led_value[i] == 6){
-            i++;
-            r = led_value[i];
+            g = v;
+            b = v;
+          }else if( color == 6){            
+            r = v;
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 7){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
-            b = led_value[i];
+            b = v;
+          }else if( color == 7){            
+            r = v;
+            g = v;
+            b = v;
           }
-          pixels.setPixelColor(sp, pixels.Color(r, g, b));
-        }else{
-          i++;
-          i++;
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));                 
         }
-      }
-      pixels.show(); 
-      
+        bb = strtok(NULL, ",");
+      }      
+      pixels.show();      
     }
     
     //ws2812
@@ -311,33 +296,46 @@ void loop()
        pinMode(echoPin, INPUT);             // 讀取 echo 的電位
        duration = pulseIn(echoPin, HIGH);   // 收到高電位時的時間
        cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
-       Serial.print("HC,");
+       Serial.print(F("HC,"));
        Serial.println(cm);        
     }
-    //rfid begin
+    /*//rfid begin
+    
     if(strcmp(commandString, "mfr0") == 0){
-      //MFRC522 mfrc522;   // 建立MFRC522實體
-      SPI.begin();        // 初始化SPI介面
+      //Serial.print("mfr begin"); 
+      SPI.begin();        // 初始化SPI介面 
+      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));     
       mfrc522.PCD_Init(atoi(inputPin), atoi(inputValue)); // 初始化MFRC522卡
       //mfrc522.PCD_Init(10, 9); // 初始化MFRC522卡
-      mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
-      //Serial.println("ok");
-      }
+      //mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
+      //Serial.println("mfr ok");
+      //}
     //get uid  
-    if(strcmp(commandString, "mfr1") == 0){
+    //if(strcmp(commandString, "mfr") == 0){      
+      //int sda = atoi(inputPin);
+      
+      //int sda = atoi(strtok(inputPin,","));
+      //int sck = atoi(strtok(NULL,","));
+      //int mosi = atoi(strtok(NULL,","));
+      //int miso = atoi(strtok(NULL,","));
+      //int rst = atoi(strtok(NULL,","));
+      //int rst = atoi(inputValue);      
+      //SPI.begin();        // 初始化SPI介面      
+      //mfrc522.PCD_Init(sda, rst); // 初始化MFRC522卡
+      delay(200);
         if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
-            Serial.print("mfr:");
+            Serial.print(F("mfr:"));
             for (byte i = 0; i < mfrc522.uid.size; i++) {
               Serial.print(mfrc522.uid.uidByte[i]);
               //Serial.print(buffer[i]);
               //Serial.print(buffer[i] < 0x10 ? " 0" : " ");
               //Serial.print(buffer[i], HEX);
             }
-            Serial.println("");
+            Serial.println(F(""));
             //dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size); // 顯示卡片的UID
             mfrc522.PICC_HaltA();  // 卡片進入停止模式
         }
-      }
+      }*/
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
       pinMode(atoi(inputPin),INPUT);
@@ -347,7 +345,7 @@ void loop()
     if(strcmp(commandString, "dht11Read") == 0){
       //int chk = DHT.read11(atoi(inputPin));
       Serial.print(DHT.getTemperature());
-      Serial.print(",");
+      Serial.print(F(","));
       Serial.println(DHT.getHumidity());
       /*
       if( atoi(inputValue) == 1 ){
@@ -373,18 +371,18 @@ void loop()
     }
     //類比讀取
     if(strcmp(commandString, "analogRead") == 0){
-      Serial.print("A");
+      Serial.print(F("A"));
       Serial.print(atoi(inputPin));
-      Serial.print(":");
+      Serial.print(F(":"));
       Serial.println(analogRead(atoi(inputPin)));
     }
     //數位讀取
     if(strcmp(commandString, "digitalRead") == 0){
       pinMode(atoi(inputPin),INPUT);
       //2-19
-      Serial.print("D");
+      Serial.print(F("D"));
       Serial.print(atoi(inputPin));
-      Serial.print(":");
+      Serial.print(F(":"));
       Serial.println(digitalRead(atoi(inputPin)));
     }
     //hx711
@@ -493,6 +491,13 @@ uint64_t stringToUint_64(String value) {
 
   return uint64Value;
 }
+/*//rfid function
+void dump_byte_array(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], HEX);
+  }
+}*/
 
 int stringToHexInt(char value) {
   switch(value) {
