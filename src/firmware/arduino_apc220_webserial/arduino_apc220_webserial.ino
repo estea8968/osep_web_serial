@@ -1,5 +1,5 @@
 /*
- * 更新日期114/04/26 estea chen
+ * 更新日期114/05/23 estea chen
  * 0326 add hx711
  */
 #include <Servo.h>
@@ -22,7 +22,7 @@
 //ntc
 #include "thermistor.h"
 //版本號
-const char* version = "1140426"; 
+const char* version = "1140523"; 
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
@@ -30,7 +30,7 @@ Servo myservo;  // create servo object to control a servo
 
 // [優化] NeoPixel 改為全域宣告，避免在 loop 中重複動態分配記憶體
 #define NUMPIXELS 12 
-Adafruit_NeoPixel pixels(NUMPIXELS, 6, NEO_GRB + NEO_KHZ800); // 預設腳位，後續可用 setPin 更改
+//Adafruit_NeoPixel pixels(NUMPIXELS, 6, NEO_GRB + NEO_KHZ800); // 預設腳位，後續可用 setPin 更改
 
 //hx711
 //HX711 scale;
@@ -80,7 +80,7 @@ void setup() {
   // 初始化LCD apc220相沖不使用
   //lcd.init();
   //lcd.backlight();
-  pixels.begin(); // 初始化全域 NeoPixel
+  //pixels.begin(); // 初始化全域 NeoPixel
 }
 
 
@@ -190,75 +190,60 @@ void loop()
     if(strcmp(commandString, "sh") == 0){
       int r = 0;
       int g = 0;
-      int b = 0;
-      int led_value[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-      char *bb ;
-      int i = 0;
+      int b = 0;      
+      char *bb ;      
       int sp;
-      bb = strtok(inputValue, ",");
-      led_value[i] = atoi(bb);
-      //Serial.println(led_value[i]);
-      i++;
-      while( bb != NULL){
-        bb = strtok(NULL, ",");
-        led_value[i] = atoi(bb);
-        i++;
-      }
-      //Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
-      //pixels.begin();
-      for ( i=0;i<32;i++){
-        if (led_value[i] > 0){
-            sp = led_value[i]-1;
-          i++;
-          if( led_value[i] == 0) {
-            i++;
-            r = led_value[i];
+      int color = 0;//顏色
+      int v = 0; //值
+      Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+      pixels.begin(); 
+      //取出第1個值//大於999表示第10個燈
+      bb = strtok(inputValue, ",");            
+      while( atoi(bb) > 99 ){        
+        sp = atoi(bb)/100;
+        color = (atoi(bb)-sp*100)/10;
+        v = atoi(bb)%10; 
+        if (sp > 0){
+            sp = sp-1;
+            //Serial.println(sp);          
+          if( color == 0) {            
+            r = v;
             g = 0;
             b = 0;
-          }else if( led_value[i] == 1){
-            i++;
-            r = led_value[i]*3;
-            g = led_value[i];
+          }else if( color == 1){            
+            r = v*3;
+            g = v;
             b = 0;
-          }else if( led_value[i] == 2){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
+          }else if( color == 2){            
+            r = v;
+            g = v;
             b = 0;
-          }else if( led_value[i] == 3){
-            i++;
+          }else if( color == 3){            
             r = 0;
-            g = led_value[i];
+            g = v;
             b = 0;
-          }else if( led_value[i] == 4){
-            i++;
+          }else if( color == 4){            
             r = 0;
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 5){
-            i++;
+            b = v;
+          }else if( color == 5){            
             r = 0;
-            g = led_value[i];
-            b = led_value[i];
-          }else if( led_value[i] == 6){
-            i++;
-            r = led_value[i];
+            g = v;
+            b = v;
+          }else if( color == 6){            
+            r = v;
             g = 0;
-            b = led_value[i];
-          }else if( led_value[i] == 7){
-            i++;
-            r = led_value[i];
-            g = led_value[i];
-            b = led_value[i];
+            b = v;
+          }else if( color == 7){            
+            r = v;
+            g = v;
+            b = v;
           }
-          pixels.setPixelColor(sp, pixels.Color(r, g, b));
-        }else{
-          i++;
-          i++;
+          pixels.setPixelColor(sp, pixels.Color(r, g, b));                 
         }
-      }
-      pixels.show(); 
-      
+        bb = strtok(NULL, ",");
+      }      
+      pixels.show();      
     }
     
     //ws2812
@@ -266,8 +251,8 @@ void loop()
         int r = atoi(strtok(inputValue,","));
         int g = atoi(strtok(NULL, ","));
         int b = atoi(strtok(NULL, ","));
-        //Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
-        //pixels.begin();        
+        Adafruit_NeoPixel pixels(NUMPIXELS, atoi(inputPin), NEO_GRB + NEO_KHZ800);
+        pixels.begin();        
         //pixels.clear();
         char* sp = "";
         for( int i = 0; i<NUMPIXELS ; i++){
