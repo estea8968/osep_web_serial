@@ -86,6 +86,8 @@ import webserialEsp8266InsetIconURL from "./webserialEsp8266/webserialEsp-small.
 
 import webserialEsp32Image from "./webserialEsp32/webserialEsp32.png";
 import webserialEsp32InsetIconURL from "./webserialEsp32/webserialEsp-small.png";
+import webserialEsp32c3Image from "./webserialEsp32c3/esp32c3.png";
+import webserialEsp32c3InsetIconURL from "./webserialEsp32c3/esp32c3-small.png";
 
 import webserialPicoboardImage from "./webserialPicoboard/webserialPicoboard.png";
 import webserialPicoboardInsetIconURL from "./webserialPicoboard/webserialPicoboard-small.png";
@@ -875,6 +877,25 @@ const extensions = [
     collaborator: "estea chen",
     iconURL: webserialEsp32Image,
     insetIconURL: webserialEsp32InsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Connect ESP-32 and Google Chrome with Web Serial API."
+        description="Webserial ESP-32 extension"
+        id="gui.extension.WebserialEsp32.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    bluetoothRequired: false,
+    helpLink: "https://sites.google.com/view/scratch-web-serial-api/",
+  },
+  {
+    name: "Web Serial ESP-32c3",
+    extensionId: "webserialEsp32c3",
+    collaborator: "estea chen",
+    iconURL: webserialEsp32c3Image,
+    insetIconURL: webserialEsp32c3InsetIconURL,
     description: (
       <FormattedMessage
         defaultMessage="Connect ESP-32 and Google Chrome with Web Serial API."
