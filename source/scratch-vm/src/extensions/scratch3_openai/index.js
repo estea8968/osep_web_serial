@@ -9,7 +9,7 @@ const ml5 = require('ml5');
 //end
 //const { Configuration, OpenAIApi } = require('openai');
 const OpenAIApi  = require('openai');
-OpenAIApi.api_key ='';
+//OpenAIApi.api_key ='';
 const menuIconURI = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgi\
 IGhlaWdodD0iMjYwcHgiIHZpZXdCb3g9IjAgMCAyNTYgMjYwIiB2ZXJzaW9uPSIxLjEiIHhtbG5z\
 PSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMu\
@@ -81,7 +81,7 @@ let theLocale = null;
 let ai_user='一般人';
 let ai_assistant='簡單回答問題';
 let ai_question='';
-let ai_model='gpt-4';
+let ai_model='gpt-4o';
 //this.prompt='';
 let ai_temperature=0.5;
 let max_tokens=500;
@@ -95,8 +95,8 @@ class openai {
         this.runtime = runtime;
         this.api_key ='';
         this.ai_answer = '';
-        this.image_size_d2_ary=['1024x1024','512x512','256x256'];
-        this.image_size_d3_ary=['1024x1024','1792x1024','1024x1792'];
+        //this.image_size_d2_ary=['1024x1024','512x512','256x256'];
+        this.image_size_d3_ary=['auto','1024x1024', '1024x1536', '1536x1024'];
         //this.runtime.registerPeripheralExtension('openai', this);
     }
 
@@ -134,6 +134,7 @@ class openai {
                     },
                     text: msg.openai_apikey[theLocale]
                 },
+                /*
                 {
                     opcode: 'drawimage_d2',
                     blockType: BlockType.COMMAND,
@@ -154,11 +155,16 @@ class openai {
                         },
                     },
                     text: msg.drawimage_d2[theLocale]
-                },
+                },*/
                 {
                     opcode: 'drawimage_d3',
                     blockType: BlockType.COMMAND,
                     arguments: {
+                        MODEL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'gpt-image-1-mini',
+                            menu:'drawmodelItem'
+                        },
                         TEXT: {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
@@ -288,9 +294,14 @@ class openai {
                 
             ],
             menus: {
-                sized2Item: {
+                /*sized2Item: {
                     acceptReporters: true,
                     items: msg.size_d2[theLocale],
+                },*/
+
+                drawmodelItem:{
+                    acceptReporters: true,
+                    items:['gpt-image-1-mini','gpt-image-1','gpt-image-2'],
                 },
                 sized3Item: {
                     acceptReporters: true,
@@ -334,8 +345,11 @@ class openai {
         }
         console.log('temperature=',ai_temperature);
     }
+    
+
     async drawimage_d3(args){
         let image_size = args.SIZE;
+        let draw_model = args.MODEL;
         let n_num = parseInt(args.NUM,10);
         if(n_num<1){
             n_num=1;
@@ -349,37 +363,40 @@ class openai {
                 break;
             }
         }
-        const prompt_text = args.TEXT;
-        
+        const prompt_text = args.TEXT;        
         if(this.api_key=='' ||  this.api_key=='api key'){
             alert('api_key is null');
-        }
-        /*const configuration = new Configuration({
-            apiKey: this.api_key,
-            //apiKey: process.env.OPENAI_API_KEY,
-          });*/
-        //let openai_draw = new OpenAIApi(configuration);
+        }        
         let openai_draw = new OpenAIApi({
-            apiKey: this.api_key,
+            //baseURL:'https://api.openai.com/v1',
+            apiKey: this.api_key, // This is the default and can be omitted
             dangerouslyAllowBrowser: true,
-        });
+          });
         //console.log('openai_draw=',openai_draw);
         console.log('prompt_text=',prompt_text,image_size);
+        //size "1024x1024" | "1536x1024" | "1024x1536" | "auto"
         try{
             const draw_respone = await openai_draw.images.generate({
-                model: "dall-e-3",
+                model: draw_model,  //"gpt-image-1-mini",
                 prompt:prompt_text,
                 n:n_num,
-                quality: "hd",
+                quality: "auto",
                 size: image_size
             })
           //const  image_url = draw_respone.data.data[0].url
-          const  image_url = draw_respone.data;
-          console.log('response.data=',draw_respone.data);
-          const w_size = image_size.split('x');
+          //const  image_url = draw_respone.data;
+          console.log('response.data=',draw_respone.data);          
+          for(i=0;i<draw_respone.data.length;i++){  
+            let imageBase64 = draw_respone.data[i].b64_json;            
+            let openaiWindow = window.open('', 'openAI 生圖功能'+i,  'toolbar=no, scrollbars=no, menubar=no, name=no, status=no');
+            openaiWindow.document.write(`            
+            <img src=data:image/png;base64,${imageBase64}>
+            `);
+           }  
+          /*const w_size = image_size.split('x');
           for(n=0;n<draw_respone.data.length;n++){
             window.open(image_url[n].url, 'openAI 生圖功能'+n, 'width=' + w_size[0] + ', height=' + w_size[1] + ', toolbar=no, scrollbars=no, menubar=no, location=no, status=no');
-          }
+          }*/
           
           
         }catch (error) {
@@ -415,10 +432,15 @@ class openai {
         if(this.api_key=='' ||  this.api_key=='api key'){
             alert('api_key is null');
         }
-        let openai_draw = new OpenAIApi({
+        /*let openai_draw = new OpenAIApi({
             apiKey: this.api_key,
             dangerouslyAllowBrowser: true,
-        });
+        });*/
+        let openai_draw = new OpenAIApi({
+            //baseURL:'https://api.openai.com/v1',
+            apiKey: process.env[this.api_key], // This is the default and can be omitted
+            dangerouslyAllowBrowser: true,
+          });
         //console.log('openai_draw=',openai_draw);
         console.log('prompt_text=',prompt_text,image_size);
         try{
@@ -506,7 +528,7 @@ class openai {
     async do_question(args){
         ai_question = args.QUESTION;
         console.log('ai_question=',ai_question+ai_assistant);
-        if(this.api_key=='' || this.api_key=='api key' || this.ai_question==''){
+        if(this.api_key=='' || this.api_key=='api key' || ai_question==''){
             this.ai_answer= msg.error_ai35[theLocale];//'api_key system assistant user can not empty';
         }else{
 
@@ -515,11 +537,15 @@ class openai {
             //apiKey: process.env.OPENAI_API_KEY,
           });*/
         //const openai = new OpenAIApi(configuration);  
-        let openai_question = new OpenAIApi({
+        /*let openai_question = new OpenAIApi({
             apiKey: this.api_key,
             dangerouslyAllowBrowser: true,
-        });
-                
+        });*/
+        const openai_question = new OpenAIApi({
+            //baseURL:'https://api.openai.com/v1',
+            apiKey: this.api_key, // This is the default and can be omitted
+            dangerouslyAllowBrowser: true,
+          });      
         try {
             const completion = await openai_question.chat.completions.create({
             model: ai_model,

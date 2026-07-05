@@ -29,14 +29,14 @@ export const drawimage_d2 = {
 
 
 export const size_d3  ={
-    'en': ['square','Horizontal','vertical'],
-    'zh-tw': ['正方形','横','直']
+    'en': ['auto','1024x1024', '1024x1536', '1536x1024'],
+    'zh-tw': ['自動','正方形1024x1024','直1536x1024','横1024x1536']
 };
 
-export const drawimage_d3 = {
-    'en': 'create [NUM] image of[SIZE] size  based upon text[TEXT] ',
-    'zh-tw': 'dall-e-3繪圖[SIZE][NUM]張 圖片描述[TEXT] '
 
+export const drawimage_d3 = {
+    'en': 'model:[MODEL] create [NUM] image of[SIZE] size  based upon text[TEXT] ',
+    'zh-tw': '繪圖:模型[MODEL]大小[SIZE][NUM]張 圖片描述[TEXT] '
 };
 
 export const set_ai_user ={
