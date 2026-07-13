@@ -1,25 +1,33 @@
 /*
- * 115/07/03
+ * 115/07/13
  */
 //#include<WiFi.h>
 #include <ESP32Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
-////#include <LiquidCrystal_I2C.h>
+//lcd
+#include <LiquidCrystal_I2C.h>
 //oled
+#include <U8g2lib.h>
+#include "u8g2_font_e58524b32706dda48e7107fc64bfd183.h"
+//#include <Arduino.h>
 ////#include <string.h>
-////#include <Arduino.h>
-////#include <U8g2lib.h>
 
 //qrcode
-//#include "SSD1306.h"
-//#include <es_qrcode.h>
-//max7219
-////#include <MD_Parola.h>
-////#include <MD_MAX72xx.h>
-////#include <SPI.h>
-////#include <LedControl.h>
+#include "SSD1306.h"
+//#include <myqrcode.h>
+#include <qrcodeoled.h>
 
+//max7219
+#include <MD_Parola.h>
+#include <MD_MAX72xx.h>
+#include <SPI.h>
+//#include <LedController.hpp>
+//LedController<1,1> lc;
+
+//lc = LedController<1,1>(DIN, CLK, CS);
+
+//sakurajin::LedController<1, 1> lc = sakurajin::LedController<1, 1>();
 //ws2812
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
@@ -29,13 +37,16 @@
 #define NUMPIXELS 12 // Popular NeoPixel ring size
 Adafruit_NeoPixel pixels(NUMPIXELS, 20, NEO_GRB + NEO_KHZ800);
 
-////U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, OLED_RESET, OLED_SCL, OLED_SDA);
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, 6, 5);
 //oled end
-//max7219
-//LedControl lc=LedControl(16,18,17,1);
-////#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-//MD_Parola maDisplay=MD_Parola(HARDWARE_TYPE, D3,D1,D2,1);
-////MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, 16,17,18,1);
+
+//qrcode SDA:5 SCL:6
+SSD1306  display(0x3C, 5, 6);
+QRcodeOled qrcode (&display);
+
+//MYQRcode myqrcode (&display);
 
 //pwm
 // setting PWM properties
@@ -44,16 +55,17 @@ const int ledChannel = 0;
 const int resolution = 8;
 //
 
-////LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);  //設定LCD
 DHTStable DHT;
 //伺服馬達
 Servo myservo;  // create servo object to control a servo
+//max7219
+//MD_Parola maDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN,  MAX_DEVICES);
+//MD_Parola maDisplay = MD_Parola(MD_MAX72XX::FC16_HW, 0, 2, 1, 1);
+
 // Published values for SG90 servos; adjust if needed
 int minUs = 700;
 int maxUs = 2500;
-//qrcode
-//SSD1306 display(0x3c, 21, 22);
-//QRcode qrcode (&display);
 
 // variable for storing the pushbutton status
 
@@ -82,29 +94,24 @@ char* serialString()
 
 void setup() {
   Serial.begin(115200); 
-  ////lcd.init(); //初始化LCD 
-  ////lcd.begin(16, 2); //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
-  //lcd.backlight(); //開啟背光
+  //lcd Wire.begin(I2C_SDA, I2C_SCL);
+  Wire.begin(5,6);
+  lcd.init(); //初始化LCD
+  //lcd.begin();
+  lcd.backlight(); //開啟背光
   //oled
-  ////u8g2.begin();
-  ////u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
-  //ledcSetup(ledChannel, freq, resolution);
-  //ledcAttach(ledChannel, freq, resolution);
-  //digital 2 esp32 led燈
-  //digital out 1-5 12-33 37
-  //gpio 15-19 25 26 ok
-  //wifi
-  //WiFi.mode(WIFI_STA); //設置WiFi模式
-
+  u8g2.begin();
+  u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
+  //qrcode
+  display.init();
+  display.clear();
+  display.display();
   //ws2812
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
   clock_prescale_set(clock_div_1);
   #endif
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
   //setupTimer();
-  //qrcode
-  //display.init();
-  //display.display();
   //max7219
 ////  maDisplay.begin();
   // Set the intensity (brightness) of the display (0-15):
@@ -176,8 +183,14 @@ void loop() {
       //取出第4個值
       char* inputTime =strtok(NULL, "#");
       //Serial.println(inputTime);
-      
-      if(strcmp(commandString, "maset") == 0){///有問題先註解掉
+      //伺服馬達
+    if(strcmp(commandString, "servoWrite") == 0){
+      myservo.attach(atoi(inputPin), minUs, maxUs);
+      delay(15);
+      myservo.write(atoi(inputValue));
+      delay(15);
+    }
+      /*if(strcmp(commandString, "maset") == 0){///有問題先註解掉
       //Serial.println(atoi(inputPin));
       char* data_pin = strtok(inputPin, ",");
       char* cs_pin = strtok(NULL, ",");
@@ -185,19 +198,9 @@ void loop() {
       char* max_devices = strtok(NULL, ",");
       //LedControl(int dataPin, int clkPin, int csPin, int numDevices);
       //lcd=LedControl(atoi(data_pin),atoi(clk_pin),atoi(cs_pin),atoi(max_devices));  //宣告 LedControl 物件      lc.shutdown(0,false);  // 關閉省電模式
-      //lcd.shutdown(0,false);  // 關閉省電模式
-      //lcd.setIntensity(0,0);  // 設定亮度為 0 (介於0~15之間)
-      //lcd.clearDisplay(0);    // 清除螢幕
-    }
-
-    //伺服馬達
-    if(strcmp(commandString, "servoWrite") == 0){
-      myservo.attach(atoi(inputPin), minUs, maxUs);
-      delay(15);
-      myservo.write(atoi(inputValue));
-      delay(15);
-    }
-    
+      lc = LedController<1,1>(atoi(data_pin),atoi(clk_pin),atoi(cs_pin),atoi(max_devices));
+      }*/
+      
     /*if(strcmp(commandString, "mashow") == 0){  ///有問題先註解掉
       char* devices = strtok(inputPin, ",");
       char* row = strtok(NULL, ",");
@@ -205,14 +208,22 @@ void loop() {
       char* onoff = strtok(NULL, ",");
       //lc.setLed(0,row,col,1); // 將Led的列,行設定為亮
       Serial.println(col);
-      lcd.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
-    }
-    if(strcmp(commandString, "maclear") == 0){
-      //lcd.clearDisplay(0); 
-    }
-    if(strcmp(commandString, "marow") == 0){
-      lcd.setRow(atoi(inputPin),atoi(inputValue),atoi(inputTime));
-    }
+      //lcd.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
+      lc.setLed(atoi(devices),atoi(col),atoi(row),atoi(onoff));
+    }*/
+    /*if(strcmp(commandString, "maclear") == 0){
+      //清螢幕
+      maDisplay.begin();      
+      maDisplay.displayClear();
+      maDisplay.print(" ");
+            
+    }*/
+    /*if(strcmp(commandString, "marow") == 0){
+      //LedController lc = LedController(6, 7, 10, 1);      
+      //lcd.setRow(atoi(inputPin),atoi(inputValue),atoi(inputTime));
+      lc.setRow(atoi(inputPin),atoi(inputValue),atoi(inputTime));
+      
+    }*/
       if(strcmp(commandString, "max") == 0){
       char* data_pin = strtok(inputPin, ",");
       char* cs_pin = strtok(NULL, ",");
@@ -235,7 +246,7 @@ void loop() {
       maDisplay.setTextAlignment(PA_CENTER);
       Serial.println(inputValue);
       maDisplay.print(inputValue);
-    }*/
+    }
       if(strcmp(commandString, "sh") == 0){
         /*//進入指令sh#腳位#111,222, 最後必需是,否則會reboot*/
       //pinMode(6, OUTPUT);
@@ -386,35 +397,45 @@ void loop() {
 
      //oled qrcode
      
-      /*if(strcmp(commandString, "q") == 0) {
-        qrcode.init();
-        qrcode.create(inputPin);
-      }*/
+      if(strcmp(commandString, "q") == 0) {
+        String qrstring=inputPin;
+        display.init();
+        display.clear();
+        display.display();                
+        qrcode.init();        
+        qrcode.create(qrstring);        
+      }
       
      //oled 16x2
     
-    /*if(strcmp(commandString, "o") == 0) {
-        u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
+    if(strcmp(commandString, "o") == 0) {
+        //u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
+        u8g2.setFont(u8g2_font_unifont_myfonts);
         u8g2.firstPage();
         int textlen = strlen(inputPin);
         int ax = atoi(strtok(inputValue,","));
         int ay = atoi(strtok(NULL, ","));
-        do {
-          u8g2.setCursor(ax,ay);
-          u8g2.print(inputPin);
           
+          //u8g2.setFont(u8g2_font_ncenB08_tr); // 設定字型
+          //u8g2.drawStr(0, 15, "Hello World!");  // 寫入文字 (X, Y 座標)
+           
+        do {
+          u8g2.clearBuffer();          // 清除螢幕內部緩衝區
+          u8g2.setCursor(ax,ay);
+          u8g2.print(inputPin);                     
+          u8g2.sendBuffer();
         }while ( u8g2.nextPage() );
             //delay(1000);
-    }*/
+    }
     
     //lcd 16x2
     //format: l#string#row
-    /*if(strcmp(commandString, "l_clear") == 0) {
+    if(strcmp(commandString, "l_clear") == 0) {
       lcd.backlight(); //開啟背光
       lcd.clear();
       lcd.noBacklight(); // 關閉背光
-    }*/
-    /*if(strcmp(commandString, "l") == 0) {
+    }
+    if(strcmp(commandString, "l") == 0) {
       lcd.backlight(); //開啟背光
           //Serial.println(inputPin);
           if(atoi(inputValue) == 0){
@@ -423,7 +444,7 @@ void loop() {
             lcd.setCursor(0,1);
           }
           lcd.print(inputPin);  
-    }*/
+    }
       
       //dht11
       if(strcmp(commandString, "dht11Set") == 0){
@@ -461,9 +482,10 @@ void loop() {
       //類比讀取
       
       if(strcmp(commandString, "analogRead") == 0){
-        int int_inputPin = atoi(inputPin);
-        //pinMode(int_inputPin, INPUT);
-        Serial.println(analogRead(int_inputPin));
+        int pin = atoi(inputPin);
+        //pinMode(pin, INPUT);
+        Serial.print("A:");
+        Serial.println(analogRead(pin));
       }
       //數位讀取
       if(strcmp(commandString, "digitalRead") == 0){
