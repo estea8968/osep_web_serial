@@ -1,11 +1,12 @@
 /*
- * 更新日期115/05/09 estea chen
+ * 更新日期114/05/23 estea chen
  * 0326 add hx711
  */
 #include <Servo.h>
 #include <DHTStable.h>
 #include <Wire.h> 
-#include <LiquidCrystal_I2C.h> // LCD_I2C模組程式庫
+//apc220相沖不使用
+//#include <LiquidCrystal_I2C.h> // LCD_I2C模組程式庫
 //ws2812
 #include <Adafruit_NeoPixel.h>
 //max7219
@@ -13,36 +14,40 @@
 //hx711
 //#include <HX711.h>
 //rfid
-//#include <SPI.h>
-//#include <MFRC522.h>
+#include <SPI.h>
+#include <MFRC522.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
 //ntc
 #include "thermistor.h"
 //版本號
-const char* version="1150503";
+const char* version = "1140523"; 
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
 Servo myservo;  // create servo object to control a servo
+
+// [優化] NeoPixel 改為全域宣告，避免在 loop 中重複動態分配記憶體
 #define NUMPIXELS 12 
+//Adafruit_NeoPixel pixels(NUMPIXELS, 6, NEO_GRB + NEO_KHZ800); // 預設腳位，後續可用 setPin 更改
+
 //hx711
 //HX711 scale;
 //rfid
-//MFRC522 mfrc522;   // 建立MFRC522實體
+MFRC522 mfrc522;   // 建立MFRC522實體
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
 static float HCHO,Temperature,Humidity;
 
-//LCD
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+//LCD apc220相沖不使用
+//LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 char* serialString()
 {
   //static char str[21]; // For strings of max length=20
-  static char str[64]; // arduino buffer最大64 For strings of max length=20
+  static char str[64]; // For strings of max length=20
   if (!Serial.available()) return NULL;
   delay(6); // wait for all characters to arrive
   memset(str,0,sizeof(str)); // clear str
@@ -50,13 +55,13 @@ char* serialString()
   while (Serial.available())
   {
     char c=Serial.read();
-    //if (c>=32 && count<sizeof(str)-1)
-    //c最大35
-    //if (c>=32 && count<sizeof(str)-1)
-    //{
+    /*優化前
       str[count]=c;
       count++;
-    //}
+    */
+    if (count < sizeof(str) - 1) {
+      str[count++] = c;
+    }
   }
   str[count]='\0'; // make it a zero terminated string
   return str;
@@ -71,10 +76,11 @@ void setup() {
   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
-  
-  // 初始化LCD
-  lcd.init();
-  lcd.backlight();  
+
+  // 初始化LCD apc220相沖不使用
+  //lcd.init();
+  //lcd.backlight();
+  //pixels.begin(); // 初始化全域 NeoPixel
 }
 
 
@@ -159,14 +165,16 @@ void loop()
 
       // Global temperature reading
       uint16_t temp;
+      //Serial.print("N");
       Serial.print(F("N"));
       Serial.print(inputPin);
-      Serial.print(F(":"));      
+      //Serial.print(":");
+      Serial.print(F(":"));    
       Serial.println(thermistor.read());
     }
 
     //lcd
-    if(strcmp(commandString, "l") == 0){
+    /*if(strcmp(commandString, "l") == 0){
       //文字inputPin
       //第幾行inputValue 
       if(strcmp(inputPin, "clear") == 0){
@@ -176,7 +184,7 @@ void loop()
         lcd.print(inputPin);   
       }
       
-    }
+    }*/
     
     //ws2812_shu
     if(strcmp(commandString, "sh") == 0){
@@ -297,32 +305,19 @@ void loop()
        duration = pulseIn(echoPin, HIGH);   // 收到高電位時的時間
        cm = (duration/2) / 29.1;         // 將時間換算成距離 cm
        Serial.print(F("HC,"));
-       Serial.println(cm);        
+       Serial.println((duration / 2) / 29.1);        
     }
-    /*//rfid begin
-    
+    //rfid begin
     if(strcmp(commandString, "mfr0") == 0){
-      //Serial.print("mfr begin"); 
-      SPI.begin();        // 初始化SPI介面 
-      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));     
+      //MFRC522 mfrc522;   // 建立MFRC522實體
+      SPI.begin();        // 初始化SPI介面
       mfrc522.PCD_Init(atoi(inputPin), atoi(inputValue)); // 初始化MFRC522卡
       //mfrc522.PCD_Init(10, 9); // 初始化MFRC522卡
-      //mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
-      //Serial.println("mfr ok");
-      //}
+      mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
+      //Serial.println("ok");
+      }
     //get uid  
-    //if(strcmp(commandString, "mfr") == 0){      
-      //int sda = atoi(inputPin);
-      
-      //int sda = atoi(strtok(inputPin,","));
-      //int sck = atoi(strtok(NULL,","));
-      //int mosi = atoi(strtok(NULL,","));
-      //int miso = atoi(strtok(NULL,","));
-      //int rst = atoi(strtok(NULL,","));
-      //int rst = atoi(inputValue);      
-      //SPI.begin();        // 初始化SPI介面      
-      //mfrc522.PCD_Init(sda, rst); // 初始化MFRC522卡
-      delay(200);
+    if(strcmp(commandString, "mfr1") == 0){
         if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
             Serial.print(F("mfr:"));
             for (byte i = 0; i < mfrc522.uid.size; i++) {
@@ -331,11 +326,11 @@ void loop()
               //Serial.print(buffer[i] < 0x10 ? " 0" : " ");
               //Serial.print(buffer[i], HEX);
             }
-            Serial.println(F(""));
+            Serial.println("");
             //dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size); // 顯示卡片的UID
             mfrc522.PICC_HaltA();  // 卡片進入停止模式
         }
-      }*/
+      }
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
       pinMode(atoi(inputPin),INPUT);
@@ -385,39 +380,14 @@ void loop()
       Serial.print(F(":"));
       Serial.println(digitalRead(atoi(inputPin)));
     }
-    //hx711
-    /*if(strcmp(commandString, "hx0") == 0){
-      scale.begin(atoi(inputPin),atoi(inputValue));
-      const int scale_factor = -1674; //比例參數，從校正程式中取得
-      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
-      scale.get_units(5);
-      scale.set_scale(scale_factor);       // 設定比例參數
-      scale.tare();               // 歸零
-      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
-      scale.get_units(5);
+    /*hx711    
+    if(strcmp(commandString, "hx1") == 0){
+      scale.begin(DT_PIN, SCK_PIN);      
+      scale.power_up();               // 結束睡眠模式      
+      scale.power_down();             // 進入睡眠模式
+      delay(500);
+      scale.power_up();               // 結束睡眠模式
     }*/
-    ///if(strcmp(commandString, "hx1") == 0){
-      //scale.begin(DT_PIN, SCK_PIN);
-      /*scale.begin(atoi(inputPin),atoi(inputValue));
-      const int scale_factor = -1674; //比例參數，從校正程式中取得
-      //Serial.println(scale.get_units(5), 0);  //未設定比例參數前的數值
-      scale.get_units(5);
-      scale.set_scale(scale_factor);       // 設定比例參數
-      scale.tare();               // 歸零
-      //Serial.println(scale.get_units(5), 0);  //設定比例參數後的數值
-      scale.get_units(5);
-      digitalWrite(13,1);   //13腳位亮燈給使用者放東西，時間2秒
-      delay(2000);
-      digitalWrite(13,0);*/
-      //scale.power_up();               // 結束睡眠模式
-      /*
-      Serial.print("hx:");
-      Serial.println(scale.get_units(10), 0);       
-      */
-      //scale.power_down();             // 進入睡眠模式
-      //delay(500);
-      //scale.power_up();               // 結束睡眠模式
-    ///}
     
     //類比寫入
     if(strcmp(commandString, "analogWrite") == 0){
@@ -433,15 +403,6 @@ void loop()
   }
   
 }
-/*
- * 這個副程式把讀取到的UID，用16進位顯示出來
- */
-/*void dump_byte_array(byte *buffer, byte bufferSize) {
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], HEX);
-  }
-}*/
 
 void getG5(unsigned char ucData)//取G5的值
 {
@@ -491,13 +452,6 @@ uint64_t stringToUint_64(String value) {
 
   return uint64Value;
 }
-/*//rfid function
-void dump_byte_array(byte *buffer, byte bufferSize) {
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], HEX);
-  }
-}*/
 
 int stringToHexInt(char value) {
   switch(value) {

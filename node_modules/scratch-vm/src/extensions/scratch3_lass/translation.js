@@ -1,6 +1,11 @@
-export const openAirmapG0v = {
-    'en': 'Open https://list.airmap.g0v.tw/',
-    'zh-tw': '開啟零時空汙觀測網'
+export const openEdiGreen = {
+    'en': 'Open the EdiGreen AirBox website',
+    'zh-tw': '開啟 EdiGreen 空氣盒子網站'
+};
+
+export const openAirBoxDeviceData = {
+    'en': 'Open the AirBox device data',
+    'zh-tw': '開啟空氣盒子設備資料'
 };
 
 export const fetchLASS = {
@@ -18,7 +23,7 @@ export const parseAttrFromLASS = {
     'zh-tw': 'LASS 讀取 [attr]'
 };
 
-export const EPAStation ={
+export const EPAStation = {
     'en': 'EPA Station',
     'zh-tw': '環保署測站'
 };

@@ -18,6 +18,30 @@ export const Octal = {
     'zh-tw': '八進制'
 };
 
+export const text_isUppercase ={
+    'en': '[TEXT] first text is?',
+    'zh-tw': '[TEXT]第1字元是?'
+};
+
+export const textisLowercase ={
+    'en': 'Lowercase',
+    'zh-tw': '小寫'
+};
+
+export const textisNumber ={
+    'en': 'Number',
+    'zh-tw': '數字'
+};
+
+export const textisOther={
+    'en': 'Other text',
+    'zh-tw': '其他文字'
+};
+
+export const textisUppercase ={
+    'en': 'Uppercase',
+    'zh-tw': '大寫'
+}
 export const Decimal = {
     'en': 'decimal',
     'zh-tw': '十進制'

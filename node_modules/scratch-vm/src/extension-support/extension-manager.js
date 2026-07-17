@@ -38,6 +38,7 @@ const builtinExtensions = {
     webserialArduino: () => require('../extensions/scratch3_webserialArduino'),
     webserialEsp: () => require('../extensions/scratch3_webserialEsp8266'),
     webserialEsp32: () => require('../extensions/scratch3_webserialEsp32'),    
+    webserialEsp32c3: () => require('../extensions/scratch3_webserialEsp32c3'),    
     webserialPicoboard: () => require('../extensions/scratch3_webserialPicoboard'),
     webserialmicrobit:() => require('../extensions/scratch3_webserialMicrobit'),
     webserialLinkit7697: () => require('../extensions/scratch3_webserialLinkit7697'),

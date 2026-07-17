@@ -36,8 +36,9 @@
     }
   },
   "dependencies": {
-    "@google/generative-ai": "^0.14.0",
+    "@google/genai": "^1.24.0",
     "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@lmstudio/sdk": "^1.5.0",
     "@tensorflow/tfjs": "^1.7.4",
     "arraybuffer-loader": "^1.0.6",
     "autoprefixer": "^9.0.1",

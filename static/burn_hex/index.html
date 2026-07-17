@@ -16,6 +16,7 @@
             <label>開發板：
               <select id="boardType">
                 <option value="uno">Uno</option>
+                <option value="uno_apc220">Uno_apc220 no lcd</option>
                 <!--<option value="leonardo">leonardo</option>-->
                 <option value="mega">mega</option>
                 <option value="nano">Nano</option>                
@@ -45,6 +46,7 @@
     </div>
     <script src="js/avrgirl-arduino.global.js" charset="UTF-8"></script>
     <script src="js/uno_hex.js" charset="UTF-8"></script>
+    <script src="js/uno_apc220_hex.js" charset="UTF-8"></script>
     <script src="js/mega_hex.js" charset="UTF-8"></script>
     <script src="js/picoboard_hex.js" charset="UTF-8"></script>
     <!--<script src="js/leonardo_hex.js" charset="UTF-8"></script>-->
@@ -54,10 +56,13 @@
       function handleSubmit(e) {
         e.preventDefault();
 	
-        const board = boardType.value;
+        let board = boardType.value;
         console.log('board:',board);
-	if (board =='uno'){
-	   hexStr = unoHex;
+	if (board =='uno'){	   
+	   hexStr = unoHex;	   	   
+	}else if(board =='uno_apc220'){
+	   hexStr = uno_apc220_Hex;
+	   board ='uno';
 	}else if(board =='leonardo'){
 	   hexStr = leonardoHex;	
 	}else if(board == 'nano'){

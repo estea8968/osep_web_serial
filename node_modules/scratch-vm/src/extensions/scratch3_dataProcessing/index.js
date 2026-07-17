@@ -277,6 +277,17 @@ class dataProcessing {
                     },
                     text: msg.halfwidthToFullwidth[theLocale]
                 },
+                {
+                    opcode: 'text_isUppercase',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'A'
+                        },
+                    },
+                    text: msg.text_isUppercase[theLocale]
+                },
             ],
             menus: {
                 selectCarrySystem: {
@@ -333,10 +344,22 @@ class dataProcessing {
     startsWith(args) {
         var data = args.data;
         var text = args.text;
-
         return data.startsWith(text);
     }
 
+    text_isUppercase(args){
+        const in_text = args.TEXT.trim();
+        console.log('in_text=',in_text);
+        if(in_text.charAt(0).match(/^.*[A-Z]+.*$/)){
+            return msg.textisUppercase[theLocale];
+        }else if(in_text.charAt(0).match(/^.*[a-z]+.*$/)){
+            return msg.textisLowercase[theLocale];
+        }else if (in_text.charAt(0).match(/^.*[0-9]+.*$/)){
+            return msg.textisNumber[theLocale];
+        }else {
+            return msg.textisOther[theLocale];
+        }
+    }
     endsWith(args) {
         var data = args.data;
         var text = args.text;
