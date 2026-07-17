@@ -1,5 +1,6 @@
 /*
- * 115/07/13
+ * 115/07/17 
+ * esp32c3 SDA:6 SCL:7 SCK:8 MISO:9 MOSI:10 RX:20 TX:21 analog:2-5 digital:2-10 20 21 
  */
 //#include<WiFi.h>
 #include <ESP32Servo.h>
@@ -10,24 +11,15 @@
 //oled
 #include <U8g2lib.h>
 #include "u8g2_font_e58524b32706dda48e7107fc64bfd183.h"
-//#include <Arduino.h>
+#include <Arduino.h>
+//#include <Adafruit_SSD1306.h>
 ////#include <string.h>
-
-//qrcode
-#include "SSD1306.h"
-//#include <myqrcode.h>
-#include <qrcodeoled.h>
 
 //max7219
 #include <MD_Parola.h>
 #include <MD_MAX72xx.h>
 #include <SPI.h>
-//#include <LedController.hpp>
-//LedController<1,1> lc;
 
-//lc = LedController<1,1>(DIN, CLK, CS);
-
-//sakurajin::LedController<1, 1> lc = sakurajin::LedController<1, 1>();
 //ws2812
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
@@ -37,16 +29,20 @@
 #define NUMPIXELS 12 // Popular NeoPixel ring size
 Adafruit_NeoPixel pixels(NUMPIXELS, 20, NEO_GRB + NEO_KHZ800);
 
-//U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, OLED_RESET, OLED_SCL, OLED_SDA);
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, 6, 5);
-//oled end
+//qrcode SDA:8 SCL:9
+//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+//Adafruit_SSD1306 display(128, 64, &Wire, -1);
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); //Arduino搭配SSD1306(0.96" OLED)用這行
+//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
-//qrcode SDA:5 SCL:6
-SSD1306  display(0x3C, 5, 6);
-QRcodeOled qrcode (&display);
-
-//MYQRcode myqrcode (&display);
+//qrcode
+#include "QRCodeGenerator.h"
+QRCode qrcode;
+#define QR_VERSION 3 // 版本 3 的規格為 29x29 格子
+//uint8_t qrcodeData[qrcode_getBufferSize(QR_VERSION)];
+uint8_t qrcodeData[202]; // 直接指定 Version 3 所需的 202 位元組 Version 9 是352
+// 放大參數設定
+const int SCALE = 2; // 放大 2 倍 (29格 * 2 = 58像素，剛好塞進 64 像素的高度內)
 
 //pwm
 // setting PWM properties
@@ -95,17 +91,19 @@ char* serialString()
 void setup() {
   Serial.begin(115200); 
   //lcd Wire.begin(I2C_SDA, I2C_SCL);
-  Wire.begin(5,6);
+  Wire.begin(6,7);
   lcd.init(); //初始化LCD
   //lcd.begin();
   lcd.backlight(); //開啟背光
   //oled
-  u8g2.begin();
-  u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
-  //qrcode
-  display.init();
-  display.clear();
-  display.display();
+  /*if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }*/
+  //display.display();
+  //delay(2000);
+  u8g2.begin();  
+  
   //ws2812
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
   clock_prescale_set(clock_div_1);
@@ -248,9 +246,7 @@ void loop() {
       maDisplay.print(inputValue);
     }
       if(strcmp(commandString, "sh") == 0){
-        /*//進入指令sh#腳位#111,222, 最後必需是,否則會reboot*/
-      //pinMode(6, OUTPUT);
-      //digitalWrite(6, HIGH);
+        /*//進入指令sh#腳位#111,222, 最後必需是,否則會reboot*/      
       int r ,  g , b;      
       char *bb ;      
       int sp , color,v;//第sp顆 顏色 值
@@ -395,34 +391,48 @@ void loop() {
     
     }
 
-     //oled qrcode
-     
-      if(strcmp(commandString, "q") == 0) {
-        String qrstring=inputPin;
-        display.init();
-        display.clear();
-        display.display();                
-        qrcode.init();        
-        qrcode.create(qrstring);        
+     //oled qrcode     
+      if(strcmp(commandString, "q") == 0) {         
+      
+        // 1. 初始化二維碼數據
+        qrcode_initText(&qrcode, qrcodeData, QR_VERSION, ECC_LOW, "inputPin");
+        // 2. 自動計算置中偏移量 (螢幕寬高減去二維碼放大後的寬高，再除以 2)
+        int qrSizeInPixels = qrcode.size * SCALE;
+        int offsetX = (128 - qrSizeInPixels) / 2; // 左右置中
+        int offsetY = (64 - qrSizeInPixels) / 2;  // 上下置中        
+        // 3. 開始繪製螢幕
+        u8g2.firstPage();
+        do {
+          // 雙重迴圈逐點檢查二維碼矩陣
+          for (uint8_t y = 0; y < qrcode.size; y++) {
+            for (uint8_t x = 0; x < qrcode.size; x++) {
+              if (qrcode_getModule(&qrcode, x, y)) {
+                // 使用 drawBox 繪製 2x2 的正方形像素點，並加入置中偏移量
+                u8g2.drawBox(offsetX + (x * SCALE), offsetY + (y * SCALE), SCALE, SCALE);
+              }
+            }
+          }
+        } while ( u8g2.nextPage() );
+        delay(3000);  
       }
       
-     //oled 16x2
-    
+     //oled 16x2    
     if(strcmp(commandString, "o") == 0) {
+        u8g2.enableUTF8Print();  //啟用UTF8文字的功能  
         //u8g2.setFont(u8g2_font_unifont_t_chinese1); //使用字型
-        u8g2.setFont(u8g2_font_unifont_myfonts);
-        u8g2.firstPage();
-        int textlen = strlen(inputPin);
+        //u8g2.setFont(u8g2_font_unifont_myfonts);
+        //u8g2.firstPage();
+        //int textlen = strlen(inputPin);
         int ax = atoi(strtok(inputValue,","));
         int ay = atoi(strtok(NULL, ","));
-          
-          //u8g2.setFont(u8g2_font_ncenB08_tr); // 設定字型
-          //u8g2.drawStr(0, 15, "Hello World!");  // 寫入文字 (X, Y 座標)
+        u8g2.setFont(u8g2_font_ncenB08_tr); // 設定字型
+          //u8g2.drawStr(0, 15, "Hello World!");  // 寫入文字 (X, Y 座標)*/
            
         do {
           u8g2.clearBuffer();          // 清除螢幕內部緩衝區
           u8g2.setCursor(ax,ay);
-          u8g2.print(inputPin);                     
+          u8g2.print(inputPin);
+          //u8g2.drawStr(ax,ay, inputPin);                     
           u8g2.sendBuffer();
         }while ( u8g2.nextPage() );
             //delay(1000);

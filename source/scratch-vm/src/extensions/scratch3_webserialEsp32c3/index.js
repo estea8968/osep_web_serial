@@ -375,7 +375,7 @@ class Scratch3Esp32c3WebSerial {
                     arguments: {
                         PIN: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: '6',
+                            defaultValue: '3',
                             menu: 'pwm_pins'
                         },
                         VALUE: {
@@ -408,7 +408,7 @@ class Scratch3Esp32c3WebSerial {
                 },
                 //oled
                 '---',
-                /*{
+                {
                     opcode: 'oled_show',
                     blockType: BlockType.COMMAND,
                     text: FormOledShow[the_locale],
@@ -419,7 +419,7 @@ class Scratch3Esp32c3WebSerial {
                         },
                         ROWX:{
                             type: ArgumentType.NUMBER,
-                            defaultValue:'0'
+                            defaultValue:'10'
                         },
                         ROWY:{
                             type: ArgumentType.NUMBER,
@@ -438,6 +438,7 @@ class Scratch3Esp32c3WebSerial {
                         }
                     }
                 },
+                '---',
                 //lcd 16x2
                 {
                     opcode: 'lcd_show',
@@ -459,8 +460,8 @@ class Scratch3Esp32c3WebSerial {
                     opcode: 'lcd_clear',
                     blockType: BlockType.COMMAND,
                     text: FormLcdClear[the_locale],
-                },*/
-               
+                },
+               '---',
                 {
                     opcode: 'servo',
                     blockType: BlockType.COMMAND,
@@ -478,7 +479,7 @@ class Scratch3Esp32c3WebSerial {
 
                     }
                 },
-
+                '---',
                 {
                     opcode: 'ws2812_write',
                     blockType: BlockType.COMMAND,
@@ -508,13 +509,12 @@ class Scratch3Esp32c3WebSerial {
 
                     }
                 },
-                
+                '---',    
                 {
                     opcode: 'ws2812_set_clear',
                     blockType: BlockType.COMMAND,
                     text: FormWs2812SetClear[the_locale],
-                },
-                
+                },                
                 {
                     opcode: 'ws2812_set_pin',
                     blockType: BlockType.COMMAND,
@@ -527,8 +527,7 @@ class Scratch3Esp32c3WebSerial {
                         }
 
                     }
-                },
-                
+                },                
                 {
                     opcode: 'ws2812_set_num',
                     blockType: BlockType.COMMAND,
@@ -549,14 +548,13 @@ class Scratch3Esp32c3WebSerial {
                             defaultValue: '2',
                         },
                     }
-                },
-                
+                },                
                 {
                     opcode: 'ws2812_show',
                     blockType: BlockType.COMMAND,
                     text: FormWs2812Show[the_locale],
                 },
-
+                '---',
                 {
                     opcode: 'analog_read',
                     blockType: BlockType.REPORTER,
@@ -564,7 +562,7 @@ class Scratch3Esp32c3WebSerial {
                     arguments: {
                         PIN: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: '6',
+                            defaultValue: '3',
                             menu: 'analog_in_pins'
                         },
                     }
@@ -629,25 +627,25 @@ class Scratch3Esp32c3WebSerial {
                     }
                 },
                 '---',
-                /*{
+                {
                     opcode: 'max7219_max',
                     blockType: BlockType.COMMAND,
                     text: Form7219_max[the_locale],
                     arguments:{
                         DATA_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '6',
-                            menu:'digital_out_pins'
+                            defaultValue: '0',
+                            //menu:'digital_out_pins'
                         },
                         CS_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '7',
-                            menu:'digital_out_pins'
+                            defaultValue: '2',
+                           // menu:'digital_out_pins'
                         },
                         CLK_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '8',
-                            menu:'digital_out_pins'
+                            defaultValue: '1',
+                            //menu:'digital_out_pins'
                         },
                         DEVICES:{
                             type: ArgumentType.NUMBER,
@@ -659,24 +657,24 @@ class Scratch3Esp32c3WebSerial {
                         },
                     }
                 },
-                {
+                /*{
                     opcode: 'max7219_set',
                     blockType: BlockType.COMMAND,
                     text: Form7219_set[the_locale],
                     arguments:{
                         DATA_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '6',
+                            defaultValue: '0',
                             menu:'digital_out_pins'
                         },
                         CS_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '7',
+                            defaultValue: '2',
                             menu:'digital_out_pins'
                         },
                         CLK_PIN:{
                             type: ArgumentType.STRING,
-                            defaultValue: '8',
+                            defaultValue: '1',
                             menu:'digital_out_pins'
                         },
                         DEVICES:{
@@ -753,12 +751,12 @@ class Scratch3Esp32c3WebSerial {
 
                 analog_in_pins: {
                     acceptReporters: true,
-                    items: ['2','3','4','5','6']
+                    items: ['2','3','4']
                 },
 
                 pwm_pins: {
                     acceptReporters: true,
-                    items: [ '2','3','4','5','6']
+                    items: [ '2','3','4','5']
                 },
 
                 mode: {
@@ -915,12 +913,17 @@ class Scratch3Esp32c3WebSerial {
     // reporter blocks
     async analog_read(args) {
         let pin = args['PIN'];
-        let sendData = 'analogRead#'+pin.toString();
+        let sendData = 'analogRead#'+pin.toString()+'#';
         //const serial_request = this.serialSendRead(sendData);
         this.serialSend(sendData);
         console.log(sendData);
-        //const serial_request = this.serialRead();
-        return this.serialRead();
+        let serial_request = await this.serialRead();
+        serial_request = serial_request.split(':');        
+        console.log('return_data=',serial_request);
+        if( serial_request[0] == 'A' ){
+                return serial_request[1];
+            }
+        await new Promise(resolve => setTimeout(resolve, 20));        
     }
     async touch_read(args){
         let pin = args['PIN'];
@@ -952,7 +955,7 @@ class Scratch3Esp32c3WebSerial {
     async serialRead(){
         //讀取serial
         //return analog_inputs;
-        let esp_reader = esp32_port.readable.getReader(); 
+        esp_reader = esp32_port.readable.getReader(); 
         let readValue = await esp_reader.read();
         let uint8array = new TextEncoder().encode();
         let  string = new TextDecoder().decode(readValue.value);
