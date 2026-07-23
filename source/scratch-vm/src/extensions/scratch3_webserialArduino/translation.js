@@ -212,8 +212,9 @@ export const mfr_set = {
     'zh-tw': "mfrc522設定,SDA腳位:[SDA] RST腳位:[RST]",
 };
 export const mfr_read = {
-    'en': "mfrc522 read card id",
-    'zh-tw': "mfrc522讀取卡片ID",
+    'en': "mfrc522 read card id pin:SDA[SDA]RST[RST] MOSI:11 MISO:12 SCK:13",
+    'zh-tw': "mfrc522讀取ID 腳位:SDA[SDA]RST[RST] MOSI:11 MISO:12 SCK:13 ",
+    //'zh-tw': "mfrc522讀取ID 腳位:SDA[SDA]SCK[SCK]MOSI[MOSI]MISO[MISO]RST[RST]",
 };
 export const mfr_id = {
     'en': "NFC card id",

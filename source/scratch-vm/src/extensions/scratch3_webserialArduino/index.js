@@ -411,7 +411,7 @@ class Scratch3ArduinoWebSerial {
                             menu: 'rgb'
                         },
                         VALUE: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.STRING,
                             defaultValue: '2',
                         },
                     }
@@ -499,9 +499,9 @@ class Scratch3ArduinoWebSerial {
                             defaultValue:'0000000000011000000110000111111001111110000110000001100000000000',
                         }
                     }
-                },
+                },                
                 '---',
-                {
+                /*{
                     opcode: 'mfr_set',
                     blockType: BlockType.COMMAND,
                     text: msg.mfr_set[the_locale],
@@ -517,11 +517,38 @@ class Scratch3ArduinoWebSerial {
                             menu:'pwm_pins',
                         }
                     }
-                },
+                },*/
                 {
                     opcode: 'mfr_read',
                     blockType: BlockType.COMMAND,
                     text: msg.mfr_read[the_locale],
+                    arguments:{
+                        SDA:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'10',
+                            menu:'pwm_pins',
+                        },
+                        /*SCK:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'13', 
+                            menu:'digital_pins',
+                        },
+                        MOSI:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'11', 
+                            menu:'pwm_pins',
+                        },
+                        MISO:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'12', 
+                            menu:'digital_pins',
+                        },*/
+                        RST:{
+                            type: ArgumentType.NUMBER,
+                            defaultValue:'9', 
+                            menu:'pwm_pins',
+                        },
+                    }
                 },
                 {
                     opcode: 'mfr_id',
@@ -995,7 +1022,7 @@ class Scratch3ArduinoWebSerial {
     }
     //shu
     ws2812_set_pin(args) {
-        ws2812_pin = args['PIN'].substring(0, 2);       
+        ws2812_pin = args['PIN'].substring(0, 2);            
     }
 
     mapminmax(in_value,min,max){
@@ -1010,8 +1037,9 @@ class Scratch3ArduinoWebSerial {
     ws2812_set_num(args) {
         let led_num = args['NUM'];
         let led_value = args['VALUE'];
-        led_value = parseInt(led_value, 10);
-        let max_value =85;
+        //led_value = parseInt(led_value, 10);
+        //let max_value =85;
+        let max_value =9;
         //console.log(led_num,led_value);
         let color_set = args['RGB'];
         let color_set_num;
@@ -1019,7 +1047,8 @@ class Scratch3ArduinoWebSerial {
             if (msg.FormRGB[the_locale][i] == color_set) {
                 color_set_num = i;
                 if (color_set_num == 1){
-                    max_value = 28;
+                    //max_value = 28;
+                    max_value = 9;
                 }
                 break;
             }
@@ -1028,8 +1057,9 @@ class Scratch3ArduinoWebSerial {
             led_value = max_value;
         }
         
-        send_color_data = send_color_data + led_num + ',' + color_set_num.toString() + ',' + led_value.toString() + ',';
-        console.log(send_color_data);
+        send_color_data = send_color_data + led_num.toString() +  color_set_num.toString() + led_value.toString() + ',';     
+        console.log(send_color_data);       
+        
     }
 
     /*ws2812_set_num1(args) {
@@ -1053,9 +1083,9 @@ class Scratch3ArduinoWebSerial {
     }*/
 
     async ws2812_show() {
-        const sendData = 'sh#' + ws2812_pin + '#' + send_color_data;
+        const sendData = 'sh#' + ws2812_pin + '#' + send_color_data;        
         console.log(sendData);
-        this.serialSend(sendData);
+        await this.serialSend(sendData);
     }
 
     ws2812_set_clear() {
@@ -1141,28 +1171,50 @@ class Scratch3ArduinoWebSerial {
         await this.serialSend(sendData);
     }
     //mfr522
-    async  mfr_set(args){
+    /*async  mfr_set(args){
         const sda_pin=parseInt(args.SDA);
         const rst_pin=parseInt(args.RST);
-        const sendData = 'mfr0#'+sda_pin+'#'+rst_pin+'#';
+        const sendData = 'mfr0#'+sda_pin+'#'+rst_pin;
         console.log('sendData=',sendData);
         await this.serialSend(sendData);
         await new Promise(resolve => setTimeout(resolve, 500));
-    }
+    }*/
     async  mfr_read(args){
         nfc_id = '';
-        const sendData = 'mfr1#';
+        //const sda=parseInt(args.SDA);
+        //const sck=parseInt(args.SCK);
+        //const mosi=parseInt(args.MOSI);
+        //const miso=parseInt(args.MISO);
+        //const rst=parseInt(args.RST);
+        //SDA[SDA]SCK[SCK]MOSI[MOSI]MISO[MISO]RST[RST]
+        //const sendData = 'mfr#'+sda+','+sck+','+mosi+','+miso+','+rst+'#';
+        //const sendData = 'mfr0#10#9';
+        const sendData = 'mfr0#'+args.SDA+'#'+args.RST;
         console.log('sendData=',sendData);
-        await this.serialSend(sendData);
+        await this.serialSend(sendData);        
         await new Promise(resolve => setTimeout(resolve, 500));
-        let serial_data = (await this.serialRead()).split(':');
+        /*    await port.close(); 
+            await port.open({ baudRate: 115200 });
+            console.log(port);
+            connected = true;  */           
+        //await new Promise(resolve => setTimeout(resolve, 500));  
+        //return await this.serialRead();
+        let serial_return = await this.serialRead();
+        serial_return = serial_return.split(':');
+        if(serial_return[0]=='mfr'){
+            nfc_id = serial_return[1];
+        }
+        return nfc_id;
+        //return await this.serialRead();        
+        /*     
+        let serial_data = (await this.serialRead()).split(':');        
         if (serial_data[0] == 'mfr') {
             console.log('mfr=',serial_data[1]);
             if(serial_data[1].length>0){
                 nfc_id = serial_data[1];
             }
             return nfc_id;
-        }
+        }*/
     }
     mfr_id(){
         return nfc_id;
@@ -1245,6 +1297,8 @@ class Scratch3ArduinoWebSerial {
         const sendData = "ver#";
         await this.serialSend(sendData);
         console.log(sendData);
+        reader = port.readable.getReader();        
+        reader.releaseLock();
         firmware_ver= await this.serialRead();
         }
         return firmware_ver;
