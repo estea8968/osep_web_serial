@@ -70,7 +70,7 @@ class scratch3_gemini {
                     blockType: BlockType.COMMAND,
                     text: msg.gmeini_api_key_url[theLocale]
                 },
-                {
+                /*{
                     opcode: 'set_ai_modle',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -81,24 +81,32 @@ class scratch3_gemini {
                         },
                     },
                     text: msg.set_ai_modle[theLocale]
-                },
+                },*/
                 {
                     opcode: 'openai_apikey',
                     blockType: BlockType.COMMAND,
                     arguments: {
+                        MODLE: {
+                            type: ArgumentType.STRING,
+                            menu: 'draw_modle_Item',
+                            defaultValue: ''
+                        },
                         KEY: {
                             type: ArgumentType.STRING,
                             defaultValue: 'api key'
                         },
                     },
                     text: msg.openai_apikey[theLocale]
-                },
-
-                                
+                },                                
                 {
                     opcode: 'drawimage',
                     blockType: BlockType.COMMAND,
                     arguments: {
+                        MODLE: {
+                            type: ArgumentType.STRING,
+                            menu: 'talk_modle_Item',
+                            defaultValue: 'gemini-2.5-flash-image'
+                        },
                         TEXT: {
                             type: ArgumentType.STRING,                            
                             defaultValue: ' '
@@ -106,18 +114,6 @@ class scratch3_gemini {
                     },
                     text: msg.drawimage [theLocale]
                 },
-
-                /*{
-                    opcode: 'set_max_token',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        TOKEN: {
-                            type: ArgumentType.STRING,
-                            defaultValue: '2048'
-                        },
-                    },
-                    text: msg.set_max_token[theLocale]
-                },*/
                 {
                     opcode: 'set_temperature',
                     blockType: BlockType.COMMAND,
@@ -149,6 +145,11 @@ class scratch3_gemini {
                     opcode: 'do_question',
                     blockType: BlockType.COMMAND,
                     arguments: {
+                        MODLE: {
+                            type: ArgumentType.STRING,
+                            menu: 'talk_modle_Item',
+                            defaultValue: 'gemini-3.1-flash-lite'
+                        },
                         QUESTION: {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
@@ -186,11 +187,14 @@ class scratch3_gemini {
                     acceptReporters: true,
                     items: msg.size[theLocale],
                 },
-                modleItem: {
+                talk_modle_Item: {
                     acceptReporters: true,
-                    items: ['gemini-3.1-flash-lite', 'gemma-4-26b-a4b-it', 'gemma-4-31b-it','gemini-2.5-flash-image', 'gemini-3.1-flash-image', 'gemini-3-pro-image-preview'],
+                    items: ['gemini-3.1-flash-lite', 'gemma-4-26b-a4b-it', 'gemma-4-31b-it'],
                 },                
-
+                draw_modle_Item: {
+                    acceptReporters: true,
+                    items: ['gemini-2.5-flash-image', 'gemini-3.1-flash-image', 'gemini-3-pro-image-preview'],
+                },
             }
         };
     }
@@ -288,33 +292,13 @@ class scratch3_gemini {
         // 使用 ReadAsDataURL 來取得完整的 Base64 編碼
         fr.readAsDataURL(file);
 
-        /*fr.onload = (e) => {           
-          let data = e.target.result;
-          this.input_file_name=data;
-          console.log(this.input_file_name);
-          console.log('upload data=',data);
-          this.knnClassifier.load(data, () => {
-            console.log('uploaded!');
-    
-            this.updateCounts();
-            alert(msg.uploaded[theLocale]);
-          });
-        }
-    
-        fr.onloadend = (e) => {
-          uploadWindow.document.getElementById('upload-files').value = "";
-        }
-    
-        fr.readAsText(files.item(0));
-        uploadWindow.close();*/
-
       }
 
 //upload file end //
-    set_ai_modle(args) {
+    /*set_ai_modle(args) {
         this.ai_model = args.MODLE;
         console.log('ai_modle=', this.ai_model);
-    }
+    }*/
     set_max_token(args) {
         max_tokens = parseInt(args.TOKEN, 10);
         if (max_tokens < 2048) {
@@ -334,6 +318,7 @@ class scratch3_gemini {
     }
 
     async drawimage(args) {
+        this.ai_model=args.MODLE;
         const ai = new GoogleGenAI({ apiKey: this.api_key });
         const prompt = args.TEXT;
         console.log('prompt=', prompt);
@@ -407,30 +392,7 @@ class scratch3_gemini {
             alert('繪圖 API 呼叫失敗: ' + error.message);
         }
     }
-    /*async drawimage(args) {
-        const ai = new GoogleGenAI({ apiKey: this.api_key });
-        //genAI = new GoogleGenAI({apiKey: this.api_key});
-        const prompt = args.TEXT;
-        console.log('prompt=', prompt);
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-image",
-            contents: prompt,
-        });
-        console.log('response=', response);
-        for (const part of response.candidates[0].content.parts) {
-            if (part.text) {
-                console.log('part.text=', part.text);
-            } else if (part.inlineData) {
-                const imageData = part.inlineData.data;
-                const buffer = Buffer.from(imageData, "base64");
-                console.log('img=', buffer);                
-                console('img=', buffer);
-                
-            }
-        }
-    }*/
-
-    set_ai_user(args) {
+        set_ai_user(args) {
         ai_user = args.USER;
     }
 
@@ -438,48 +400,8 @@ class scratch3_gemini {
         ai_assistant = args.ASSISTANT;
     }
 
-    /*async do_question(args) {
-        ai_question = args.QUESTION;
-        console.log('ai_question=', ai_question + ai_assistant);
-        if (this.api_key == '' || this.api_key == 'api key' || ai_question == '') {
-            this.ai_answer = msg.error_ai[theLocale];//'api_key system assistant user can not empty';
-        } else {
-            //console.log('api_key=',this.api_key);
-            genAI = new GoogleGenAI({ apiKey: this.api_key });
-            console.log('api_key=', this.api_key);
-            console.log('genAI=', genAI);
-            const generationConfig = {
-                stopSequences: ["red"],
-                maxOutputTokens: max_tokens,
-                temperature: ai_temperature,  //0.9,
-                topP: ai_top_p,  //0.1,
-                topK: 16,                
-            };
-            //const model = genAI.getGenerativeModel({ model: "gemini-pro",generationConfig});
-            const response = await genAI.models.generateContent({
-                model: this.ai_model,
-                ////----------------
-                //contents: ai_question,
-                input: [
-                    { type: "text", text: ai_question },
-                    { type: "document", uri: this.input_file_name, mime_type: this.input_file_type }
-                ]
-
-            });
-            console.log(response.text);
-            const result = response.text;
-
-            //const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001",generationConfig});
-            //const prompt = "Write a story about a magic backpack."
-            //const result = await model.generateContent(ai_question);
-            this.ai_answer = response.text;
-            //console.log('response=',response.text());
-            //this.ai_answer = response.text();
-            console.log('ai_answer=', this.ai_answer);
-        }
-    }*/
-
     async do_question(args) {
+        this.ai_model=args.MODLE;
         ai_question = args.QUESTION;
         console.log('ai_question=', ai_question);
         

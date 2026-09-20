@@ -23,8 +23,8 @@ export const size  ={
 };
 
 export const drawimage = {
-    'en': 'text create  images. [TEXT] ',
-    'zh-tw': '文生圖片，描述[TEXT] '
+    'en': 'text create modle:[MODLE] images. [TEXT] ',
+    'zh-tw': '文圖，模型[MODLE]描述[TEXT] '
 };
 
 export const set_ai_user ={
@@ -50,8 +50,8 @@ export const set_assistant ={
 };
 
 export const set_question ={
-    'en': 'talk text of [QUESTION]',
-    'zh-tw': '聊天內容[QUESTION]'
+    'en': 'talk text of modle:[MODLE] [QUESTION]',
+    'zh-tw': '聊天模型[MODLE],內容[QUESTION]'
 };
 
 export const error_ai ={
