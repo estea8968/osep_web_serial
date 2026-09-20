@@ -71,6 +71,34 @@ export const upload_file={
     'en': 'Up load file',
     'zh-tw': '上傳檔案'
 };
+export const clear_upload_file ={
+    'en': 'Clear upload file',
+    'zh-tw': '清除上傳的檔案'
+};
+export const upload= {
+        'ja': 'アップロード',
+        'ja-Hira': 'アップロード',
+        'en': 'upload',
+        'zh-cn': '上传',
+        'zh-tw': '上傳'
+    };
+
+export const uploaded= {
+        'ja': 'アップロードが完了しました。',
+        'ja-Hira': 'アップロードがかんりょうしました。',
+        'en': 'The upload is complete.',
+        'zh-cn': '上传完成。',
+        'zh-tw': '上傳完成。'
+    };
+
+export const upload_instruction= {
+        'ja': 'ファイルを選び、アップロードボタンをクリックして下さい。',
+        'ja-Hira': 'ファイルをえらび、アップロードボタンをクリックしてください。',
+        'en': 'Select a file and click the upload button.',
+        'zh-cn': '选择一个文件，然后单击上传按钮。',
+        'zh-tw': '選擇一個檔案，然後點擊上傳按鈕'
+    };
+
 export const gmeini_api_key_url={
     'en': 'opne Gemini api key url',
     'zh-tw': '開啟Gemini api key網站'

@@ -36,7 +36,10 @@ class scratch3_gemini {
         this.image_size_ary = ['1024x1024', '512x512', '256x256'];
         //this.runtime.registerPeripheralExtension('openai', this);
         this.ai_model = 'gemini-2.5-flash-lite';
-
+        this.knnClassifier = ml5.KNNClassifier();
+        //上傳檔名和類型
+        this.input_file_name='';
+        this.input_file_type='';
     }
 
     _setLocale() {
@@ -74,7 +77,7 @@ class scratch3_gemini {
                         MODLE: {
                             type: ArgumentType.STRING,
                             menu: 'modleItem',
-                            defaultValue: 'gemini-2.5-flash-lite'
+                            defaultValue: 'gemini-3.1-flash-lite'
                         },
                     },
                     text: msg.set_ai_modle[theLocale]
@@ -91,19 +94,20 @@ class scratch3_gemini {
                     text: msg.openai_apikey[theLocale]
                 },
 
-                /*                
+                                
                 {
                     opcode: 'drawimage',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         TEXT: {
-                            type: ArgumentType.STRING,
+                            type: ArgumentType.STRING,                            
                             defaultValue: ' '
                         },
                     },
                     text: msg.drawimage [theLocale]
-                },                
-                {
+                },
+
+                /*{
                     opcode: 'set_max_token',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -125,7 +129,7 @@ class scratch3_gemini {
                     },
                     text: msg.set_temperature[theLocale]
                 },
-                /*{
+                {
                     opcode: 'upload_file',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -135,7 +139,12 @@ class scratch3_gemini {
                         },
                     },
                     text: msg.upload_file[theLocale]
-                },*/
+                },
+                {
+                    opcode: 'clear_upload_file',
+                    blockType: BlockType.COMMAND,                    
+                    text: msg.clear_upload_file[theLocale]
+                },
                 {
                     opcode: 'do_question',
                     blockType: BlockType.COMMAND,
@@ -179,8 +188,8 @@ class scratch3_gemini {
                 },
                 modleItem: {
                     acceptReporters: true,
-                    items: ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-3.1-flash-lite', 'gemma-4-26b-a4b-it', 'gemma-4-31b-it'],
-                },
+                    items: ['gemini-3.1-flash-lite', 'gemma-4-26b-a4b-it', 'gemma-4-31b-it','gemini-2.5-flash-image', 'gemini-3.1-flash-image', 'gemini-3-pro-image-preview'],
+                },                
 
             }
         };
@@ -201,6 +210,107 @@ class scratch3_gemini {
         console.log(e.target.files); // get file object
         });
     }*/
+   upload_file() {
+       if (this.actionRepeated()) { return };
+       let width = 480;
+       let height = 200;
+       let left = window.innerWidth / 2;
+       let top = window.innerHeight / 2;
+       let x = left - (width / 2);
+       let y = top - (height / 2);
+       uploadWindow = window.open('', null, 'top=' + y + ',left=' + x + ',width=' + width + ',height=' + height);
+       uploadWindow.document.open();
+       uploadWindow.document.write('<html><head><title>' + msg.upload_file[theLocale] + '</title></head><body>');
+       uploadWindow.document.write('<p>' + msg.upload_instruction[theLocale] + '</p>');
+       uploadWindow.document.write('<input type="file" id="upload-files">');
+       uploadWindow.document.write('<input type="button" value="' + msg.upload[theLocale] + '" id="upload-button">');
+       uploadWindow.document.write('</body></html>');
+       uploadWindow.document.close();
+   
+       uploadWindow.document.getElementById("upload-button").onclick = () => {
+         this.uploadButtonClicked(uploadWindow);
+       }
+     }
+     clear_upload_file(){
+        this.input_file_name='';
+        this.input_file_type='';
+        return 'clear file ok';
+     }
+     actionRepeated() {
+        let currentTime = Date.now();
+        if (this.blockClickedAt && (this.blockClickedAt + 250) > currentTime) {
+        console.log('Please do not repeat trigerring this block.');
+        this.blockClickedAt = currentTime;
+        return true;
+        } else {
+        this.blockClickedAt = currentTime;
+        return false;
+        }
+    }
+    uploadButtonClicked(uploadWindow) {
+        let files = uploadWindow.document.getElementById('upload-files').files;
+        if (files.length <= 0) {
+            uploadWindow.alert('Please select file.');
+            return false;
+        }
+        let file = files[0];
+        console.log('上傳檔名=', file.name);
+        // 限制允許的檔案類型
+        const allowedTypes = ['text/plain', 'image/jpeg', 'image/png']; 
+        if (!allowedTypes.includes(file.type)) {
+            console.log('不支援的檔案類型！');
+            uploadWindow.alert('Please upload text, png, jpeg file.');
+            return false;      
+        }
+
+        this.input_file_type = file.type; // 記錄 MIME 類型，例如 'image/png' 或 'text/plain'
+        this.input_file_name = file.name;        
+        
+        let fr = new FileReader();
+        fr.onload = (e) => {           
+            let dataUrl = e.target.result; // 格式如 "data:image/png;base64,iVBORw0KGgo..."
+            
+            // 擷取 Base64 的純資料字串（去除前面的 "data:image/png;base64," 前綴）
+            let base64Data = dataUrl.split(',')[1];
+            
+            // 將處理好的 Base64 字串儲存起來供 Gemini 使用
+            this.input_file_base64 = base64Data;
+            
+            console.log('檔案 Base64 轉換完成');
+            alert(msg.uploaded[theLocale]);
+            uploadWindow.close();
+        }
+
+        fr.onerror = (err) => {
+            console.error('檔案讀取失敗', err);
+            uploadWindow.alert('Failed to read file.');
+        };    
+        // 使用 ReadAsDataURL 來取得完整的 Base64 編碼
+        fr.readAsDataURL(file);
+
+        /*fr.onload = (e) => {           
+          let data = e.target.result;
+          this.input_file_name=data;
+          console.log(this.input_file_name);
+          console.log('upload data=',data);
+          this.knnClassifier.load(data, () => {
+            console.log('uploaded!');
+    
+            this.updateCounts();
+            alert(msg.uploaded[theLocale]);
+          });
+        }
+    
+        fr.onloadend = (e) => {
+          uploadWindow.document.getElementById('upload-files').value = "";
+        }
+    
+        fr.readAsText(files.item(0));
+        uploadWindow.close();*/
+
+      }
+
+//upload file end //
     set_ai_modle(args) {
         this.ai_model = args.MODLE;
         console.log('ai_modle=', this.ai_model);
@@ -222,7 +332,82 @@ class scratch3_gemini {
         }
         console.log('temperature=', ai_temperature);
     }
+
     async drawimage(args) {
+        const ai = new GoogleGenAI({ apiKey: this.api_key });
+        const prompt = args.TEXT;
+        console.log('prompt=', prompt);
+
+        // 建立傳給模型的 contents 陣列，預先放入使用者的文字提示詞
+        let contentsArray = [prompt];
+
+        // 檢查是否有上傳的參考檔案（圖片或文字）
+        if (this.input_file_base64 && this.input_file_type) {
+            contentsArray.push({
+                inlineData: {
+                    mimeType: this.input_file_type,
+                    data: this.input_file_base64
+                }
+            });
+            console.log('已將上傳的檔案作為參考依據加入繪圖請求中');
+        }
+
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash-image", // 確保使用支援圖像生成的模型
+                contents: contentsArray,         // 支援同時傳入文字提示詞與參考檔案
+            });
+            
+            console.log('response=', response);
+
+            let textDescription = '';
+            let imageBase64Data = '';
+
+            // 解析回傳的內容，收集文字與圖片資料
+            if (response.candidates && response.candidates[0].content.parts) {
+                for (const part of response.candidates[0].content.parts) {
+                    if (part.text) {
+                        textDescription += part.text + '<br>';
+                        console.log('part.text=', part.text);
+                    } else if (part.inlineData) {
+                        imageBase64Data = part.inlineData.data;
+                        console.log('成功取得圖片 Base64 資料');
+                    }
+                }
+            }
+
+            // 開啟新視窗並呈現結果（文字在前面，圖片在後面）
+            const newWindow = window.open('', '_blank');
+            if (newWindow) {
+                newWindow.document.write('<html><head><title>AI 生成結果與預覽</title></head><body style="font-family: Arial, sans-serif; padding: 20px;">');
+                
+                // 1. 先放文字說明
+                if (textDescription) {
+                    newWindow.document.write('<div><h3>AI 說明：</h3><p>' + textDescription + '</p></div><hr>');
+                } else {
+                    newWindow.document.write('<div><h3>AI 說明：</h3><p>（無文字說明）</p></div><hr>');
+                }
+
+                // 2. 後面放圖片
+                if (imageBase64Data) {
+                    newWindow.document.write('<div><h3>生成的圖片：</h3><img src="data:image/png;base64,' + imageBase64Data + '" style="max-width:100%; height:auto; border-radius:8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" /></div>');
+                } else {
+                    newWindow.document.write('<div><p>未成功生成圖片。</p></div>');
+                }
+
+                newWindow.document.write('</body></html>');
+                newWindow.document.close();
+                newWindow.document.title = 'AI 繪圖與說明預覽';
+            } else {
+                alert('無法打開新窗口，請檢查您的瀏覽器彈出視窗設定。');
+            }
+
+        } catch (error) {
+            console.error('繪圖 API 呼叫失敗:', error);
+            alert('繪圖 API 呼叫失敗: ' + error.message);
+        }
+    }
+    /*async drawimage(args) {
         const ai = new GoogleGenAI({ apiKey: this.api_key });
         //genAI = new GoogleGenAI({apiKey: this.api_key});
         const prompt = args.TEXT;
@@ -238,33 +423,12 @@ class scratch3_gemini {
             } else if (part.inlineData) {
                 const imageData = part.inlineData.data;
                 const buffer = Buffer.from(imageData, "base64");
-                console.log('img=', buffer)
-
-                /*const newWindow = window.open('', '_blank');
-                if (newWindow) {
-                    // 創建一個 img 元素
-                    const img = newWindow.document.createElement('img');
-                    
-                    // 將 base64 字串設置為 img 的 src 屬性
-                    myBase64Image = buffer;
-                    img.src = base64String;
-                    
-                    // 將 img 元素添加到新窗口的 body 中
-    
-                    newWindow.document.body.appendChild(img);
-                    
-                    // 可選：設置新窗口的標題
-                    newWindow.document.title = 'AI圖片預覽';
-                } else {
-                    alert('無法打開新窗口，請檢查您的瀏覽器彈出視窗設定。');
-                }*/
-                //windows.open('<img src="data:image/png;base64"'+imageData);
+                console.log('img=', buffer);                
                 console('img=', buffer);
-                //fs.writeFileSync("gemini-native-image.png", buffer);
-                //console.log("Image saved as gemini-native-image.png");
+                
             }
         }
-    }
+    }*/
 
     set_ai_user(args) {
         ai_user = args.USER;
@@ -274,7 +438,7 @@ class scratch3_gemini {
         ai_assistant = args.ASSISTANT;
     }
 
-    async do_question(args) {
+    /*async do_question(args) {
         ai_question = args.QUESTION;
         console.log('ai_question=', ai_question + ai_assistant);
         if (this.api_key == '' || this.api_key == 'api key' || ai_question == '') {
@@ -289,12 +453,17 @@ class scratch3_gemini {
                 maxOutputTokens: max_tokens,
                 temperature: ai_temperature,  //0.9,
                 topP: ai_top_p,  //0.1,
-                topK: 16,
+                topK: 16,                
             };
             //const model = genAI.getGenerativeModel({ model: "gemini-pro",generationConfig});
             const response = await genAI.models.generateContent({
                 model: this.ai_model,
-                contents: ai_question,
+                ////----------------
+                //contents: ai_question,
+                input: [
+                    { type: "text", text: ai_question },
+                    { type: "document", uri: this.input_file_name, mime_type: this.input_file_type }
+                ]
 
             });
             console.log(response.text);
@@ -307,6 +476,53 @@ class scratch3_gemini {
             //console.log('response=',response.text());
             //this.ai_answer = response.text();
             console.log('ai_answer=', this.ai_answer);
+        }
+    }*/
+
+    async do_question(args) {
+        ai_question = args.QUESTION;
+        console.log('ai_question=', ai_question);
+        
+        if (this.api_key == '' || this.api_key == 'api key' || ai_question == '') {
+            this.ai_answer = msg.error_ai[theLocale];
+        } else {
+            genAI = new GoogleGenAI({ apiKey: this.api_key });
+            console.log('genAI=', genAI);
+
+            // 準備傳遞給模型的 contents 內容
+            let contentsArray = [ai_question];
+
+            // 檢查是否有成功上傳檔案並包含 Base64 資料
+            if (this.input_file_base64 && this.input_file_type) {
+                contentsArray.push({
+                    inlineData: {
+                        mimeType: this.input_file_type,
+                        data: this.input_file_base64
+                    }
+                });
+                console.log('已夾帶上傳的檔案進 Gemini 請求中');
+            }
+
+            try {
+                const response = await genAI.models.generateContent({
+                    model: this.ai_model,
+                    contents: contentsArray, // 放入文字與檔案資料
+                    generationConfig: {
+                        stopSequences: ["red"],
+                        maxOutputTokens: max_tokens,
+                        temperature: ai_temperature,
+                        topP: ai_top_p,
+                        topK: 16,                
+                    }
+                });
+
+                console.log('response=', response);
+                this.ai_answer = response.text;
+                console.log('ai_answer=', this.ai_answer);
+            } catch (error) {
+                console.error('Gemini 呼叫錯誤:', error);
+                this.ai_answer = 'API 呼叫失敗: ' + error.message;
+            }
         }
     }
 
