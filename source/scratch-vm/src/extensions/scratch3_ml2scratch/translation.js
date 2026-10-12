@@ -146,6 +146,20 @@ export const Message = {
         'zh-cn': '下载学习数据',
         'zh-tw': '下載學習資料'
     },
+    download_learning_images: {
+        'ja': '学習画像をダウンロード',
+        'ja-Hira': 'がくしゅうがぞうをダウンロード',
+        'en': 'download learning images',
+        'zh-cn': '下载学习图片',
+        'zh-tw': '下載學習圖片'
+    },
+    no_learning_images: {
+        'ja': 'まだ学習画像がありません。',
+        'ja-Hira': 'まだがくしゅうがぞうがありません。',
+        'en': 'There are no learning images yet.',
+        'zh-cn': '目前还没有学习图片。',
+        'zh-tw': '目前還沒有學習圖片。'
+    },
     upload_learning_data: {
         'ja': '学習データをアップロード',
         'ja-Hira': 'がくしゅうデータをアップロード',

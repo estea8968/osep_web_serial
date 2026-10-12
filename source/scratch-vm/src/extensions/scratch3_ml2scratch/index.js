@@ -4,6 +4,7 @@ const Cast = require('../../util/cast');
 const log = require('../../util/log');
 const ml5 = require('ml5');
 const msg = require('./translation');
+const JSZip = require('jszip');
 
 /**
  * Formatter which is used for translating.
@@ -74,6 +75,9 @@ class Scratch3ML2ScratchBlocks {
 
     this.counts = null;
     this.firstTraining = true;
+
+    // 學習時擷取的圖片：{ label: [ { blob, time } ] }
+    this.capturedImages = {};
 
     this.interval = 1000;
     this.globalVideoTransparency = 0;
@@ -264,6 +268,11 @@ class Scratch3ML2ScratchBlocks {
           blockType: BlockType.COMMAND
         },
         {
+          opcode: 'downloadImages',
+          text: msg.Message.download_learning_images[this.locale],
+          blockType: BlockType.COMMAND
+        },
+        {
           opcode: 'toggleClassification',
           text: msg.Message.toggle_classification[this.locale],
           blockType: BlockType.COMMAND,
@@ -376,6 +385,7 @@ class Scratch3ML2ScratchBlocks {
     this.firstTrainingWarning();
     let features = this.featureExtractor.infer(this.input);
     this.knnClassifier.addExample(features, '1');
+    this.captureFrame('1');
     this.updateCounts();
   }
 
@@ -383,6 +393,7 @@ class Scratch3ML2ScratchBlocks {
     this.firstTrainingWarning();
     let features = this.featureExtractor.infer(this.input);
     this.knnClassifier.addExample(features, '2');
+    this.captureFrame('2');
     this.updateCounts();
   }
 
@@ -390,6 +401,7 @@ class Scratch3ML2ScratchBlocks {
     this.firstTrainingWarning();
     let features = this.featureExtractor.infer(this.input);
     this.knnClassifier.addExample(features, '3');
+    this.captureFrame('3');
     this.updateCounts();
   }
 
@@ -397,6 +409,7 @@ class Scratch3ML2ScratchBlocks {
     this.firstTrainingWarning();
     let features = this.featureExtractor.infer(this.input);
     this.knnClassifier.addExample(features, args.LABEL);
+    this.captureFrame(args.LABEL);
     this.updateCounts();
   }
 
@@ -531,10 +544,14 @@ class Scratch3ML2ScratchBlocks {
           for (let label in this.counts) {
             this.counts[label] = 0;
           }
+          this.capturedImages = {};
         } else {
           if (this.counts[args.LABEL] > 0) {
             this.knnClassifier.clearLabel(args.LABEL);
             this.counts[args.LABEL] = 0;
+          }
+          if (this.capturedImages[args.LABEL]) {
+            delete this.capturedImages[args.LABEL];
           }
         }
       }
@@ -549,6 +566,69 @@ class Scratch3ML2ScratchBlocks {
     if (this.actionRepeated()) { return };
     let fileName = String(Date.now());
     this.knnClassifier.save(fileName);
+  }
+
+  /**
+   * 擷取目前輸入（攝影機或舞台）的畫面，轉成 PNG 暫存在記憶體中。
+   * @param {string} label - 學習的標籤
+   */
+  captureFrame(label) {
+    try {
+      const src = this.input;
+      if (!src) return;
+      const isVideo = src.tagName === 'VIDEO';
+      const w = isVideo ? src.videoWidth : src.width;
+      const h = isVideo ? src.videoHeight : src.height;
+      if (!w || !h) return;
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+      // 攝影機畫面依 Scratch 的鏡像設定翻轉，讓存下來的圖和舞台上看到的一致
+      if (isVideo && this.runtime.ioDevices.video.mirror) {
+        ctx.translate(w, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(src, 0, 0, w, h);
+      const time = Date.now();
+      const key = String(label);
+      c.toBlob(blob => {
+        if (!blob) return;
+        if (!this.capturedImages[key]) this.capturedImages[key] = [];
+        this.capturedImages[key].push({ blob: blob, time: time });
+      }, 'image/png');
+    } catch (e) {
+      console.error('[ml2scratch] captureFrame failed', e);
+    }
+  }
+
+  /**
+   * 把所有暫存的學習圖片打包成 ZIP 下載，每個標籤一個資料夾。
+   */
+  downloadImages() {
+    if (this.actionRepeated()) { return };
+    const labels = Object.keys(this.capturedImages).filter(l => this.capturedImages[l].length > 0);
+    if (labels.length === 0) {
+      alert(msg.Message.no_learning_images[this.locale]);
+      return;
+    }
+    const zip = new JSZip();
+    labels.forEach(label => {
+      const folder = zip.folder('label_' + label);
+      this.capturedImages[label].forEach((img, i) => {
+        const no = String(i + 1).padStart(3, '0');
+        folder.file('label' + label + '_' + no + '_' + img.time + '.png', img.blob);
+      });
+    });
+    return zip.generateAsync({ type: 'blob' }).then(content => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = 'ml2scratch_images_' + Date.now() + '.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    });
   }
 
   upload() {
