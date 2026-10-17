@@ -11,6 +11,8 @@ const blockIconURI = null;
 const defaultId = 'default';
 let theLocale = null;
 const GOOGLE_MAP_API_KEY = "AIzaSyDQyvBdtQG4wBygmCMLjNhniJXd55PXLyA";
+// AdvancedMarkerElement 需要 Map ID；DEMO_MAP_ID 為 Google 官方測試用 ID
+const GOOGLE_MAP_ID = 'DEMO_MAP_ID';
 
 var aaa;
 
@@ -469,7 +471,7 @@ class googleMap {
                 <div id="map"></div>
                 <div id="sidebar" style="overflow:scroll;"></div>
                 <script
-                    src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                    src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                     defer></script>
                 <script>
             `);
@@ -506,11 +508,12 @@ class googleMap {
                             center: {
                                 lat: latMax,
                                 lng: lngMin
-                            }, zoom: 16,
+                            }, zoom: 16, mapId: '${GOOGLE_MAP_ID}',
                         });
                         setData(markerData);
                         if (markerData.length > 1) map.fitBounds(bounds);
                     }
+                    window.initMap = initMap;
     
                     function lat_Max() {
                         var a = 0;
@@ -551,18 +554,21 @@ class googleMap {
                     }
     
                     function addMarker(i, lat, lng, label) {
-                        var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                        marker[i] = new google.maps.Marker({ position: markerLatLng, map: map });
+                        marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                            position: { lat: lat, lng: lng },
+                            map: map,
+                            title: label
+                        });
                         const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;"></p>';
                         infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
                         markerEvent(i);
                     }
     
                     function markerEvent(i) {
-                        marker[i].addListener("click",
+                        marker[i].addEventListener("gmp-click",
                             function () {
                                 if (windowOpened) windowOpened.close();
-                                infoWindow[i].open(map, marker[i]);
+                                infoWindow[i].open({ map: map, anchor: marker[i] });
                                 windowOpened = infoWindow[i];
                             }
                         );
@@ -570,7 +576,7 @@ class googleMap {
     
                     function openWindow(i) {
                         if (windowOpened) windowOpened.close();
-                        infoWindow[i].open(map, marker[i]);
+                        infoWindow[i].open({ map: map, anchor: marker[i] });
                         windowOpened = infoWindow[i];
                     }
                 </script>
@@ -623,7 +629,7 @@ class googleMap {
             <div id="map"></div>
             <div id="sidebar" style="overflow:scroll;"></div>
             <script
-                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                 defer></script>
             <script>
         `);
@@ -660,11 +666,12 @@ class googleMap {
                         center: {
                             lat: latMax,
                             lng: lngMin
-                        }, zoom: 16,
+                        }, zoom: 16, mapId: '${GOOGLE_MAP_ID}',
                     });
                     setData(markerData);
                     if (markerData.length > 1) map.fitBounds(bounds);
                 }
+                window.initMap = initMap;
 
                 function lat_Max() {
                     var a = 0;
@@ -705,14 +712,17 @@ class googleMap {
                 }
 
                 function addMarker(i, lat, lng, label, color) {
-                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinColor = color.substr(1); // remove '#' from color code
-                    var pinImage = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#' + color + '"><path d="M12 2C7.6 2 4 5.6 4 10c0 4.4 8 13 8 13s8-8.6 8-13c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>');
-
-                    marker[i] = new google.maps.Marker({
-                        position: markerLatLng,
+                    var hexColor = (color && color.charAt(0) === '#') ? color : '#' + color;
+                    var pin = new google.maps.marker.PinElement({
+                        background: hexColor,
+                        borderColor: hexColor,
+                        glyphColor: '#FFFFFF'
+                    });
+                    marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                        position: { lat: lat, lng: lng },
                         map: map,
-                        icon: pinImage
+                        content: pin.element,
+                        title: label
                     });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;"></p>';
                     infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
@@ -720,10 +730,10 @@ class googleMap {
                 }
 
                 function markerEvent(i) {
-                    marker[i].addListener("click",
+                    marker[i].addEventListener("gmp-click",
                         function () {
                             if (windowOpened) windowOpened.close();
-                            infoWindow[i].open(map, marker[i]);
+                            infoWindow[i].open({ map: map, anchor: marker[i] });
                             windowOpened = infoWindow[i];
                         }
                     );
@@ -731,7 +741,7 @@ class googleMap {
         
                 function openWindow(i) {
                     if (windowOpened) windowOpened.close();
-                    infoWindow[i].open(map, marker[i]);
+                    infoWindow[i].open({ map: map, anchor: marker[i] });
                     windowOpened = infoWindow[i];
                 }
 
@@ -786,7 +796,7 @@ class googleMap {
             <div id="map"></div>
             <div id="sidebar" style="overflow:scroll;"></div>
             <script
-                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                 defer></script>
             <script>
         `);
@@ -825,11 +835,12 @@ class googleMap {
                         center: {
                             lat: latMax,
                             lng: lngMin
-                        }, zoom: 16,
+                        }, zoom: 16, mapId: '${GOOGLE_MAP_ID}',
                     });
                     setData(markerData);
                     if (markerData.length > 1) map.fitBounds(bounds);
                 }
+                window.initMap = initMap;
 
                 function lat_Max() {
                     var a = 0;
@@ -870,15 +881,16 @@ class googleMap {
                 }
 
                 function addMarker(i, lat, lng, label, color, photo, length, width) {
-                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinImage = photo;
-                    marker[i] = new google.maps.Marker({
-                        position: markerLatLng,
+                    var img = document.createElement('img');
+                    img.src = photo;
+                    img.width = width;
+                    img.height = length;
+                    img.style.objectFit = 'cover';
+                    marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                        position: { lat: lat, lng: lng },
                         map: map,
-                        icon: {
-                            url: pinImage,
-                            scaledSize: new google.maps.Size(width, length)
-                        }
+                        content: img,
+                        title: label
                     });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;"></p>';
                     infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
@@ -886,10 +898,10 @@ class googleMap {
                 }
 
                 function markerEvent(i) {
-                    marker[i].addListener("click",
+                    marker[i].addEventListener("gmp-click",
                         function () {
                             if (windowOpened) windowOpened.close();
-                            infoWindow[i].open(map, marker[i]);
+                            infoWindow[i].open({ map: map, anchor: marker[i] });
                             windowOpened = infoWindow[i];
                         }
                     );
@@ -897,7 +909,7 @@ class googleMap {
         
                 function openWindow(i) {
                     if (windowOpened) windowOpened.close();
-                    infoWindow[i].open(map, marker[i]);
+                    infoWindow[i].open({ map: map, anchor: marker[i] });
                     windowOpened = infoWindow[i];
                 }
 
@@ -934,8 +946,6 @@ class googleMap {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Calculate Distance, Mark Locations, Display Path and InfoWindow</title>
-                <script
-                    src="https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API_KEY}&libraries=geometry,directions"></script>
                 <style>
                     #map {
                         height: 100%;
@@ -963,19 +973,20 @@ class googleMap {
 
                         map = new google.maps.Map(document.getElementById('map'), {
                             center: { lat: ${this.recordCoordinate[0][1]}, lng: ${this.recordCoordinate[0][2]} },
-                            zoom: 10
+                            zoom: 10,
+                            mapId: '${GOOGLE_MAP_ID}'
                         });
 
-                        var location1 = new google.maps.LatLng(${this.recordCoordinate[0][1]}, ${this.recordCoordinate[0][2]});
-                        var location2 = new google.maps.LatLng(${this.recordCoordinate[1][1]}, ${this.recordCoordinate[1][2]});
+                        var location1 = { lat: ${this.recordCoordinate[0][1]}, lng: ${this.recordCoordinate[0][2]} };
+                        var location2 = { lat: ${this.recordCoordinate[1][1]}, lng: ${this.recordCoordinate[1][2]} };
 
-                        var marker1 = new google.maps.Marker({
+                        var marker1 = new google.maps.marker.AdvancedMarkerElement({
                             position: location1,
                             map: map,
                             title: '${this.recordCoordinate[0][0]}'
                         });
 
-                        var marker2 = new google.maps.Marker({
+                        var marker2 = new google.maps.marker.AdvancedMarkerElement({
                             position: location2,
                             map: map,
                             title: '${this.recordCoordinate[1][0]}'
@@ -1003,8 +1014,8 @@ class googleMap {
                                 var infoWindow1 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[0][0]}' });
                                 var infoWindow2 = new google.maps.InfoWindow({ content: '${this.recordCoordinate[1][0]}' });
 
-                                google.maps.event.addListener(marker1, 'click', function () { infoWindow1.open(map, marker1); });
-                                google.maps.event.addListener(marker2, 'click', function () { infoWindow2.open(map, marker2); });
+                                marker1.addEventListener('gmp-click', function () { infoWindow1.open({ map: map, anchor: marker1 }); });
+                                marker2.addEventListener('gmp-click', function () { infoWindow2.open({ map: map, anchor: marker2 }); });
 
                                 var distanceInfoWindow = new google.maps.InfoWindow({ content: '從${this.recordCoordinate[0][0]}到${this.recordCoordinate[1][0]}的${traffic_Text}距離是' + distanceInKm.toFixed(2) + ' 公里' });
 
@@ -1015,10 +1026,11 @@ class googleMap {
                             }
                         });
                     }
-
-                    google.maps.event.addDomListener(window, 'load', initMap);
-
+                    window.initMap = initMap;
                 </script>
+                <script
+                    src="https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API_KEY}&libraries=marker&callback=initMap&loading=async"
+                    defer></script>
 
             </body>
             `);
@@ -1131,7 +1143,7 @@ class googleMap {
             <div id="map"></div>
             <div id="sidebar" style="overflow:scroll;"></div>
             <script
-                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                 defer></script>
             <script>
         `);
@@ -1178,10 +1190,12 @@ class googleMap {
                             lng: lngMin
                         },
                         zoom: 16,
+                        mapId: '${GOOGLE_MAP_ID}',
                     });
                     setData(markerData);
                     map.fitBounds(bounds);
                 }
+                window.initMap = initMap;
 
                 function lat_Max() {
                     var a = 0;
@@ -1222,17 +1236,21 @@ class googleMap {
                 }
 
                 function addMarker(i, lat, lng, label, remark) {
-                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    marker[i] = new google.maps.Marker({ position: markerLatLng, map: map });
+                    marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                        position: { lat: lat, lng: lng },
+                        map: map,
+                        title: label
+                    });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;">' + remark + '</p>';
-                    infoWindow[i] = new google.maps.InfoWindow({ content: contentString }); markerEvent(i);
+                    infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
+                    markerEvent(i);
                 }
 
                 function markerEvent(i) {
-                    marker[i].addListener("click",
+                    marker[i].addEventListener("gmp-click",
                         function () {
                             if (windowOpened) { windowOpened.close(); }
-                            infoWindow[i].open(map, marker[i]);
+                            infoWindow[i].open({ map: map, anchor: marker[i] });
                             windowOpened = infoWindow[i];
                         }
                     );
@@ -1240,7 +1258,7 @@ class googleMap {
 
                 function openWindow(i) {
                     if (windowOpened) { windowOpened.close(); }
-                    infoWindow[i].open(map, marker[i]);
+                    infoWindow[i].open({ map: map, anchor: marker[i] });
                     windowOpened = infoWindow[i];
                 }
             </script>
@@ -1295,7 +1313,7 @@ class googleMap {
             <div id="map"></div>
             <div id="sidebar" style="overflow:scroll;"></div>
             <script
-                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                 defer></script>
             <script>
         `);
@@ -1347,11 +1365,12 @@ class googleMap {
                         center: {
                             lat: latMax,
                             lng: lngMin
-                        }, zoom: 16,
+                        }, zoom: 16, mapId: '${GOOGLE_MAP_ID}',
                     });
                     setData(markerData);
                     if (markerData.length > 1) map.fitBounds(bounds);
                 }
+                window.initMap = initMap;
 
                 function lat_Max() {
                     var a = 0;
@@ -1392,15 +1411,19 @@ class googleMap {
                 }
 
                 function addMarker(i, lat, lng, label, color, remark, length, width) {
-                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinImage = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#' + color + '"><path d="M12 2C7.6 2 4 5.6 4 10c0 4.4 8 13 8 13s8-8.6 8-13c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>');
-                    marker[i] = new google.maps.Marker({
-                        position: markerLatLng,
+                    var hexColor = (color && color.charAt(0) === '#') ? color : '#' + color;
+                    var pinScale = Math.max(Number(width), Number(length)) / 36;
+                    var pin = new google.maps.marker.PinElement({
+                        background: hexColor,
+                        borderColor: hexColor,
+                        glyphColor: '#FFFFFF',
+                        scale: (!isFinite(pinScale) || pinScale <= 0) ? 1 : pinScale
+                    });
+                    marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                        position: { lat: lat, lng: lng },
                         map: map,
-                        icon: {
-                            url: pinImage,
-                            scaledSize: new google.maps.Size(width, length)
-                        }
+                        content: pin.element,
+                        title: label
                     });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;">' + remark + '</p>';
                     infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
@@ -1408,10 +1431,10 @@ class googleMap {
                 }
 
                 function markerEvent(i) {
-                    marker[i].addListener("click",
+                    marker[i].addEventListener("gmp-click",
                         function () {
                             if (windowOpened) windowOpened.close();
-                            infoWindow[i].open(map, marker[i]);
+                            infoWindow[i].open({ map: map, anchor: marker[i] });
                             windowOpened = infoWindow[i];
                         }
                     );
@@ -1419,7 +1442,7 @@ class googleMap {
         
                 function openWindow(i) {
                     if (windowOpened) windowOpened.close();
-                    infoWindow[i].open(map, marker[i]);
+                    infoWindow[i].open({ map: map, anchor: marker[i] });
                     windowOpened = infoWindow[i];
                 }
 
@@ -1476,7 +1499,7 @@ class googleMap {
             <div id="map"></div>
             <div id="sidebar" style="overflow:scroll;"></div>
             <script
-                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap"
+                src="https://maps.googleapis.com/maps/api/js?region=TW&language=zh-TW&key=${GOOGLE_MAP_API_KEY}&callback=initMap&libraries=marker&loading=async"
                 defer></script>
             <script>
         `);
@@ -1529,11 +1552,12 @@ class googleMap {
                         center: {
                             lat: latMax,
                             lng: lngMin
-                        }, zoom: 16,
+                        }, zoom: 16, mapId: '${GOOGLE_MAP_ID}',
                     });
                     setData(markerData);
                     if (markerData.length > 1) map.fitBounds(bounds);
                 }
+                window.initMap = initMap;
 
                 function lat_Max() {
                     var a = 0;
@@ -1574,15 +1598,16 @@ class googleMap {
                 }
 
                 function addMarker(i, lat, lng, label, link, remark, length, width) {
-                    var markerLatLng = new google.maps.LatLng({ lat: lat, lng: lng, });
-                    var pinImage = link;
-                    marker[i] = new google.maps.Marker({
-                        position: markerLatLng,
+                    var img = document.createElement('img');
+                    img.src = link;
+                    img.width = width;
+                    img.height = length;
+                    img.style.objectFit = 'cover';
+                    marker[i] = new google.maps.marker.AdvancedMarkerElement({
+                        position: { lat: lat, lng: lng },
                         map: map,
-                        icon: {
-                            url: pinImage,
-                            scaledSize: new google.maps.Size(width, length)
-                        }
+                        content: img,
+                        title: label
                     });
                     const contentString = '<h2>' + label + '</h2><p style="font-size:16px;font-weight:bold;">' + remark + '</p>';
                     infoWindow[i] = new google.maps.InfoWindow({ content: contentString });
@@ -1590,10 +1615,10 @@ class googleMap {
                 }
 
                 function markerEvent(i) {
-                    marker[i].addListener("click",
+                    marker[i].addEventListener("gmp-click",
                         function () {
                             if (windowOpened) windowOpened.close();
-                            infoWindow[i].open(map, marker[i]);
+                            infoWindow[i].open({ map: map, anchor: marker[i] });
                             windowOpened = infoWindow[i];
                         }
                     );
@@ -1601,7 +1626,7 @@ class googleMap {
         
                 function openWindow(i) {
                     if (windowOpened) windowOpened.close();
-                    infoWindow[i].open(map, marker[i]);
+                    infoWindow[i].open({ map: map, anchor: marker[i] });
                     windowOpened = infoWindow[i];
                 }
 
