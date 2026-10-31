@@ -1,5 +1,5 @@
 /*
- * 更新日期115/07/23 estea chen
+ * 更新日期115/11/01 estea chen
  * 0326 add hx711
  */
 #include <Servo.h>
@@ -13,15 +13,15 @@
 //hx711
 //#include <HX711.h>
 //rfid
-#include <SPI.h>
-#include <MFRC522.h>
+//#include <SPI.h>
+//#include <MFRC522.h>
 
 //PMS5003T
 #include <SoftwareSerial.h>
 //ntc
 #include "thermistor.h"
 //版本號
-const char* version="1150723";
+const char* version="1151101";
 SoftwareSerial pmsSerial(2, 3);
 
 DHTStable DHT;
@@ -30,7 +30,7 @@ Servo myservo;  // create servo object to control a servo
 //hx711
 //HX711 scale;
 //rfid
-MFRC522 mfrc522;   // 建立MFRC522實體
+//MFRC522 mfrc522;   // 建立MFRC522實體
 
 //PMS5003T
 static unsigned int pm_cf_10,pm_cf_25,pm_cf_100,pm_at_10,pm_at_25,pm_at_100,particulate03,particulate05,particulate10,particulate25,particulate50,particulate100;
@@ -68,9 +68,7 @@ void setup() {
   #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
     clock_prescale_set(clock_div_1);
   #endif
-  //rfid
-  SPI.begin();        // 初始化SPI介面 
-  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0)); 
+   
   // PMS5003T sensor baud rate is 9600
   pmsSerial.begin(9600);
   
@@ -303,7 +301,8 @@ void loop()
     }
     //rfid begin
     
-    if(strcmp(commandString, "mfr0") == 0){
+    /*if(strcmp(commandString, "mfr0") == 0){
+      
       mfrc522.PCD_Init(atoi(inputPin), atoi(inputValue)); // 初始化MFRC522卡      
       //mfrc522.PCD_DumpVersionToSerial(); // 顯示讀卡設備的版本    
       //Serial.println("mfr ok");
@@ -332,7 +331,7 @@ void loop()
             //dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size); // 顯示卡片的UID
             mfrc522.PICC_HaltA();  // 卡片進入停止模式
         }
-      }
+      }*/
     //dht11
     if(strcmp(commandString, "dht11Set") == 0){
       pinMode(atoi(inputPin),INPUT);
@@ -421,9 +420,9 @@ void loop()
       analogWrite(atoi(inputPin),atoi(inputValue));
     }
     //數位寫入
-    if(strcmp(commandString, "digitalWrite") == 0){
+    if(strcmp(commandString, "digitalWrite") == 0){      
          pinMode(atoi(inputPin),OUTPUT);
-         digitalWrite(atoi(inputPin),atoi(inputValue));
+         digitalWrite(atoi(inputPin),atoi(inputValue));        
      }
     needPrompt=true;
     //delay(1000);
