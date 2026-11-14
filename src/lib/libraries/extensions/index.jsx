@@ -151,9 +151,13 @@ import ic2scratchInsetIconURL from "./ic2scratch/ic2scratch-small.png";
 
 import textSentimentImage from "./textSentiment/textSentiment.png";
 import textSentimentInsetIconURL from "./textSentiment/textSentiment-small.png";
+import claudeImage from "./claude/claude.png";
+import claudeInsetIconURL from "./claude/claude-small.svg";
 
 import faceExpressionRecogintionImage from "./faceExpressionRecogintion/faceExpressionRecogintion.png";
 import faceExpressionRecogintionIconURL from "./faceExpressionRecogintion/faceExpressionRecogintion-small.png";
+import faceExpressionMediapipeImage from "./faceExpressionMediapipe/faceExpressionMediapipe.png";
+import faceExpressionMediapipeIconURL from "./faceExpressionMediapipe/faceExpressionMediapipe-small.svg";
 
 const version = "v2-0.2.4";
 
@@ -1153,6 +1157,25 @@ const extensions = [
     helpLink: "https://openai.com/",
   },
   {
+    name: "Claude",
+    extensionId: "claude",
+    collaborator: "Anthropic API",
+    iconURL: claudeImage,
+    insetIconURL: claudeInsetIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Chat with Claude AI (needs your own API key)."
+        description="Claude extension description"
+        id="gui.extension.claude.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+    helpLink: "https://docs.claude.com/",
+  },
+  {
     name: "Gemini",
     extensionId: "gemini",
     collaborator: "estea chen",
@@ -1348,6 +1371,29 @@ const extensions = [
     // launchPeripheralConnectionFlow: false,
     useAutoScan: false,
   },  
+  {
+    name: (
+      <FormattedMessage
+        defaultMessage="Face Expression (MediaPipe)"
+        description="Face expression recognition with MediaPipe"
+        id="gui.extension.faceExpressionMediapipe.title"
+      />
+    ),
+    extensionId: "faceExpressionMediapipe",
+    iconURL: faceExpressionMediapipeImage,
+    insetIconURL: faceExpressionMediapipeIconURL,
+    description: (
+      <FormattedMessage
+        defaultMessage="Recognize facial expressions, face actions and head pose with MediaPipe."
+        description="Face expression recognition with MediaPipe."
+        id="gui.extension.faceExpressionMediapipe.description"
+      />
+    ),
+    featured: true,
+    disabled: false,
+    internetConnectionRequired: true,
+    useAutoScan: false,
+  },
 ];
 export { extensions };
 export default extensions;

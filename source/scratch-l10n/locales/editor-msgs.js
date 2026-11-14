@@ -60589,6 +60589,8 @@ export default {
     "gui.extension.textSentiment.title":"文本情緒辨識",
     "gui.extension.textSentiment.description": "使用文本情緒模型，辨識文本是否為正面或負面情緒",
     "gui.extension.faceExpressionRecogintion.description":"使用攝影機捕捉臉部表情，辨識情緒如開心、平靜、生氣等",
-    "gui.extension.faceExpressionRecogintion.title":"臉部表情辨識",    
+    "gui.extension.faceExpressionRecogintion.title":"臉部表情辨識",
+    "gui.extension.faceExpressionMediapipe.title":"臉部表情辨識 (MediaPipe)",
+    "gui.extension.faceExpressionMediapipe.description":"使用 MediaPipe 辨識臉部表情、臉部動作（微笑、眨眼、張嘴…）與頭部角度",    
   }
 };

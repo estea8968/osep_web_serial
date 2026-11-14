@@ -63205,7 +63205,11 @@ const builtinExtensions = {
   gdxfor: () => __webpack_require__(/*! ../extensions/scratch3_gdx_for */ "./node_modules/scratch-vm/src/extensions/scratch3_gdx_for/index.js"),
   //osep add
   openai: () => __webpack_require__(/*! ../extensions/scratch3_openai */ "./node_modules/scratch-vm/src/extensions/scratch3_openai/index.js"),
-  gemini: () => __webpack_require__(/*! ../extensions/scratch3_gemini */ "./node_modules/scratch-vm/src/extensions/scratch3_gemini/index.js")
+  gemini: () => __webpack_require__(/*! ../extensions/scratch3_gemini */ "./node_modules/scratch-vm/src/extensions/scratch3_gemini/index.js"),
+  //osep add (claude/textSentiment/faceExpressionMediapipe)
+  claude: () => __webpack_require__(/*! ../extensions/scratch3_claude */ "./node_modules/scratch-vm/src/extensions/scratch3_claude/index.js"),
+  textSentiment: () => __webpack_require__(/*! ../extensions/scratch3_textSentiment */ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/index.js"),
+  faceExpressionMediapipe: () => __webpack_require__(/*! ../extensions/scratch3_faceExpressionMediapipe */ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/index.js")
 };
 
 /**
@@ -67779,6 +67783,2300 @@ class ScratchLinkDeviceAdapter {
   }
 }
 module.exports = ScratchLinkDeviceAdapter;
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_claude/index.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * Claude AI 插件（Anthropic Messages API）
+ *
+ * 重要：不可使用 async/await（專案 babel 會產生需要 regeneratorRuntime 的程式，
+ * GUI 沒有載入它，插件會在載入時就壞掉）。全部用 Promise。
+ * 也因此不需要像舊 openai 插件那樣 require('ml5')。
+ */
+const ArgumentType = __webpack_require__(/*! ../../extension-support/argument-type */ "./node_modules/scratch-vm/src/extension-support/argument-type.js");
+const BlockType = __webpack_require__(/*! ../../extension-support/block-type */ "./node_modules/scratch-vm/src/extension-support/block-type.js");
+const formatMessage = __webpack_require__(/*! format-message */ "./node_modules/format-message/index.js");
+const msg = __webpack_require__(/*! ./translation */ "./node_modules/scratch-vm/src/extensions/scratch3_claude/translation.js");
+const {ClaudeClient, MODELS, DEFAULT_MODEL, DEFAULT_MAX_TOKENS, KEY_PLACEHOLDER} = __webpack_require__(/*! ./claude-core */ "./node_modules/scratch-vm/src/extensions/scratch3_claude/claude-core.js");
+const config = __webpack_require__(/*! ./claude-config */ "./node_modules/scratch-vm/src/extensions/scratch3_claude/claude-config.js");
+
+// 簡單的對話泡泡 + 星芒圖示（原創，非官方商標）
+const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">' +
+    '<rect x="2" y="4" width="36" height="26" rx="8" fill="#D97757"/>' +
+    '<path d="M12 30 L10 37 L19 30 Z" fill="#D97757"/>' +
+    '<path d="M20 9 L22.2 14.8 L28 17 L22.2 19.2 L20 25 L17.8 19.2 L12 17 L17.8 14.8 Z" fill="#FFFFFF"/>' +
+    '</svg>';
+const menuIconURI = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
+const blockIconURI = menuIconURI;
+
+const SNAPSHOT_TIMEOUT_MS = 3000;
+
+class Scratch3Claude {
+    constructor (runtime) {
+        this.runtime = runtime;
+        this.client = new ClaudeClient();
+        this.client.setProxyUrl(config.PROXY_URL);
+        this.answerText = '';
+        this.statusText = '';
+        this.locale = this._setLocale();
+        this.statusText = msg.status_idle[this.locale];
+    }
+
+    _setLocale () {
+        let locale = 'en';
+        try {
+            const l = String(formatMessage.setup().locale || '').toLowerCase();
+            if (l === 'zh-tw' || l === 'zh-hant' || l === 'zh-hk') locale = 'zh-tw';
+        } catch (e) {
+            locale = 'en';
+        }
+        return locale;
+    }
+
+    getInfo () {
+        this.locale = this._setLocale();
+        const L = this.locale;
+        return {
+            id: 'claude',
+            name: msg.name[L],
+            color1: '#D97757',
+            color2: '#C2603F',
+            color3: '#A84E31',
+            menuIconURI: menuIconURI,
+            blockIconURI: blockIconURI,
+            blocks: [
+                {
+                    opcode: 'setApiKey',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_api_key[L],
+                    arguments: {
+                        KEY: {type: ArgumentType.STRING, defaultValue: KEY_PLACEHOLDER}
+                    }
+                },
+                {
+                    opcode: 'setAccessCode',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_access_code[L],
+                    arguments: {
+                        CODE: {type: ArgumentType.STRING, defaultValue: ' '}
+                    }
+                },
+                {
+                    opcode: 'setProxyUrl',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_proxy_url[L],
+                    arguments: {
+                        URL: {type: ArgumentType.STRING, defaultValue: 'https://script.google.com/macros/s/.../exec'}
+                    }
+                },
+                {
+                    opcode: 'setModel',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_model[L],
+                    arguments: {
+                        MODEL: {type: ArgumentType.STRING, menu: 'modelMenu', defaultValue: DEFAULT_MODEL}
+                    }
+                },
+                {
+                    opcode: 'setSystem',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_system[L],
+                    arguments: {
+                        SYSTEM: {type: ArgumentType.STRING, defaultValue: msg.default_system[L]}
+                    }
+                },
+                {
+                    opcode: 'setMaxTokens',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_max_tokens[L],
+                    arguments: {
+                        TOKENS: {type: ArgumentType.NUMBER, defaultValue: DEFAULT_MAX_TOKENS}
+                    }
+                },
+                {
+                    opcode: 'setTemperature',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_temperature[L],
+                    arguments: {
+                        TEMP: {type: ArgumentType.NUMBER, defaultValue: 0.7}
+                    }
+                },
+                {
+                    opcode: 'setMemory',
+                    blockType: BlockType.COMMAND,
+                    text: msg.set_memory[L],
+                    arguments: {
+                        ONOFF: {type: ArgumentType.STRING, menu: 'onoffMenu', defaultValue: 'on'}
+                    }
+                },
+                {
+                    opcode: 'clearHistory',
+                    blockType: BlockType.COMMAND,
+                    text: msg.clear_history[L]
+                },
+                '---',
+                {
+                    opcode: 'ask',
+                    blockType: BlockType.COMMAND,
+                    text: msg.ask[L],
+                    arguments: {
+                        QUESTION: {type: ArgumentType.STRING, defaultValue: msg.default_question[L]}
+                    }
+                },
+                {
+                    opcode: 'askStage',
+                    blockType: BlockType.COMMAND,
+                    text: msg.ask_stage[L],
+                    arguments: {
+                        QUESTION: {type: ArgumentType.STRING, defaultValue: msg.default_stage_question[L]}
+                    }
+                },
+                {
+                    opcode: 'askReporter',
+                    blockType: BlockType.REPORTER,
+                    text: msg.ask_reporter[L],
+                    disableMonitor: true,
+                    arguments: {
+                        QUESTION: {type: ArgumentType.STRING, defaultValue: msg.default_question[L]}
+                    }
+                },
+                '---',
+                {
+                    opcode: 'getAnswer',
+                    blockType: BlockType.REPORTER,
+                    text: msg.answer[L]
+                },
+                {
+                    opcode: 'getStatus',
+                    blockType: BlockType.REPORTER,
+                    text: msg.status[L]
+                },
+                {
+                    opcode: 'isBusy',
+                    blockType: BlockType.BOOLEAN,
+                    text: msg.is_busy[L]
+                },
+                {
+                    opcode: 'copyText',
+                    blockType: BlockType.COMMAND,
+                    text: msg.copy_text[L],
+                    arguments: {
+                        TEXT: {type: ArgumentType.STRING, defaultValue: ' '}
+                    }
+                }
+            ],
+            menus: {
+                modelMenu: {
+                    acceptReporters: true,
+                    items: MODELS.slice()
+                },
+                onoffMenu: {
+                    acceptReporters: true,
+                    items: [
+                        {text: msg.onoff[L][0], value: 'on'},
+                        {text: msg.onoff[L][1], value: 'off'}
+                    ]
+                }
+            }
+        };
+    }
+
+    /* ---------- 設定 ---------- */
+
+    setApiKey (args) {
+        this.client.setApiKey(args.KEY);
+        // 不要把金鑰印到 console
+    }
+
+    setAccessCode (args) {
+        this.client.setAccessCode(args.CODE);
+    }
+
+    setProxyUrl (args) {
+        const url = String(args.URL || '').trim();
+        // 沒改預設文字就點下去 → 不要蓋掉 claude-config.js 的網址
+        if (url.indexOf('/s/.../') >= 0) return;
+        this.client.setProxyUrl(url || config.PROXY_URL);
+    }
+
+    setModel (args) {
+        this.client.setModel(args.MODEL);
+    }
+
+    setSystem (args) {
+        this.client.setSystem(args.SYSTEM);
+    }
+
+    setMaxTokens (args) {
+        this.client.setMaxTokens(args.TOKENS);
+    }
+
+    setTemperature (args) {
+        this.client.setTemperature(args.TEMP);
+    }
+
+    setMemory (args) {
+        const v = String(args.ONOFF).trim().toLowerCase();
+        const on = v === 'on' || v === 'true' || v === '1' || v === msg.onoff['zh-tw'][0];
+        this.client.setMemory(on);
+    }
+
+    clearHistory () {
+        this.client.clearHistory();
+    }
+
+    /* ---------- 發問 ---------- */
+
+    /** 共用：發問並更新回應/狀態。永遠 resolve（錯誤轉成文字），讓積木不會卡住 */
+    _ask (question, imageDataUrl) {
+        const L = this.locale;
+        this.statusText = msg.status_busy[L];
+        return this.client.ask(question, imageDataUrl).then(answer => {
+            this.answerText = answer;
+            this.statusText = this.client.lastStopReason === 'max_tokens' ?
+                msg.status_truncated[L] : msg.status_done[L];
+            return answer;
+        }, err => {
+            const text = this._errorText(err);
+            this.answerText = text;
+            this.statusText = text;
+            if (typeof console !== 'undefined') console.warn('[claude]', err && err.code, err && err.detail); // eslint-disable-line no-console
+            return text;
+        });
+    }
+
+    _errorText (err) {
+        const L = this.locale;
+        const code = err && err.code;
+        const entry = msg.errors[code] || msg.errors.HTTP;
+        let text = msg.error_prefix[L] + entry[L];
+        // 400 與未知錯誤附上 API 的原始訊息，方便老師除錯
+        if ((code === 'BAD_REQUEST' || code === 'HTTP' || code === 'BAD_MODEL' || code === 'PROXY_SETUP') && err.detail) {
+            text += ` (${err.detail})`;
+        }
+        return text;
+    }
+
+    ask (args) {
+        return this._ask(args.QUESTION).then(() => {});
+    }
+
+    askReporter (args) {
+        return this._ask(args.QUESTION);
+    }
+
+    askStage (args) {
+        return this._snapshot().then(url => this._ask(args.QUESTION, url || ''))
+            .then(() => {});
+    }
+
+    /** 取得舞台截圖（data URL）；失敗回傳 '' */
+    _snapshot () {
+        const renderer = this.runtime && this.runtime.renderer;
+        if (!renderer || typeof renderer.requestSnapshot !== 'function') return Promise.resolve('');
+        return new Promise(resolve => {
+            let finished = false;
+            const timer = setTimeout(() => {
+                if (!finished) {
+                    finished = true;
+                    resolve('');
+                }
+            }, SNAPSHOT_TIMEOUT_MS);
+            renderer.requestSnapshot(url => {
+                if (finished) return;
+                finished = true;
+                clearTimeout(timer);
+                resolve(url || '');
+            });
+            // 專案停止時也確保會畫一次
+            if (typeof renderer.draw === 'function') renderer.draw();
+        });
+    }
+
+    /* ---------- 讀取 ---------- */
+
+    getAnswer () {
+        return this.answerText;
+    }
+
+    getStatus () {
+        return this.statusText;
+    }
+
+    isBusy () {
+        return this.client.pending > 0;
+    }
+
+    copyText (args) {
+        const text = String(args.TEXT);
+        if (typeof navigator === 'undefined' || !navigator.clipboard) return;
+        return navigator.clipboard.writeText(text).catch(err => {
+            console.warn('[claude] copy failed', err); // eslint-disable-line no-console
+        });
+    }
+}
+
+module.exports = Scratch3Claude;
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_claude/claude-core.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * Claude Messages API 用戶端（不依賴 Scratch，可在 Node 測試）
+ *
+ * 注意：本專案的 babel 設定會把 async/await 轉成需要 regeneratorRuntime 的程式，
+ * 而 GUI 沒有載入它，所以這裡全部使用 Promise 寫法，不要改成 async/await。
+ * 也避免物件展開 {...a} 與 ?. 語法（webpack 4 / 舊 babel 不支援）。
+ */
+
+const API_URL = 'https://api.anthropic.com/v1/messages';
+const API_VERSION = '2023-06-01';
+
+const MODELS = ['claude-haiku-5-5', 'claude-sonnet-5-5'];
+const DEFAULT_MODEL = MODELS[0];
+
+const DEFAULT_MAX_TOKENS = 1024;
+const MAX_TOKENS_LIMIT = 16000;
+const MAX_HISTORY_MESSAGES = 20; // 記憶模式最多保留 10 輪
+const TIMEOUT_MS = 90000;
+
+/** 建立帶 code 的錯誤，讓介面層翻譯成學生看得懂的訊息 */
+const makeError = (code, detail) => {
+    const e = new Error(detail || code);
+    e.code = code;
+    e.detail = detail || '';
+    return e;
+};
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+const parseJson = raw => {
+    try {
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+};
+
+// 積木預設值，使用者沒改就點下去時當作沒輸入
+const KEY_PLACEHOLDER = 'sk-ant-...';
+
+/** 'data:image/png;base64,xxxx' → {mediaType, data} */
+const parseDataUrl = url => {
+    const m = /^data:(image\/(?:png|jpeg|gif|webp));base64,(.+)$/.exec(String(url || ''));
+    return m ? {mediaType: m[1], data: m[2]} : null;
+};
+
+/** 把 API 錯誤狀態碼轉成 code */
+const httpCode = status => {
+    if (status === 400) return 'BAD_REQUEST';
+    if (status === 401) return 'BAD_KEY';
+    if (status === 403) return 'FORBIDDEN';
+    if (status === 404) return 'BAD_MODEL';
+    if (status === 413) return 'TOO_LARGE';
+    if (status === 429) return 'RATE_LIMIT';
+    if (status === 529 || status === 503) return 'OVERLOADED';
+    if (status >= 500) return 'SERVER';
+    return 'HTTP';
+};
+
+class ClaudeClient {
+    constructor (options) {
+        options = options || {};
+        // 不能直接存 fetch 參考再以 this._fetch() 呼叫，瀏覽器會丟 Illegal invocation
+        this._fetch = options.fetch || function (url, init) {
+            return fetch(url, init); // eslint-disable-line no-undef
+        };
+        this._timeoutMs = options.timeoutMs || TIMEOUT_MS;
+
+        this.apiKey = '';
+        this.proxyUrl = '';
+        this.accessCode = '';
+        this.model = DEFAULT_MODEL;
+        this.system = '';
+        this.maxTokens = DEFAULT_MAX_TOKENS;
+        this.temperature = null; // null = 不送出，使用模型預設值
+        this.memory = false;
+        this.history = [];
+
+        this.lastAnswer = '';
+        this.lastError = null; // Error（含 code）或 null
+        this.lastStopReason = '';
+        this.pending = 0;
+        this.usage = {input: 0, output: 0};
+    }
+
+    /** 自己的金鑰（直接呼叫 API）。留空就改回使用中繼。 */
+    setApiKey (key) {
+        const k = String(key || '').trim();
+        this.apiKey = k === KEY_PLACEHOLDER ? '' : k;
+    }
+
+    /** GAS 中繼網址（https://script.google.com/macros/s/.../exec） */
+    setProxyUrl (url) {
+        this.proxyUrl = String(url || '').trim();
+    }
+
+    /** 中繼的使用密碼（GAS 有設 ACCESS_CODE 時才需要） */
+    setAccessCode (code) {
+        this.accessCode = String(code === null || typeof code === 'undefined' ? '' : code).trim();
+    }
+
+    /** 'direct' | 'proxy' | 'none' */
+    get mode () {
+        if (this.apiKey) return 'direct';
+        if (this.proxyUrl) return 'proxy';
+        return 'none';
+    }
+
+    setModel (model) {
+        const m = String(model || '').trim();
+        this.model = m || DEFAULT_MODEL;
+    }
+
+    setSystem (text) {
+        this.system = String(text || '').trim();
+    }
+
+    setMaxTokens (n) {
+        const v = parseInt(n, 10);
+        this.maxTokens = isNaN(v) ? DEFAULT_MAX_TOKENS : clamp(v, 1, MAX_TOKENS_LIMIT);
+    }
+
+    setTemperature (t) {
+        const s = String(t === null || typeof t === 'undefined' ? '' : t).trim();
+        if (s === '') {
+            this.temperature = null;
+            return;
+        }
+        const v = parseFloat(s);
+        this.temperature = isNaN(v) ? null : clamp(v, 0, 1);
+    }
+
+    setMemory (on) {
+        this.memory = !!on;
+        if (!this.memory) this.history = [];
+    }
+
+    clearHistory () {
+        this.history = [];
+    }
+
+    /** 組出要送給 API 的 body（獨立出來方便測試） */
+    buildRequest (question, imageDataUrl) {
+        const text = String(question || '').trim();
+        const image = parseDataUrl(imageDataUrl);
+        let content;
+        if (image) {
+            content = [
+                {type: 'image', source: {type: 'base64', media_type: image.mediaType, data: image.data}},
+                {type: 'text', text: text}
+            ];
+        } else {
+            content = text;
+        }
+        const messages = (this.memory ? this.history.slice() : []).concat([{role: 'user', content: content}]);
+        const body = {
+            model: this.model,
+            max_tokens: this.maxTokens,
+            messages: messages
+        };
+        if (this.system) body.system = this.system;
+        if (this.temperature !== null) body.temperature = this.temperature;
+        return body;
+    }
+
+    /**
+     * 發問。回傳 Promise<string>（Claude 的回答）。失敗時 reject 帶 code 的 Error，
+     * 同時會設定 lastError / lastAnswer。
+     */
+    ask (question, imageDataUrl) {
+        const text = String(question === null || typeof question === 'undefined' ? '' : question).trim();
+        if (this.mode === 'none') return this._fail(makeError('NO_KEY'));
+        if (this.mode === 'proxy' && !/^https:\/\//.test(this.proxyUrl)) return this._fail(makeError('PROXY_SETUP', 'proxy url must start with https://'));
+        if (!text) return this._fail(makeError('EMPTY_QUESTION'));
+        if (typeof imageDataUrl !== 'undefined' && imageDataUrl !== null && !parseDataUrl(imageDataUrl)) {
+            return this._fail(makeError('NO_IMAGE'));
+        }
+
+        const body = this.buildRequest(text, imageDataUrl);
+        const historyNote = imageDataUrl ? `[附上舞台畫面] ${text}` : text;
+
+        let controller = null;
+        let timer = null;
+        if (typeof AbortController !== 'undefined') {
+            controller = new AbortController(); // eslint-disable-line no-undef
+            timer = setTimeout(() => controller.abort(), this._timeoutMs);
+        }
+
+        this.pending++;
+        this.lastError = null;
+        const signal = controller ? controller.signal : undefined;
+        const send = this.apiKey ? this._sendDirect(body, signal) : this._sendProxy(body, signal);
+
+        return send
+            .then(data => {
+                const answer = data.content
+                    .filter(b => b && b.type === 'text')
+                    .map(b => b.text)
+                    .join('')
+                    .trim();
+                this.lastStopReason = data.stop_reason || '';
+                if (data.usage) {
+                    this.usage.input += data.usage.input_tokens || 0;
+                    this.usage.output += data.usage.output_tokens || 0;
+                }
+                if (!answer && data.stop_reason === 'refusal') throw makeError('REFUSAL');
+                if (this.memory) {
+                    this.history.push({role: 'user', content: historyNote});
+                    this.history.push({role: 'assistant', content: answer || '(沒有回應)'});
+                    while (this.history.length > MAX_HISTORY_MESSAGES) this.history.splice(0, 2);
+                }
+                this.lastAnswer = answer;
+                return answer;
+            })
+            .then(answer => {
+                this._done(timer);
+                return answer;
+            }, err => {
+                this._done(timer);
+                return this._fail(err);
+            });
+    }
+
+    /** 直接呼叫 Anthropic API（使用者自己輸入金鑰時） */
+    _sendDirect (body, signal) {
+        return Promise.resolve()
+            .then(() => this._fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'x-api-key': this.apiKey,
+                    'anthropic-version': API_VERSION,
+                    // 允許瀏覽器直接呼叫（CORS）。金鑰是使用者自己輸入的，只存在記憶體中。
+                    'anthropic-dangerous-direct-browser-access': 'true'
+                },
+                body: JSON.stringify(body),
+                signal: signal
+            }))
+            .catch(err => {
+                if (err && err.name === 'AbortError') throw makeError('TIMEOUT');
+                throw makeError('NETWORK', err && err.message);
+            })
+            .then(res => res.text().then(raw => {
+                const data = parseJson(raw);
+                if (!res.ok) {
+                    const detail = data && data.error && data.error.message ? data.error.message : `HTTP ${res.status}`;
+                    const e = makeError(httpCode(res.status), detail);
+                    e.status = res.status;
+                    throw e;
+                }
+                if (!data || !Array.isArray(data.content)) throw makeError('BAD_RESPONSE', String(raw).slice(0, 200));
+                return data;
+            }));
+    }
+
+    /**
+     * 透過 Google Apps Script 中繼呼叫（金鑰存在 GAS，網頁裡沒有金鑰）。
+     * 用 text/plain 送出是為了避開 CORS 預檢（GAS 不處理 OPTIONS）。
+     * GAS 一律回 HTTP 200，真正的狀態放在 JSON 的 ok / status / error。
+     */
+    _sendProxy (body, signal) {
+        return Promise.resolve()
+            .then(() => this._fetch(this.proxyUrl, {
+                method: 'POST',
+                headers: {'content-type': 'text/plain;charset=utf-8'},
+                body: JSON.stringify({accessCode: this.accessCode, request: body}),
+                redirect: 'follow',
+                signal: signal
+            }))
+            .catch(err => {
+                if (err && err.name === 'AbortError') throw makeError('TIMEOUT');
+                // 部署權限不是「任何人」時會被導到 Google 登入頁，瀏覽器會擋成網路錯誤
+                throw makeError('PROXY_NETWORK', err && err.message);
+            })
+            .then(res => res.text().then(raw => {
+                const reply = parseJson(raw);
+                if (!reply || typeof reply.ok !== 'boolean') {
+                    throw makeError('PROXY_SETUP', `HTTP ${res.status} ${String(raw).slice(0, 120)}`);
+                }
+                if (!reply.ok) {
+                    const err = reply.error || {};
+                    const type = err.type || '';
+                    let code = httpCode(reply.status || 500);
+                    if (type === 'daily_limit') code = 'DAILY_LIMIT';
+                    else if (type === 'access_denied') code = 'ACCESS_DENIED';
+                    else if (type === 'model_not_allowed') code = 'MODEL_NOT_ALLOWED';
+                    else if (type === 'proxy_not_configured') code = 'PROXY_SETUP';
+                    const e = makeError(code, err.message || `HTTP ${reply.status}`);
+                    e.status = reply.status;
+                    throw e;
+                }
+                const data = reply.data;
+                if (!data || !Array.isArray(data.content)) throw makeError('BAD_RESPONSE', String(raw).slice(0, 200));
+                return data;
+            }));
+    }
+
+    _done (timer) {
+        if (timer) clearTimeout(timer);
+        this.pending = Math.max(0, this.pending - 1);
+    }
+
+    _fail (err) {
+        this.lastError = err;
+        this.lastAnswer = '';
+        return Promise.reject(err);
+    }
+}
+
+module.exports = {
+    ClaudeClient,
+    MODELS,
+    DEFAULT_MODEL,
+    DEFAULT_MAX_TOKENS,
+    MAX_TOKENS_LIMIT,
+    MAX_HISTORY_MESSAGES,
+    API_URL,
+    API_VERSION,
+    KEY_PLACEHOLDER,
+    parseDataUrl
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_claude/claude-config.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * Claude 插件設定
+ *
+ * PROXY_URL：Google Apps Script 中繼的網址（部署成網頁應用程式後取得，
+ *            長得像 https://script.google.com/macros/s/xxxxxxxx/exec）。
+ *            設定後，使用者不需要自己的 Claude 金鑰就能使用。
+ *            這個網址不是金鑰；真正的金鑰存在 GAS 的「指令碼屬性」裡，不會出現在網頁中。
+ *            設定方式見 gas/README.md。
+ *
+ * 不要把 Anthropic API 金鑰（sk-ant-...）寫在這個檔案或任何插件程式裡：
+ * 網站是公開的，金鑰會被打包進 lib.min.js，任何人都看得到。
+ */
+module.exports = {
+    PROXY_URL: 'https://script.google.com/macros/s/AKfycby5F02NvF3IWRhA3-yYLmHERDD5WKizp0Alal2cOugT7gpOfKTaGBCX1ekwHOzQd4RA5A/exec'
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_claude/translation.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+exports.name = {
+    'en': 'Claude',
+    'zh-tw': 'Claude AI'
+};
+
+exports.set_api_key = {
+    'en': 'Claude API key [KEY]',
+    'zh-tw': 'Claude金鑰 [KEY]'
+};
+exports.set_access_code = {
+    'en': 'set class access code [CODE]',
+    'zh-tw': '設定使用密碼 [CODE]'
+};
+exports.set_proxy_url = {
+    'en': 'set relay (GAS) URL [URL]',
+    'zh-tw': '設定中繼(GAS)網址 [URL]'
+};
+exports.set_model = {
+    'en': 'configure modle of[MODEL]',
+    'zh-tw': '設定AI模型為[MODEL]'
+};
+exports.set_system = {
+    'en': 'configure system of[SYSTEM]',
+    'zh-tw': '設定AI身份為[SYSTEM]'
+};
+exports.set_max_tokens = {
+    'en': 'configure max token of[TOKENS]',
+    'zh-tw': '設定最大代幣[TOKENS]'
+};
+exports.set_temperature = {
+    'en': 'configure temperature of[TEMP]',
+    'zh-tw': '輸出溫度(0真實與1創意)[TEMP]'
+};
+exports.set_memory = {
+    'en': 'turn conversation memory [ONOFF]',
+    'zh-tw': '對話記憶 [ONOFF]'
+};
+exports.clear_history = {
+    'en': 'clear conversation history',
+    'zh-tw': '清除對話紀錄'
+};
+exports.ask = {
+    'en': 'talk text of [QUESTION]',
+    'zh-tw': '聊天內容[QUESTION]'
+};
+exports.ask_stage = {
+    'en': 'show stage to Claude and ask [QUESTION] and wait',
+    'zh-tw': '讓 Claude 看舞台並問 [QUESTION] 並等待'
+};
+exports.ask_reporter = {
+    'en': 'answer from Claude to [QUESTION]',
+    'zh-tw': 'Claude 對 [QUESTION] 的回答'
+};
+exports.answer = {
+    'en': 'Claude answer',
+    'zh-tw': 'Claude 回應訊息'
+};
+exports.status = {
+    'en': 'Claude status',
+    'zh-tw': 'Claude 狀態'
+};
+exports.is_busy = {
+    'en': 'Claude is thinking?',
+    'zh-tw': 'Claude 思考中?'
+};
+exports.copy_text = {
+    'en': 'copy [TEXT] to clipboard',
+    'zh-tw': '複製 [TEXT] 到剪貼簿'
+};
+
+exports.onoff = {
+    'en': ['on', 'off'],
+    'zh-tw': ['開啟', '關閉']
+};
+
+exports.default_question = {
+    'en': 'Hello! Introduce yourself in one sentence.',
+    'zh-tw': '你好！用一句話介紹你自己。'
+};
+exports.default_stage_question = {
+    'en': 'What do you see on the stage?',
+    'zh-tw': '舞台上有什麼？'
+};
+exports.default_system = {
+    'en': 'You are a friendly assistant. Answer briefly.',
+    'zh-tw': '你是親切的助教，請用繁體中文簡短回答。'
+};
+
+// 狀態
+exports.status_idle = {
+    'en': 'ready',
+    'zh-tw': '待命'
+};
+exports.status_busy = {
+    'en': 'thinking…',
+    'zh-tw': '思考中…'
+};
+exports.status_done = {
+    'en': 'done',
+    'zh-tw': '完成'
+};
+exports.status_truncated = {
+    'en': 'done (reply cut off: increase max length)',
+    'zh-tw': '完成（回應被截斷，可調高最大長度）'
+};
+
+// 錯誤（key = ClaudeClient 的錯誤 code）
+exports.errors = {
+    NO_KEY: {
+        'en': 'Please set an API key or relay URL first',
+        'zh-tw': '請先設定 Claude API 金鑰或中繼網址'
+    },
+    DAILY_LIMIT: {
+        'en': 'Daily usage limit reached, try again tomorrow',
+        'zh-tw': '今天的使用次數已達上限，明天再試'
+    },
+    ACCESS_DENIED: {
+        'en': 'Wrong access code',
+        'zh-tw': '使用密碼錯誤'
+    },
+    MODEL_NOT_ALLOWED: {
+        'en': 'This model is not allowed by the relay',
+        'zh-tw': '中繼不允許使用這個模型'
+    },
+    PROXY_SETUP: {
+        'en': 'Relay is not set up correctly',
+        'zh-tw': '中繼設定有誤'
+    },
+    PROXY_NETWORK: {
+        'en': 'Cannot reach the relay (check URL and that access is "Anyone")',
+        'zh-tw': '連不到中繼（檢查網址，以及部署的存取權是否為「任何人」）'
+    },
+    EMPTY_QUESTION: {
+        'en': 'The question is empty',
+        'zh-tw': '問題不能是空的'
+    },
+    NO_IMAGE: {
+        'en': 'Could not capture the stage',
+        'zh-tw': '無法擷取舞台畫面'
+    },
+    BAD_KEY: {
+        'en': 'Invalid API key',
+        'zh-tw': 'API 金鑰錯誤或已失效'
+    },
+    FORBIDDEN: {
+        'en': 'This key has no permission for this request',
+        'zh-tw': '此金鑰沒有權限'
+    },
+    BAD_MODEL: {
+        'en': 'Model not found, check the model name',
+        'zh-tw': '找不到這個模型，請檢查模型名稱'
+    },
+    BAD_REQUEST: {
+        'en': 'Request rejected',
+        'zh-tw': '請求內容有誤'
+    },
+    TOO_LARGE: {
+        'en': 'Request too large',
+        'zh-tw': '送出的內容太大'
+    },
+    RATE_LIMIT: {
+        'en': 'Too many requests or out of credit, wait and try again',
+        'zh-tw': '請求太頻繁或額度不足，請稍後再試'
+    },
+    OVERLOADED: {
+        'en': 'Claude is busy right now, try again later',
+        'zh-tw': 'Claude 伺服器忙碌中，請稍後再試'
+    },
+    SERVER: {
+        'en': 'Server error, try again later',
+        'zh-tw': '伺服器錯誤，請稍後再試'
+    },
+    TIMEOUT: {
+        'en': 'Timed out',
+        'zh-tw': '等待逾時'
+    },
+    NETWORK: {
+        'en': 'Network error',
+        'zh-tw': '網路連線錯誤'
+    },
+    REFUSAL: {
+        'en': 'Claude declined to answer this',
+        'zh-tw': 'Claude 無法回答這個問題'
+    },
+    BAD_RESPONSE: {
+        'en': 'Unexpected response',
+        'zh-tw': '回應格式異常'
+    },
+    HTTP: {
+        'en': 'Request failed',
+        'zh-tw': '請求失敗'
+    }
+};
+exports.error_prefix = {
+    'en': 'Error: ',
+    'zh-tw': '錯誤：'
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/index.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+const ArgumentType = __webpack_require__(/*! ../../extension-support/argument-type */ "./node_modules/scratch-vm/src/extension-support/argument-type.js");
+const BlockType = __webpack_require__(/*! ../../extension-support/block-type */ "./node_modules/scratch-vm/src/extension-support/block-type.js");
+const formatMessage = __webpack_require__(/*! format-message */ "./node_modules/format-message/index.js");
+const msg = __webpack_require__(/*! ./translation */ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/translation.js");
+const {SentimentAnalyzer} = __webpack_require__(/*! ./sentiment-core */ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/sentiment-core.js");
+
+const menuIconURI = `data:image/png;base64,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`;
+const blockIconURI = menuIconURI;
+
+let theLocale = null;
+
+class textSentiment {
+    constructor (runtime) {
+        theLocale = this._setLocale();
+        this.runtime = runtime;
+
+        this.text = '';
+        this.confidence = 0; // 正面機率 0~1（沿用舊版積木的意義）
+        this.result = null; // {language, label, score, confidence}
+        this.lastLanguage = null; // 最近一次分析/載入的語言，用來顯示模型狀態
+        this._requestId = 0;
+
+        this.analyzer = new SentimentAnalyzer();
+    }
+
+    _setLocale () {
+        let nowLocale = '';
+        switch (formatMessage.setup().locale) {
+        case 'zh-tw':
+            nowLocale = 'zh-tw';
+            break;
+        default:
+            nowLocale = 'en';
+            break;
+        }
+        return nowLocale;
+    }
+
+    getInfo () {
+        theLocale = this._setLocale();
+
+        return {
+            id: 'textSentiment',
+            name: msg.title[theLocale],
+            color1: '#3AACFD',
+            color2: '#3AACFD',
+            menuIconURI: menuIconURI,
+            blockIconURI: blockIconURI,
+            blocks: [
+                {
+                    opcode: 'inputText',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        defaultText: {
+                            type: ArgumentType.STRING,
+                            defaultValue: msg.defaultText[theLocale]
+                        }
+                    },
+                    text: msg.inputText[theLocale]
+                },
+                {
+                    opcode: 'startTextSentiment',
+                    blockType: BlockType.COMMAND,
+                    text: msg.startTextSentiment[theLocale]
+                },
+                {
+                    opcode: 'getConfidence',
+                    blockType: BlockType.REPORTER,
+                    text: msg.confidence[theLocale]
+                },
+                {
+                    opcode: 'getSentiment',
+                    blockType: BlockType.REPORTER,
+                    text: msg.sentiment[theLocale]
+                },
+                {
+                    opcode: 'getLanguage',
+                    blockType: BlockType.REPORTER,
+                    text: msg.language[theLocale]
+                },
+                '---',
+                {
+                    opcode: 'preloadModel',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        LANG: {
+                            type: ArgumentType.STRING,
+                            menu: 'modelMenu',
+                            defaultValue: 'all'
+                        }
+                    },
+                    text: msg.preloadModel[theLocale]
+                },
+                {
+                    opcode: 'getModelStatus',
+                    blockType: BlockType.REPORTER,
+                    text: msg.modelStatus[theLocale]
+                }
+            ],
+            menus: {
+                modelMenu: {
+                    acceptReporters: false,
+                    items: [
+                        {text: msg.menuAll[theLocale], value: 'all'},
+                        {text: msg.langZh[theLocale], value: 'zh'},
+                        {text: msg.langEn[theLocale], value: 'en'}
+                    ]
+                }
+            }
+        };
+    }
+
+    /** 設定要分析的文字（不再需要翻譯） */
+    inputText (args) {
+        this.text = String(args.defaultText);
+    }
+
+    /** 分析目前的文字；回傳 Promise，Scratch 會等分析完成才執行下一個積木 */
+    startTextSentiment () {
+        const requestId = ++this._requestId;
+        return this.analyzer.analyze(this.text)
+            .then(result => {
+                if (result.language) this.lastLanguage = result.language;
+                // 只採用最新一次請求的結果，避免較慢的舊請求覆蓋新結果
+                if (requestId !== this._requestId) return;
+                this.result = result;
+                this.confidence = result.score;
+            })
+            .catch(err => {
+                // eslint-disable-next-line no-console
+                console.error('[textSentiment] analyze failed:', err);
+            });
+    }
+
+    preloadModel (args) {
+        const langs = args.LANG === 'all' ? ['zh', 'en'] : [args.LANG];
+        this.lastLanguage = langs.length === 1 ? langs[0] : null; // 全部 → 狀態顯示兩種語言
+        return Promise.all(langs.map(lang => this.analyzer.load(lang).catch(err => {
+            // eslint-disable-next-line no-console
+            console.error(`[textSentiment] load ${lang} model failed:`, err);
+        })));
+    }
+
+    getConfidence () {
+        return Number(this.confidence.toFixed(2));
+    }
+
+    getSentiment () {
+        if (!this.result) return '';
+        const key = {positive: 'positive', negative: 'negative', neutral: 'neutral'}[this.result.label];
+        return msg[key][theLocale];
+    }
+
+    getLanguage () {
+        if (!this.result || !this.result.language) return '';
+        return this.result.language === 'zh' ? msg.langZh[theLocale] : msg.langEn[theLocale];
+    }
+
+    getModelStatus () {
+        const order = this.lastLanguage ? [this.lastLanguage] : ['zh', 'en'];
+        const parts = order.map(lang => {
+            const s = this.analyzer.status[lang];
+            const name = lang === 'zh' ? msg.langZh[theLocale] : msg.langEn[theLocale];
+            let state;
+            switch (s.state) {
+            case 'loading':
+                state = `${msg.statusLoading[theLocale]} ${s.progress}%`;
+                break;
+            case 'ready':
+                state = msg.statusReady[theLocale];
+                break;
+            case 'error':
+                state = msg.statusError[theLocale];
+                break;
+            default:
+                state = msg.statusIdle[theLocale];
+            }
+            return `${name}:${state}`;
+        });
+        return parts.join(' / ');
+    }
+}
+
+module.exports = textSentiment;
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/sentiment-core.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * 文字情緒辨識核心（與 Scratch 無關，可在 Node 中單獨測試）
+ *
+ * - 自動判斷語言：含中文字 → 中文模型；英文 → 英文模型
+ * - 模型以 transformers.js 在瀏覽器端執行（ONNX / WASM），不需翻譯 API
+ * - transformers.js 於執行期由 CDN 載入，不需要修改專案的 package.json
+ */
+const {toSimplified} = __webpack_require__(/*! ./t2s */ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/t2s.js");
+
+const TRANSFORMERS_VERSION = '4.3.2';
+const TRANSFORMERS_URL =
+    `https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/dist/transformers.min.js`;
+
+const MODELS = {
+    zh: {
+        // IDEA-CCNL Erlangshen-Roberta-110M-Sentiment（8 個中文情緒資料集、約 22 萬筆訓練）
+        id: 'onnx-community/Erlangshen-Roberta-110M-Sentiment-ONNX',
+        dtype: 'q8', // int8 量化，約 103 MB
+        // 模型以簡體語料訓練，繁體先逐字轉簡體可再提升一點準確度
+        preprocess: toSimplified
+    },
+    en: {
+        // DistilBERT fine-tuned on SST-2
+        id: 'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
+        dtype: 'q8', // 約 67 MB
+        preprocess: text => text
+    }
+};
+
+const MAX_CHARS = 500; // 模型上限 512 tokens，過長的輸入先截斷
+
+const CJK_RE = /[㐀-䶿一-鿿豈-﫿]/g;
+const LATIN_WORD_RE = /[A-Za-z]+/g;
+
+/**
+ * 判斷文字語言。
+ * @param {string} text 輸入文字
+ * @returns {'zh'|'en'|null} 沒有中文字也沒有英文字時回傳 null
+ */
+const detectLanguage = text => {
+    const s = String(text === null || typeof text === 'undefined' ? '' : text);
+    const cjk = (s.match(CJK_RE) || []).length;
+    const latin = (s.match(LATIN_WORD_RE) || []).length;
+    if (cjk === 0 && latin === 0) return null;
+    // 中英夾雜時，以中文字數與英文單字數比較
+    return cjk >= latin ? 'zh' : 'en';
+};
+
+/** 把模型輸出（所有類別分數）換算成「正面機率」 */
+const positiveProbability = outputs => {
+    let pos = 0;
+    let neg = 0;
+    for (const o of outputs) {
+        if (/pos/i.test(o.label)) pos += o.score;
+        else if (/neg/i.test(o.label)) neg += o.score;
+    }
+    const total = pos + neg;
+    return total > 0 ? pos / total : 0.5;
+};
+
+/** 瀏覽器預設：從 CDN 動態載入 transformers.js（避開 webpack 4 的打包） */
+// 注意：本檔不使用 async/await —— 專案的 babel 設定會把它轉成需要
+// regeneratorRuntime 的程式碼，而 GUI 沒有載入它，會導致插件無法載入。
+const defaultPipelineFactory = () => {
+    // eslint-disable-next-line no-new-func
+    const dynamicImport = new Function('url', 'return import(url)');
+    return dynamicImport(TRANSFORMERS_URL).then(mod => {
+        // 不要向網站本身的 /models/ 路徑找模型（避免一連串 404）
+        mod.env.allowLocalModels = false;
+        return mod.pipeline;
+    });
+};
+
+class SentimentAnalyzer {
+    /**
+     * @param {object} [options]
+     * @param {Function} [options.pipelineFactory] async () => transformers.js 的 pipeline 函式
+     * @param {object} [options.models] 覆寫模型設定（測試用）
+     * @param {Function} [options.onStatus] (lang, status) => void
+     */
+    constructor (options = {}) {
+        this.pipelineFactory = options.pipelineFactory || defaultPipelineFactory;
+        this.models = options.models || MODELS;
+        this.onStatus = options.onStatus || (() => {});
+        this._pipelineFnPromise = null;
+        this._classifiers = {}; // lang -> Promise<classifier>
+        this.status = {};
+        for (const lang of Object.keys(this.models)) {
+            this.status[lang] = {state: 'idle', progress: 0, error: null};
+        }
+    }
+
+    _setStatus (lang, patch) {
+        this.status[lang] = Object.assign({}, this.status[lang], patch);
+        this.onStatus(lang, this.status[lang]);
+    }
+
+    _getPipelineFn () {
+        if (!this._pipelineFnPromise) {
+            this._pipelineFnPromise = Promise.resolve()
+                .then(() => this.pipelineFactory())
+                .catch(err => {
+                    this._pipelineFnPromise = null; // 允許下次重試
+                    throw err;
+                });
+        }
+        return this._pipelineFnPromise;
+    }
+
+    /**
+     * 載入（或取得已載入的）某語言模型。同一語言只會下載一次。
+     * @param {'zh'|'en'} lang 語言
+     * @returns {Promise<Function>} classifier
+     */
+    load (lang) {
+        const cfg = this.models[lang];
+        if (!cfg) return Promise.reject(new Error(`Unsupported language: ${lang}`));
+        if (this._classifiers[lang]) return this._classifiers[lang];
+
+        const files = {}; // file -> {loaded, total}
+        const onProgress = p => {
+            if (!p || !p.file || p.status !== 'progress' || !p.total) return;
+            files[p.file] = {loaded: p.loaded, total: p.total};
+            let loaded = 0;
+            let total = 0;
+            for (const f of Object.values(files)) {
+                loaded += f.loaded;
+                total += f.total;
+            }
+            this._setStatus(lang, {progress: Math.min(99, Math.floor((100 * loaded) / total))});
+        };
+
+        this._setStatus(lang, {state: 'loading', progress: 0, error: null});
+        this._classifiers[lang] = this._getPipelineFn()
+            .then(pipeline => pipeline('text-classification', cfg.id, {
+                dtype: cfg.dtype,
+                progress_callback: onProgress
+            }))
+            .then(classifier => {
+                this._setStatus(lang, {state: 'ready', progress: 100});
+                return classifier;
+            })
+            .catch(err => {
+                delete this._classifiers[lang]; // 允許下次重試
+                this._setStatus(lang, {state: 'error', error: err});
+                throw err;
+            });
+        return this._classifiers[lang];
+    }
+
+    /**
+     * 分析一段文字。
+     * @param {string} text 輸入文字
+     * @returns {Promise<{language: ?string, label: string, score: number, confidence: number}>}
+     *   score = 正面機率 (0~1)；confidence = 對結果的把握度 (0.5~1)
+     */
+    analyze (text) {
+        const raw = String(text === null || typeof text === 'undefined' ? '' : text).trim();
+        const language = detectLanguage(raw);
+        if (!language) {
+            return Promise.resolve({language: null, label: 'neutral', score: 0.5, confidence: 0});
+        }
+        const cfg = this.models[language];
+        return this.load(language)
+            .then(classifier => classifier(cfg.preprocess(raw).slice(0, MAX_CHARS), {top_k: null}))
+            .then(outputs => {
+                const score = positiveProbability(Array.isArray(outputs) ? outputs : [outputs]);
+                return {
+                    language,
+                    label: score >= 0.5 ? 'positive' : 'negative',
+                    score,
+                    confidence: Math.max(score, 1 - score)
+                };
+            });
+    }
+}
+
+module.exports = {
+    SentimentAnalyzer,
+    detectLanguage,
+    positiveProbability,
+    MODELS,
+    TRANSFORMERS_URL
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/t2s.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * 繁體 → 簡體「單字」對照表（僅供情緒模型前處理使用）
+ * 由 OpenCC 字典 TSCharacters + TWVariantsRev 自動產生（opencc-js 1.4.2）
+ * OpenCC: Apache License 2.0, https://github.com/BYVoid/OpenCC
+ * 共 3228 字
+ */
+const FROM = "㑯㑳㑶㓨㗲㘚㜄㜏㜢㠏㠣㥮㩜㩳㩵㺏䁪䁻䃮䊷䋙䋚䋹䋻䍦䎱䓣䙡䜀䝼䡵䥇䥑䥕䥱䦛䦟䧢䮄䯀䰾䱷䱽䲁䲘䴉丟並乾亂亙亞佇佈佔併來侖侶侷俁係俔俠俥俬倀倆倈倉個們倖倫倲偉偑側偵偽傌傑傖傘備傢傭傯傳傴債傷傾僂僅僉僑僕僞僤僥僨僱價儀儁儂億儈儉儎儐儔儕儘償優儲儷儸儺儻儼兇兌兒兗內兩冊冑冪凈凍凜凱別刪剄則剋剎剗剛剝剮剴創剷劃劄劇劉劊劌劍劏劑劚勁動務勛勝勞勢勣勩勱勳勵勸勻匭匯匱區協卹卻卽厙厠厤厭厲厴參叄叢吒吳吶呂咼員唄唸問啓啞啟啢喎喚喪喫喬單喲嗆嗇嗊嗎嗚嗩嗰嗶嘆嘍嘓嘔嘖嘗嘜嘩嘮嘯嘰嘵嘸嘽噁噓噚噝噠噥噦噯噲噴噸噹嚀嚇嚌嚐嚕嚙嚥嚦嚧嚨嚮嚲嚳嚴嚶囀囁囂囅囈囉囌囑囪圇國圍園圓圖團垻埡埨埰執堅堊堖堝堯報場塊塋塏塒塗塚塢塤塵塸塹塿墊墜墠墮墰墳墶墻墾壇壋壎壓壗壘壙壚壜壞壟壠壢壩壪壯壺壼壽夠夢夥夾奐奧奩奪奬奮奼妝姍姦娙娛婁婦婭媧媯媰媼媽嫋嫗嫵嫺嫻嫿嬀嬃嬈嬋嬌嬙嬡嬤嬪嬰嬸孃孋孌孫學孻孿宮寀寢實寧審寫寬寵寶將專尋對導尷屆屍屓屜屢層屨屬岡峯峴島峽崍崑崗崙崢崬嵐嵗嵽嵾嶁嶄嶇嶔嶗嶠嶢嶧嶨嶮嶸嶺嶼嶽巋巒巔巖巘巰巹帥師帳帶幀幃幓幗幘幟幣幫幬幷幹幾庫廁廂廄廈廎廕廚廝廞廟廠廡廢廣廩廬廳弒弔弳張強彄彆彈彌彎彔彙彠彥彫彲彿後徑從徠復徵徹恆恥悅悞悵悶悽惡惱惲惻愛愜愨愴愷愾慄態慍慘慚慟慣慤慪慫慮慳慶慺慼慾憂憊憐憑憒憖憚憤憫憮憲憶懇應懌懍懞懟懣懤懨懲懶懷懸懺懼懾戀戇戔戧戩戰戱戲戶扞拋拚挩挱挾捨捫捱捲掃掄掆掗掙掛採揀揚換揮揯損搖搗搧搵搶摑摜摟摯摳摶摺摻撈撏撐撓撝撟撣撥撫撲撳撻撾撿擁擄擇擊擋擓擔據擠擡擣擬擯擰擱擲擴擷擺擻擼擽擾攄攆攏攔攖攙攛攜攝攢攣攤攪攬敎敓敗敘敵數斂斃斆斕斬斷於旂旣昇時晉晛晝暈暉暐暘暢暫曄曆曇曉曏曖曠曥曨曬書會朥朧朮東枴柵柺査桱桿梔梘梜條梟梲棄棊棖棗棟棡棧棲棶椏椲楊楓楨業極榘榦榪榮榲榿構槍槓槤槧槨槮槳槶槼樁樂樅樑樓標樞樢樣樧樫樳樸樹樺樿橈橋機橢橫橯檁檉檔檜檟檢檣檮檯檳檸檻櫃櫍櫓櫚櫛櫝櫞櫟櫥櫧櫨櫪櫫櫬櫱櫳櫸櫻欄欅權欏欒欓欖欞欽歎歐歟歡歲歷歸歿殘殞殤殨殫殭殮殯殰殲殺殻殼毀毆毿氂氈氌氣氫氬氳氾汎汙決沒沖況泝洩洶浹浿涇涗涼淒淚淥淨淩淪淵淶淺渙減渢渦測渾湊湋湞湧湯溈準溝溫溮溳溼滄滅滌滎滙滬滯滲滷滸滻滾滿漁漊漍漚漢漣漬漲漵漸漿潁潑潔潕潙潚潛潤潯潰潷潿澀澆澇澐澗澠澤澦澩澫澮澱澾濁濃濄濆濕濘濚濛濜濟濤濧濫濰濱濺濼濾瀂瀅瀆瀇瀉瀋瀏瀕瀘瀝瀟瀠瀦瀧瀨瀰瀲瀾灃灄灑灒灕灘灙灝灡灣灤灧灩災為烏烴無煉煒煙煢煥煩煬煱熅熒熗熰熱熲熾燀燁燈燉燒燖燙燜營燦燬燭燴燶燻燼燾爍爐爛爭爲爺爾牀牆牘牴牽犖犛犢犧狀狹狽猙猶猻獁獃獄獅獎獨獪獫獮獰獱獲獵獷獸獺獻獼玀現琱琺琿瑋瑒瑣瑤瑩瑪瑲璉璊璕璗璡璣璦璫璯環璵璸璽璿瓅瓊瓏瓔瓚瓛甌甕產産畝畢畫異畵當疇疊痙痠痾瘂瘋瘍瘓瘞瘡瘧瘮瘲瘺瘻療癆癇癉癒癘癟癡癢癤癥癧癩癬癭癮癰癱癲發皁皚皰皸皺盃盜盞盡監盤盧盪眞眥眾睍睏睜睞瞘瞜瞞瞶瞼矇矓矚矯硃硜硤硨硯碕碩碭碸確碼碽磑磚磠磣磧磯磽磾礄礎礐礙礦礪礫礬礱祕祿禍禎禕禡禦禪禮禰禱禿秈稅稈稏稜稟種稱穀穇穌積穎穠穡穢穩穫穭窩窪窮窯窵窶窺竄竅竇竈竊竪競筆筍筧筴箇箋箏箚節範築篋篔篠篢篤篩篳篸簀簍簑簞簡簣簫簹簽簾籃籅籌籔籙籛籜籟籠籤籩籪籬籮籲粵糉糝糞糧糰糲糴糶糹糾紀紂紃約紅紆紇紈紉紋納紐紓純紕紖紗紘紙級紛紜紝紞紡紬紮細紱紲紳紵紹紺紼紿絀終絃組絅絆絎結絕絛絝絞絡絢給絨絪絰統絲絳絶絹絺綁綃綄綆綈綉綌綎綏綐綑經綖綜綝綞綠綡綢綣綧綪綫綬維綯綰綱網綳綴綵綸綹綺綻綽綾綿緄緇緊緋緑緒緓緔緗緘緙線緝緞締緡緣緦編緩緬緯緱緲練緶緹緻緼縈縉縊縋縐縑縕縗縛縝縞縟縣縧縫縭縮縯縱縲縳縴縵縶縷縹總績繃繅繆繒織繕繚繞繡繢繩繪繫繭繮繯繰繳繶繸繹繻繼繽繾繿纁纆纇纈纊續纍纏纓纔纕纖纘纜缽罃罈罌罎罰罵罷羅羆羈羋羣羥羨義羶習翫翬翹翽耬耮聖聞聯聰聲聳聵聶職聹聽聾肅脅脈脛脣脩脫脹腎腖腡腦腫腳腸膃膕膚膞膠膢膩膽膾膿臉臍臏臘臚臟臠臢臥臨臺與興舉舊舖舘艙艤艦艫艱艷芻苧茲荊莊莖莢莧華菴菸萇萊萬萴萵葉葒葤葦葯葷蒍蒐蒓蒔蒕蒞蒼蓀蓆蓋蓮蓯蓴蓽蔄蔔蔘蔞蔣蔥蔦蔭蔯蔿蕁蕆蕎蕒蕓蕕蕘蕢蕩蕪蕭蕷薀薈薊薌薑薔薘薟薦薩薳薴薵薹薺藍藎藝藥藪藭藴藶藹藺蘀蘄蘆蘇蘊蘋蘚蘞蘟蘢蘭蘺蘿虆虉處虛虜號虧虯蛺蛻蜆蝀蝕蝟蝦蝨蝸螄螞螢螮螻螿蟄蟈蟎蟣蟬蟯蟲蟳蟶蟻蠁蠅蠆蠍蠐蠑蠔蠟蠣蠨蠱蠶蠻衆衊術衕衚衛衝袞袷裊裏補裝裡製複褌褘褲褳褸褻襀襇襉襏襖襝襠襤襪襬襯襲襴覈見覎規覓視覘覡覥覦親覬覯覲覷覺覽覿觀觴觶觸訁訂訃計訊訌討訏訐訒訓訕訖託記訛訝訟訢訣訥訩訪設許訴訶診註証詀詁詆詎詐詒詔評詖詗詘詛詝詞詠詡詢詣試詩詪詫詬詭詮詰話該詳詵詷詼詿誄誅誆誇誌認誑誒誕誘誚語誠誡誣誤誥誦誨說説誰課誶誹誼誾調諂諄談諉請諍諏諑諒諓論諗諛諜諝諞諟諡諢諤諦諧諫諭諮諱諲諳諴諶諷諸諺諼諾謀謁謂謄謅謊謎謏謐謔謖謗謙謚講謝謠謡謨謫謬謭謳謹謾譁證譎譏譓譖識譙譚譜譞譟譫譭譯議譴護譸譽譾讀讅變讋讌讎讒讓讕讖讚讜讞谿豈豎豐豔豬豶貍貓貙貝貞貟負財貢貧貨販貪貫責貯貰貲貳貴貶買貸貺費貼貽貿賀賁賂賃賄賅資賈賊賑賒賓賕賙賚賜賞賠賡賢賣賤賦賧質賫賬賭賰賴賵賺賻購賽賾贄贅贇贈贊贋贍贏贐贓贔贖贗贛贜赬趕趙趨趲跡踐踰踴蹌蹕蹟蹠蹣蹤蹺躂躉躊躋躍躎躑躒躓躕躚躡躥躦躪軀車軋軌軍軏軑軒軔軛軝軟軤軫軲軸軹軺軻軼軾較輄輅輇輈載輊輋輒輓輔輕輗輛輜輝輞輟輥輦輩輪輬輮輯輳輶輸輻輼輾輿轀轂轄轅轆轉轍轎轔轟轡轢轤辦辭辮辯農迴逕這連週進遊運過達違遙遜遞遠遡適遲遶遷選遺遼邁還邇邊邏邐郟郵鄆鄉鄒鄔鄖鄧鄩鄭鄰鄲鄳鄴鄶鄺酇酈醃醖醜醞醟醣醫醬醱醲釀釁釃釅釋釐釒釓釔釕釗釘釙針釣釤釦釧釩釴釵釷釹釺釾釿鈀鈁鈃鈄鈅鈇鈈鈉鈍鈎鈐鈑鈒鈔鈕鈞鈡鈣鈥鈦鈧鈮鈰鈳鈴鈷鈸鈹鈺鈽鈾鈿鉀鉅鉆鉈鉉鉊鉋鉍鉑鉕鉗鉚鉛鉝鉞鉢鉤鉥鉦鉧鉬鉭鉮鉳鉶鉷鉸鉺鉻鉿銀銃銅銈銍銑銓銖銘銚銛銜銠銣銥銦銨銩銪銫銬銱銳銶銷銹銻銼鋁鋃鋅鋇鋌鋏鋐鋒鋗鋙鋝鋟鋣鋤鋥鋦鋨鋩鋪鋭鋮鋯鋰鋱鋶鋸鋹鋼錀錁錄錆錇錈錏錐錒錕錘錙錚錛錞錟錠錡錢錤錦錨錩錫錮錯録錳錶錸錼鍀鍁鍃鍅鍆鍇鍈鍊鍋鍍鍔鍘鍚鍛鍠鍤鍥鍩鍬鍭鍰鍵鍶鍺鍼鍾鎂鎄鎇鎊鎌鎓鎔鎖鎘鎚鎛鎝鎡鎢鎣鎦鎧鎩鎪鎬鎭鎮鎰鎲鎳鎵鎶鎸鎿鏃鏇鏈鏌鏍鏏鏐鏑鏗鏘鏜鏝鏞鏟鏡鏢鏤鏨鏰鏵鏷鏹鏺鏻鏽鐃鐄鐇鐋鐍鐏鐐鐒鐓鐔鐘鐙鐝鐠鐥鐦鐧鐨鐩鐫鐮鐯鐲鐳鐵鐶鐸鐺鐽鐿鑄鑊鑌鑑鑒鑔鑕鑞鑠鑣鑥鑪鑭鑰鑱鑲鑷鑹鑼鑽鑾鑿钁钂長門閂閃閆閈閉開閌閎閏閑閒間閔閘閡閣閤閥閨閩閫閬閭閱閲閶閹閻閼閽閾閿闃闆闇闈闉闊闋闌闍闐闑闒闓闔闕闖關闞闠闡闢闤闥陘陝陞陣陰陳陸陽隉隊階隑隕際隤隨險隮隯隱隴隸隻雋雖雙雛雜雞離難雲電霑霢霧霽靂靄靆靈靉靚靜靝靦靨鞏鞝鞦鞽韁韃韆韉韋韌韍韓韙韜韝韞韻響頁頂頃項順頇須頊頌頍頎頏預頑頒頓頔頗領頜頠頡頤頦頫頭頮頰頲頴頵頷頸頹頻頽顆題額顎顏顒顓顔顗願顙顛類顢顥顧顫顬顯顰顱顳顴風颭颮颯颱颳颶颸颺颻颼飀飄飆飈飛飠飢飣飥飩飪飫飭飯飱飲飴飼飽飾飿餃餄餅餈餉養餌餎餏餑餒餓餕餖餗餘餚餛餜餞餡館餬餱餳餵餶餷餸餺餼餾餿饁饃饅饈饉饊饋饌饑饒饗饘饜饞饢馬馭馮馱馳馴馹馼駁駃駉駐駑駒駓駔駕駘駙駛駝駟駡駢駪駭駰駱駸駼駿騁騂騄騅騊騌騍騎騏騑騖騙騞騠騤騧騫騭騮騰騱騵騶騷騸騾驀驁驂驃驄驅驊驌驍驎驏驕驗驚驛驟驢驤驥驦驪驫骯髏髒體髕髖髮鬆鬍鬚鬢鬥鬧鬨鬩鬮鬱鬹魎魘魚魛魟魢魨魯魴魷魺鮀鮁鮃鮆鮈鮊鮋鮍鮎鮐鮑鮒鮓鮚鮜鮝鮞鮟鮠鮡鮣鮦鮪鮫鮭鮮鮳鮶鮸鮺鯀鯁鯇鯉鯊鯒鯔鯕鯖鯗鯛鯝鯡鯢鯤鯧鯨鯪鯫鯰鯴鯷鯻鯽鯿鰁鰂鰃鰆鰈鰉鰊鰌鰍鰏鰐鰒鰓鰛鰜鰟鰠鰣鰤鰥鰧鰨鰩鰭鰮鰱鰲鰳鰵鰶鰷鰹鰺鰻鰼鰾鱀鱂鱅鱇鱈鱉鱒鱔鱖鱗鱘鱚鱝鱟鱠鱣鱤鱧鱨鱭鱯鱲鱷鱸鱺鳥鳧鳩鳬鳲鳳鳴鳶鳾鴆鴇鴉鴒鴕鴛鴝鴞鴟鴣鴦鴨鴯鴰鴴鴷鴻鴿鵁鵂鵃鵏鵐鵑鵒鵓鵜鵝鵟鵠鵡鵪鵬鵮鵯鵰鵲鵷鵾鶄鶇鶉鶊鶓鶖鶘鶚鶠鶡鶥鶩鶪鶬鶯鶱鶲鶴鶹鶺鶻鶼鶿鷀鷁鷂鷄鷉鷊鷓鷖鷗鷙鷚鷟鷥鷦鷫鷭鷯鷲鷳鷴鷸鷹鷺鷽鸂鸇鸊鸌鸏鸑鸕鸘鸚鸛鸝鸞鹵鹹鹺鹼鹽麗麥麩麪麫麬麯麳麴麵麼麽黃黌點黨黲黴黶黷黽黿鼂鼉鼕鼴齊齋齎齏齒齔齕齗齘齙齜齟齠齡齣齦齧齪齬齮齯齲齶齷齼龍龎龐龑龔龕龜鿁鿓𠁞𠗣𡃕𡅏𡑍𡑭𡓾𡔖𡞵𡠹𡢃𡮉𡮣𡳳𡻕𡾱𢣚𢶫𢹿𣈶𣙎𣞻𣠩𣠲𣯶𣾷𤁣𤅶𤓩𤪺𤫩𤳸𥊝𥌃𥕥𥖅𥗽𥢢𥸠𥼽𦘧𦣎𦪙𧜗𧜵𧝞𧟀𧩙𧵳𧶧𨊰𨊸𨋢𨤻𨦫𨧀𨧜𨨏𨭆𨭎𨯅𩞯𩠴𩣑𩶘𰻞么潀痺睪簷著";
+const TO = "㑔㑇㐹刾𠵾㘎㚯㛣𡞱㟆𫵷㤘㨫㧐擜𤠋𥇢䀥鿎䌶䌺䌻䌿䌾䍠䎬𬜯䙌䜧䞍𫟦䦂鿏𬭯䥾䦶䦷𨸟𫠊䯅鲃䲣䲝鳚鳤鹮丢并干乱亘亚伫布占并来仑侣局俣系伣侠伡私伥俩俫仓个们幸伦㑈伟㐽侧侦伪㐷杰伧伞备家佣偬传伛债伤倾偻仅佥侨仆伪𫢸侥偾雇价仪俊侬亿侩俭傤傧俦侪尽偿优储俪㑩傩傥俨凶兑儿兖内两册胄幂净冻凛凯别删刭则克刹刬刚剥剐剀创铲划札剧刘刽刿剑㓥剂㔉劲动务勋胜劳势𪟝勚劢勋励劝匀匦汇匮区协恤却即厍厕历厌厉厣参叁丛咤吴呐吕呙员呗念问启哑启唡㖞唤丧吃乔单哟呛啬唝吗呜唢𠮶哔叹喽啯呕啧尝唛哗唠啸叽哓呒啴恶嘘㖊咝哒哝哕嗳哙喷吨当咛吓哜尝噜啮咽呖𠰷咙向亸喾严嘤啭嗫嚣冁呓啰苏嘱囱囵国围园圆图团坝垭𫭢采执坚垩垴埚尧报场块茔垲埘涂冢坞埙尘𫭟堑𪣻垫坠𫮃堕坛坟垯墙垦坛垱埙压𡋤垒圹垆坛坏垄垅坜坝塆壮壶壸寿够梦伙夹奂奥奁夺奖奋姹妆姗奸𫰛娱娄妇娅娲妫㛀媪妈袅妪妩娴娴婳妫媭娆婵娇嫱嫒嬷嫔婴婶娘㛤娈孙学𡥧孪宫采寝实宁审写宽宠宝将专寻对导尴届尸屃屉屡层屦属冈峰岘岛峡崃昆岗仑峥岽岚岁𫶇㟥嵝崭岖嵚崂峤峣峄峃崄嵘岭屿岳岿峦巅岩𪩘巯卺帅师帐带帧帏㡎帼帻帜币帮帱并干几库厕厢厩厦庼荫厨厮𫷷庙厂庑废广廪庐厅弑吊弪张强𫸩别弹弥弯录汇彟彦雕彨佛后径从徕复征彻恒耻悦悮怅闷凄恶恼恽恻爱惬悫怆恺忾栗态愠惨惭恸惯悫怄怂虑悭庆㥪戚欲忧惫怜凭愦慭惮愤悯怃宪忆恳应怿懔蒙怼懑㤽恹惩懒怀悬忏惧慑恋戆戋戗戬战戯戏户捍抛拼捝挲挟舍扪挨卷扫抡㧏挜挣挂采拣扬换挥搄损摇捣扇揾抢掴掼搂挚抠抟折掺捞挦撑挠㧑挢掸拨抚扑揿挞挝捡拥掳择击挡㧟担据挤抬捣拟摈拧搁掷扩撷摆擞撸㧰扰摅撵拢拦撄搀撺携摄攒挛摊搅揽教敚败叙敌数敛毙敩斓斩断于旗既升时晋𬀪昼晕晖𬀩旸畅暂晔历昙晓向暧旷𣆐昽晒书会𦛨胧术东拐栅拐查𣐕杆栀枧𬂩条枭棁弃棋枨枣栋㭎栈栖梾桠㭏杨枫桢业极矩干杩荣榅桤构枪杠梿椠椁椮桨椢椝桩乐枞梁楼标枢㭤样榝㭴桪朴树桦椫桡桥机椭横𣓿檩柽档桧槚检樯梼台槟柠槛柜𬃊橹榈栉椟橼栎橱槠栌枥橥榇蘖栊榉樱栏榉权椤栾𣗋榄棂钦叹欧欤欢岁历归殁残殒殇㱮殚僵殓殡㱩歼杀壳壳毁殴毵牦毡氇气氢氩氲泛泛污决没冲况溯泄汹浃𬇙泾涚凉凄泪渌净凌沦渊涞浅涣减沨涡测浑凑𣲗浈涌汤沩准沟温浉涢湿沧灭涤荥汇沪滞渗卤浒浐滚满渔溇𬇹沤汉涟渍涨溆渐浆颍泼洁𣲘沩㴋潜润浔溃滗涠涩浇涝沄涧渑泽滪泶𬇕浍淀㳠浊浓㳡𣸣湿泞溁蒙浕济涛㳔滥潍滨溅泺滤澛滢渎㲿泻沈浏濒泸沥潇潆潴泷濑弥潋澜沣滠洒𪷽漓滩𣺼灏㳕湾滦滟滟灾为乌烃无炼炜烟茕焕烦炀㶽煴荧炝𬉼热颎炽𬊤烨灯炖烧𬊈烫焖营灿毁烛烩㶶熏烬焘烁炉烂争为爷尔床墙牍抵牵荦牦犊牺状狭狈狰犹狲犸呆狱狮奖独狯猃狝狞㺍获猎犷兽獭献猕猡现雕珐珲玮玚琐瑶莹玛玱琏𫞩𬍤𬍡琎玑瑷珰㻅环玙瑸玺璇𬍛琼珑璎瓒𤩽瓯瓮产产亩毕画异画当畴叠痉酸疴痖疯疡痪瘗疮疟瘆疭瘘瘘疗痨痫瘅愈疠瘪痴痒疖症疬癞癣瘿瘾痈瘫癫发皂皑疱皲皱杯盗盏尽监盘卢荡真眦众𪾢困睁睐眍䁖瞒瞆睑蒙眬瞩矫朱硁硖砗砚埼硕砀砜确码䂵硙砖硵碜碛矶硗䃅硚础𬒈碍矿砺砾矾砻秘禄祸祯祎祃御禅礼祢祷秃籼税秆䅉棱禀种称谷䅟稣积颖秾穑秽稳获穞窝洼穷窑窎窭窥窜窍窦灶窃竖竞笔笋笕䇲个笺筝札节范筑箧筼筿𬕂笃筛筚𥮾箦篓蓑箪简篑箫筜签帘篮𥫣筹䉤箓篯箨籁笼签笾簖篱箩吁粤粽糁粪粮团粝籴粜纟纠纪纣𬘓约红纡纥纨纫纹纳纽纾纯纰纼纱纮纸级纷纭纴𬘘纺䌷扎细绂绁绅纻绍绀绋绐绌终弦组䌹绊绗结绝绦绔绞络绚给绒𬘡绖统丝绛绝绢𫄨绑绡𬘫绠绨绣绤𬘩绥䌼捆经𫄧综𬘭缍绿𫟅绸绻𬘯𬘬线绶维绹绾纲网绷缀彩纶绺绮绽绰绫绵绲缁紧绯绿绪绬绱缃缄缂线缉缎缔缗缘缌编缓缅纬缑缈练缏缇致缊萦缙缢缒绉缣缊缞缚缜缟缛县绦缝缡缩𬙂纵缧䌸纤缦絷缕缥总绩绷缫缪缯织缮缭绕绣缋绳绘系茧缰缳缲缴𫄷䍁绎𦈡继缤缱䍀𫄸𬙊颣缬纩续累缠缨才𬙋纤缵缆钵䓨坛罂坛罚骂罢罗罴羁芈群羟羡义膻习玩翚翘翙耧耢圣闻联聪声耸聩聂职聍听聋肃胁脉胫唇修脱胀肾胨脶脑肿脚肠腽腘肤䏝胶𦝼腻胆脍脓脸脐膑腊胪脏脔臜卧临台与兴举旧铺馆舱舣舰舻艰艳刍苎兹荆庄茎荚苋华庵烟苌莱万荝莴叶荭荮苇药荤𫇭搜莼莳蒀莅苍荪席盖莲苁莼荜𬜬卜参蒌蒋葱茑荫𫈟𫇭荨蒇荞荬芸莸荛蒉荡芜萧蓣蕰荟蓟芗姜蔷荙莶荐萨䓕苧䓓苔荠蓝荩艺药薮䓖蕴苈蔼蔺萚蕲芦苏蕴苹藓蔹𦻕茏兰蓠萝蔂𬟁处虚虏号亏虬蛱蜕蚬𬟽蚀猬虾虱蜗蛳蚂萤䗖蝼螀蛰蝈螨虮蝉蛲虫𫊻蛏蚁蚃蝇虿蝎蛴蝾蚝蜡蛎蟏蛊蚕蛮众蔑术同胡卫冲衮夹袅里补装里制复裈袆裤裢褛亵𫌀裥裥袯袄裣裆褴袜摆衬袭襕核见觃规觅视觇觋觍觎亲觊觏觐觑觉览觌观觞觯触讠订讣计讯讧讨𬣙讦讱训讪讫托记讹讶讼䜣诀讷讻访设许诉诃诊注证𧮪诂诋讵诈诒诏评诐诇诎诅𬣞词咏诩询诣试诗𬣳诧诟诡诠诘话该详诜𫍣诙诖诔诛诓夸志认诳诶诞诱诮语诚诫诬误诰诵诲说说谁课谇诽谊訚调谄谆谈诿请诤诹诼谅𬣡论谂谀谍谞谝𬤊谥诨谔谛谐谏谕咨讳𬤇谙𫍯谌讽诸谚谖诺谋谒谓誊诌谎谜𫍲谧谑谡谤谦谥讲谢谣谣谟谪谬谫讴谨谩哗证谲讥𬤝谮识谯谭谱𫍽噪谵毁译议谴护诪誉谫读谉变詟䜩雠谗让谰谶赞谠谳溪岂竖丰艳猪豮狸猫䝙贝贞贠负财贡贫货贩贪贯责贮贳赀贰贵贬买贷贶费贴贻贸贺贲赂赁贿赅资贾贼赈赊宾赇赒赉赐赏赔赓贤卖贱赋赕质赍账赌䞐赖赗赚赙购赛赜贽赘赟赠赞赝赡赢赆赃赑赎赝赣赃赪赶赵趋趱迹践逾踊跄跸迹跖蹒踪跷跶趸踌跻跃䟢踯跞踬蹰跹蹑蹿躜躏躯车轧轨军𫐄轪轩轫轭𬨂软轷轸轱轴轵轺轲轶轼较𨐈辂辁辀载轾𪨶辄挽辅轻𫐐辆辎辉辋辍辊辇辈轮辌𫐓辑辏𬨎输辐辒辗舆辒毂辖辕辘转辙轿辚轰辔轹轳办辞辫辩农回径这连周进游运过达违遥逊递远溯适迟绕迁选遗辽迈还迩边逻逦郏邮郓乡邹邬郧邓𬩽郑邻郸𫑡邺郐邝酂郦腌酝丑酝蒏糖医酱酦𬪩酿衅酾酽释厘钅钆钇钌钊钉钋针钓钐扣钏钒𬬩钗钍钕钎䥺𬬱钯钫钘钭钥𫓧钚钠钝钩钤钣钑钞钮钧钟钙钬钛钪铌铈钶铃钴钹铍钰钸铀钿钾巨钻铊铉𬬿铇铋铂钷钳铆铅𫟷钺钵钩𬬸钲𬭁钼钽𬬹锫铏𫟹铰铒铬铪银铳铜𫓯铚铣铨铢铭铫铦衔铑铷铱铟铵铥铕铯铐铞锐𨱇销锈锑锉铝锒锌钡铤铗𬭎锋𫓶铻锊锓铘锄锃锔锇铓铺锐铖锆锂铽锍锯𬬮钢𬬭锞录锖锫锩铔锥锕锟锤锱铮锛𬭚锬锭锜钱𫓹锦锚锠锡锢错录锰表铼镎锝锨锪钫钔锴锳炼锅镀锷铡钖锻锽锸锲锘锹𬭤锾键锶锗针钟镁锿镅镑镰𬭩镕锁镉锤镈𨱏镃钨蓥镏铠铩锼镐镇镇镒镋镍镓鿔镌镎镞旋链镆镙𬭬镠镝铿锵镗镘镛铲镜镖镂錾镚铧镤镪䥽𬭸锈铙𨱑𫔍铴𫔎𨱔镣铹镦镡钟镫镢镨䦅锎锏镄𬭼镌镰䦃镯镭铁镮铎铛𫟼镱铸镬镔鉴鉴镲锧镴铄镳镥𬬻镧钥镵镶镊镩锣钻銮凿镢镋长门闩闪闫闬闭开闶闳闰闲闲间闵闸阂阁合阀闺闽阃阆闾阅阅阊阉阎阏阍阈阌阒板暗闱𬮱阔阕阑阇阗𫔶阘闿阖阙闯关阚阓阐辟阛闼陉陕升阵阴陈陆阳陧队阶𬮿陨际𬯎随险𬯀陦隐陇隶只隽虽双雏杂鸡离难云电沾霡雾霁雳霭叇灵叆靓静靔腼靥巩绱秋鞒缰鞑千鞯韦韧韨韩韪韬鞲韫韵响页顶顷项顺顸须顼颂𫠆颀颃预顽颁顿𬱖颇领颌𬱟颉颐颏𫖯头颒颊颋颕𫖳颔颈颓频颓颗题额颚颜颙颛颜𫖮愿颡颠类颟颢顾颤颥显颦颅颞颧风飐飑飒台刮飓飔飏飖飕飗飘飙飚飞饣饥饤饦饨饪饫饬饭飧饮饴饲饱饰饳饺饸饼糍饷养饵饹饻饽馁饿馂饾𫗧余肴馄馃饯馅馆糊糇饧喂馉馇𩠌馎饩馏馊馌馍馒馐馑馓馈馔饥饶飨𫗴餍馋馕马驭冯驮驰驯驲𫘜驳𫘝𬳶驻驽驹𬳵驵驾骀驸驶驼驷骂骈𬳽骇骃骆骎𬳿骏骋骍𫘧骓𫘦骔骒骑骐𬴂骛骗𬴃𫘨骙䯄骞骘骝腾𫘬𫘪驺骚骟骡蓦骜骖骠骢驱骅骕骁𬴊骣骄验惊驿骤驴骧骥骦骊骉肮髅脏体髌髋发松胡须鬓斗闹哄阋阄郁鬶魉魇鱼鱽𫚉鱾鲀鲁鲂鱿鲄𬶍鲅鲆𫚖𬶋鲌鲉鲏鲇鲐鲍鲋鲊鲒鲘鲞鲕𩽾𬶏𬶐䲟鲖鲔鲛鲑鲜鲓鲪𩾃鲝鲧鲠鲩鲤鲨鲬鲻鲯鲭鲞鲷鲴鲱鲵鲲鲳鲸鲮鲰鲶鲺鳀𬶟鲫鳊鳈鲗鳂䲠鲽鳇𬶠䲡鳅鲾鳄鳆鳃鳁鳒鳑鳋鲥𫚕鳏䲢鳎鳐鳍鳁鲢鳌鳓鳘𬶭鲦鲣鲹鳗鳛鳔𬶨鳉鳙𩾌鳕鳖鳟鳝鳜鳞鲟𬶮鲼鲎鲙鳣鳡鳢鲿鲚鳠𫚭鳄鲈鲡鸟凫鸠凫鸤凤鸣鸢䴓鸩鸨鸦鸰鸵鸳鸲鸮鸱鸪鸯鸭鸸鸹鸻䴕鸿鸽䴔鸺鸼𬷕鹀鹃鹆鹁鹈鹅𫛭鹄鹉鹌鹏鹐鹎雕鹊鹓鹍䴖鸫鹑鹒鹋鹙鹕鹗𬸘鹖鹛鹜䴗鸧莺𬸣鹟鹤鹠鹡鹘鹣鹚鹚鹢鹞鸡䴘鹝鹧鹥鸥鸷鹨𬸦鸶鹪鹔𬸪鹩鹫鹇鹇鹬鹰鹭鸴㶉鹯䴙鹱鹲𬸚鸬鹴鹦鹳鹂鸾卤咸鹾碱盐丽麦麸面面𤿲曲𪎌曲面么么黄黉点党黪霉黡黩黾鼋鼌鼍冬鼹齐斋赍齑齿龀龁龂𬹼龅龇龃龆龄出龈啮龊龉𬺈𫠜龋腭龌𬺓龙厐庞䶮龚龛龟䜤鿒𠀾㓆𠴛𠲥𫭼𡋗𡋀𡍣㛟㛿㛠𡭜𡭬𡳃岁㟜𢘝𢫞𢬦暅㭣𣘓𣞎𣑶毶㳢𣺽𣷷𤊰㻘㻏𤳄𥅿𥅘𥐰𥐯𬒗䅪𥮋𥹥𡳒𦟗䑽䘞䙊䘛𧝧䜥䞌䞎䢀䢁䢂𨤰䦀𬭊䦁𬭛𬭶𬭳䥿䭪𩠠䯃䲞𰻝幺潨痹睾檐着";
+
+let table = null;
+const buildTable = () => {
+    table = new Map();
+    const f = Array.from(FROM);
+    const t = Array.from(TO);
+    for (let i = 0; i < f.length; i++) table.set(f[i], t[i]);
+};
+
+const toSimplified = text => {
+    if (!table) buildTable();
+    let out = '';
+    for (const ch of String(text)) out += table.get(ch) || ch;
+    return out;
+};
+
+module.exports = {toSimplified};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_textSentiment/translation.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+exports.title = {
+    'en': 'Text Sentiment',
+    'zh-tw': '文字情緒辨識'
+};
+
+exports.inputText = {
+    'en': 'Enter text sentiment[defaultText]',
+    'zh-tw': '輸入文字情緒[defaultText]'
+};
+
+exports.defaultText = {
+    'en': 'Please enter text',
+    'zh-tw': '請輸入文字'
+};
+
+exports.startTextSentiment = {
+    'en': 'Start Text Emotion Recognition',
+    'zh-tw': '開始文字情緒辨識'
+};
+
+exports.confidence = {
+    'en': 'Text Emotion Confidence',
+    'zh-tw': '文字情緒置信度'
+};
+
+exports.sentiment = {
+    'en': 'Sentiment result',
+    'zh-tw': '情緒結果'
+};
+
+exports.language = {
+    'en': 'Detected language',
+    'zh-tw': '偵測到的語言'
+};
+
+exports.preloadModel = {
+    'en': 'Preload [LANG] model',
+    'zh-tw': '預先載入[LANG]模型'
+};
+
+exports.modelStatus = {
+    'en': 'Model status',
+    'zh-tw': '模型狀態'
+};
+
+exports.menuAll = {
+    'en': 'all',
+    'zh-tw': '全部'
+};
+
+exports.langZh = {
+    'en': 'Chinese',
+    'zh-tw': '中文'
+};
+
+exports.langEn = {
+    'en': 'English',
+    'zh-tw': '英文'
+};
+
+exports.positive = {
+    'en': 'positive',
+    'zh-tw': '正面'
+};
+
+exports.negative = {
+    'en': 'negative',
+    'zh-tw': '負面'
+};
+
+exports.neutral = {
+    'en': 'neutral',
+    'zh-tw': '中性'
+};
+
+exports.statusIdle = {
+    'en': 'not loaded',
+    'zh-tw': '未載入'
+};
+
+exports.statusLoading = {
+    'en': 'loading',
+    'zh-tw': '載入中'
+};
+
+exports.statusReady = {
+    'en': 'ready',
+    'zh-tw': '就緒'
+};
+
+exports.statusError = {
+    'en': 'failed',
+    'zh-tw': '載入失敗'
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/index.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * 臉部表情辨識（MediaPipe 版）
+ *
+ * - 使用 MediaPipe Face Landmarker（執行期從 CDN 載入，見 mp-config.js）
+ * - 表情由 52 個 blendshape 依規則計算（見 face-core.js 的 RULES）
+ * - 使用 Scratch 本身的視訊（會套用選擇的攝影機與翻轉設定），不另外開攝影機
+ *
+ * 重要：不可使用 async/await（專案 babel 會產生需要 regeneratorRuntime 的程式，
+ * GUI 沒有載入它）。全部用 Promise，也不需要 require('ml5')。
+ */
+const ArgumentType = __webpack_require__(/*! ../../extension-support/argument-type */ "./node_modules/scratch-vm/src/extension-support/argument-type.js");
+const BlockType = __webpack_require__(/*! ../../extension-support/block-type */ "./node_modules/scratch-vm/src/extension-support/block-type.js");
+const formatMessage = __webpack_require__(/*! format-message */ "./node_modules/format-message/index.js");
+const msg = __webpack_require__(/*! ./translation */ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/translation.js");
+const core = __webpack_require__(/*! ./face-core */ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/face-core.js");
+const {createFaceLandmarker} = __webpack_require__(/*! ./mp-loader */ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/mp-loader.js");
+
+// 原創圖示：笑臉 + 特徵點
+const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">' +
+    '<circle cx="20" cy="20" r="17" fill="#1E9E8F"/>' +
+    '<circle cx="14" cy="16" r="2.4" fill="#FFFFFF"/>' +
+    '<circle cx="26" cy="16" r="2.4" fill="#FFFFFF"/>' +
+    '<path d="M12 24 Q20 31 28 24" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+    '<g fill="#BFF3EC"><circle cx="20" cy="6" r="1.3"/><circle cx="7" cy="14" r="1.3"/>' +
+    '<circle cx="33" cy="14" r="1.3"/><circle cx="9" cy="28" r="1.3"/><circle cx="31" cy="28" r="1.3"/>' +
+    '<circle cx="20" cy="34" r="1.3"/></g>' +
+    '</svg>';
+const menuIconURI = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSvg)}`;
+const blockIconURI = menuIconURI;
+
+const SMOOTHING = 0.5; // blendshape 平滑程度（0～1，越大越即時）
+
+const STATUS = {
+    IDLE: 'idle',
+    LOADING: 'loading',
+    CAMERA: 'camera',
+    RUNNING: 'running',
+    STOPPED: 'stopped',
+    VIDEO_OFF: 'videoOff',
+    ERR_CAMERA: 'errCamera',
+    ERR_LIBRARY: 'errLibrary',
+    ERR_WASM: 'errWasm',
+    ERR_MODEL: 'errModel',
+    ERR_OTHER: 'errOther'
+};
+const STAGE_TO_STATUS = {library: STATUS.ERR_LIBRARY, wasm: STATUS.ERR_WASM, model: STATUS.ERR_MODEL};
+
+let theLocale = 'en';
+
+class Scratch3FaceExpressionMediapipe {
+    /**
+     * @param {Runtime} runtime
+     * @param {object} [deps] 測試用：{createFaceLandmarker, raf, now}
+     */
+    constructor (runtime, deps = {}) {
+        this.runtime = runtime;
+        this._createFaceLandmarker = deps.createFaceLandmarker || createFaceLandmarker;
+        this._raf = deps.raf || (fn => window.requestAnimationFrame(fn));
+        this._now = deps.now || (() => performance.now());
+
+        this._landmarker = null;
+        this._delegate = '';
+        this._initPromise = null;
+        this._detecting = false;
+        this._videoOpenedByStart = false;
+        this._lastVideoTime = -1;
+        this._lastTimestamp = 0;
+
+        this._status = STATUS.IDLE;
+        this._errorDetail = '';
+        this._clearFace();
+        theLocale = this._setLocale();
+    }
+
+    _setLocale () {
+        const locale = formatMessage.setup().locale;
+        return locale === 'zh-tw' ? 'zh-tw' : 'en';
+    }
+
+    _t (key) {
+        const entry = msg[key];
+        if (!entry) return key;
+        return entry[theLocale] || entry.en;
+    }
+
+    getInfo () {
+        theLocale = this._setLocale();
+        const emotionArg = {type: ArgumentType.STRING, menu: 'emotionMenu', defaultValue: 'happy'};
+        return {
+            id: 'faceExpressionMediapipe',
+            name: this._t('title'),
+            color1: '#1E9E8F',
+            color2: '#17857A',
+            color3: '#126B62',
+            menuIconURI,
+            blockIconURI,
+            blocks: [
+                {
+                    opcode: 'videoToggle',
+                    blockType: BlockType.COMMAND,
+                    text: this._t('videoToggle'),
+                    arguments: {
+                        VIDEO_STATE: {type: ArgumentType.STRING, menu: 'videoMenu', defaultValue: 'on'}
+                    }
+                },
+                {opcode: 'startRecognition', blockType: BlockType.COMMAND, text: this._t('start')},
+                {opcode: 'stopRecognition', blockType: BlockType.COMMAND, text: this._t('stop')},
+                '---',
+                {
+                    opcode: 'whenEmotion',
+                    blockType: BlockType.HAT,
+                    text: this._t('whenEmotion'),
+                    isEdgeActivated: true,
+                    arguments: {EMOTION: emotionArg}
+                },
+                {opcode: 'isFaceDetected', blockType: BlockType.BOOLEAN, text: this._t('faceDetected')},
+                {
+                    opcode: 'isEmotion',
+                    blockType: BlockType.BOOLEAN,
+                    text: this._t('isEmotion'),
+                    arguments: {EMOTION: emotionArg}
+                },
+                {opcode: 'getEmotion', blockType: BlockType.REPORTER, text: this._t('emotion')},
+                {opcode: 'getConfidence', blockType: BlockType.REPORTER, text: this._t('confidence')},
+                {
+                    opcode: 'getEmotionScore',
+                    blockType: BlockType.REPORTER,
+                    text: this._t('emotionScore'),
+                    arguments: {EMOTION: emotionArg}
+                },
+                '---',
+                {
+                    opcode: 'getAction',
+                    blockType: BlockType.REPORTER,
+                    text: this._t('action'),
+                    arguments: {ACTION: {type: ArgumentType.STRING, menu: 'actionMenu', defaultValue: 'smile'}}
+                },
+                {
+                    opcode: 'getFaceProp',
+                    blockType: BlockType.REPORTER,
+                    text: this._t('face'),
+                    arguments: {PROP: {type: ArgumentType.STRING, menu: 'propMenu', defaultValue: 'x'}}
+                },
+                {
+                    opcode: 'getBlendshape',
+                    blockType: BlockType.REPORTER,
+                    text: this._t('blendshape'),
+                    arguments: {NAME: {type: ArgumentType.STRING, defaultValue: 'jawOpen'}}
+                },
+                '---',
+                {opcode: 'getStatus', blockType: BlockType.REPORTER, text: this._t('status')}
+            ],
+            menus: {
+                videoMenu: {
+                    acceptReporters: false,
+                    items: [
+                        {text: this._t('off'), value: 'off'},
+                        {text: this._t('on'), value: 'on'},
+                        {text: this._t('onFlipped'), value: 'on-flipped'}
+                    ]
+                },
+                emotionMenu: {
+                    acceptReporters: true,
+                    items: core.EMOTIONS.map(k => ({text: this._t(`emotion_${k}`), value: k}))
+                },
+                actionMenu: {
+                    acceptReporters: true,
+                    items: core.ACTION_KEYS.map(k => ({text: this._t(`action_${k}`), value: k}))
+                },
+                propMenu: {
+                    acceptReporters: true,
+                    items: ['x', 'y', 'width', 'height', 'yaw', 'pitch', 'roll']
+                        .map(k => ({text: this._t(`prop_${k}`), value: k}))
+                }
+            }
+        };
+    }
+
+    // ---------- 狀態 ----------
+
+    _setStatus (code, detail) {
+        this._status = code;
+        this._errorDetail = detail || '';
+    }
+
+    _clearFace () {
+        this._blendshapes = null;
+        this._faceFound = false;
+        this._emotionKey = '';
+        this._scores = null;
+        this._confidence = 0;
+        this._geometry = null;
+    }
+
+    _handleError (error) {
+        const code = (error && (error.statusCode || STAGE_TO_STATUS[error.stage])) || STATUS.ERR_OTHER;
+        const cause = (error && error.cause) || error;
+        const detail = cause && cause.message ? cause.message : String(cause);
+        console.error('MediaPipe 臉部表情辨識錯誤:', error); // eslint-disable-line no-console
+        this._detecting = false;
+        this._clearFace();
+        this._setStatus(code, detail);
+        if (this._videoOpenedByStart) {
+            this._videoOpenedByStart = false;
+            this.runtime.ioDevices.video.disableVideo();
+        }
+    }
+
+    // ---------- 視訊 ----------
+
+    _video () {
+        return this.runtime.ioDevices && this.runtime.ioDevices.video;
+    }
+
+    _isVideoEnabled () {
+        const v = this._video();
+        return Boolean(v && v.provider && v.provider.enabled);
+    }
+
+    _getVideoElement () {
+        const v = this._video();
+        if (!v || !v.provider || !v.videoReady) return null;
+        return v.provider.video;
+    }
+
+    _isMirrored () {
+        const v = this._video();
+        // Scratch 預設是鏡像；「翻轉」= 不鏡像
+        return !v || v.mirror !== false;
+    }
+
+    videoToggle (args) {
+        const v = this._video();
+        if (!v) return;
+        this._videoOpenedByStart = false; // 使用者自己控制視訊
+        if (args.VIDEO_STATE === 'off') {
+            v.disableVideo();
+            return;
+        }
+        v.mirror = args.VIDEO_STATE === 'on';
+        const p = v.enableVideo();
+        if (p) return p.then(() => {});
+    }
+
+    _openVideo () {
+        const v = this._video();
+        if (!v || !v.provider) {
+            const err = new Error('找不到視訊裝置');
+            err.statusCode = STATUS.ERR_CAMERA;
+            return Promise.reject(err);
+        }
+        if (!this._isVideoEnabled()) {
+            this._videoOpenedByStart = true;
+            v.mirror = true;
+        }
+        // 使用者拒絕攝影機時 enableVideo 不會 reject，只是 provider.video 是 null
+        return Promise.resolve(v.enableVideo()).then(() => {
+            if (!v.provider.video) {
+                const err = new Error('攝影機無法開啟');
+                err.statusCode = STATUS.ERR_CAMERA;
+                throw err;
+            }
+        });
+    }
+
+    // ---------- 模型 ----------
+
+    _loadModel () {
+        if (this._landmarker) return Promise.resolve();
+        if (this._initPromise) return this._initPromise;
+        this._setStatus(STATUS.LOADING);
+        this._initPromise = this._createFaceLandmarker()
+            .then(result => {
+                this._landmarker = result.landmarker;
+                this._delegate = result.delegate;
+                console.log(`MediaPipe Face Landmarker 載入完成（${result.delegate}）`); // eslint-disable-line no-console
+            })
+            .then(() => {
+                this._initPromise = null;
+            }, err => {
+                this._initPromise = null;
+                throw err;
+            });
+        return this._initPromise;
+    }
+
+    // ---------- 開始 / 停止 ----------
+
+    /** 回傳 Promise：積木會等到模型與攝影機準備好（或失敗）才往下執行 */
+    startRecognition () {
+        if (this._detecting) {
+            if (!this._isVideoEnabled()) {
+                this._setStatus(STATUS.CAMERA);
+                return this._openVideo().catch(err => this._handleError(err));
+            }
+            return;
+        }
+        return this._loadModel()
+            .then(() => {
+                this._setStatus(STATUS.CAMERA);
+                return this._openVideo();
+            })
+            .then(() => {
+                if (this._detecting) return;
+                this._setStatus(STATUS.RUNNING);
+                this._detecting = true;
+                this._lastVideoTime = -1;
+                this._loop();
+            })
+            .catch(err => this._handleError(err));
+    }
+
+    stopRecognition () {
+        this._detecting = false;
+        this._clearFace();
+        this._setStatus(STATUS.STOPPED);
+        if (this._videoOpenedByStart) {
+            this._videoOpenedByStart = false;
+            this._video().disableVideo();
+        }
+    }
+
+    _loop () {
+        if (!this._detecting) return;
+        try {
+            this._processFrame();
+        } catch (e) {
+            console.error('MediaPipe 偵測錯誤:', e); // eslint-disable-line no-console
+        }
+        this._raf(() => this._loop());
+    }
+
+    _processFrame () {
+        const videoEl = this._getVideoElement();
+        if (!videoEl || videoEl.readyState < 2) {
+            if (!this._isVideoEnabled()) {
+                this._setStatus(STATUS.VIDEO_OFF);
+                this._clearFace();
+            }
+            return;
+        }
+        if (this._status !== STATUS.RUNNING) this._setStatus(STATUS.RUNNING);
+        // 同一幀不重複辨識
+        if (videoEl.currentTime === this._lastVideoTime) return;
+        this._lastVideoTime = videoEl.currentTime;
+
+        // VIDEO 模式的時間戳記必須遞增
+        let ts = this._now();
+        if (ts <= this._lastTimestamp) ts = this._lastTimestamp + 1;
+        this._lastTimestamp = ts;
+
+        const result = this._landmarker.detectForVideo(videoEl, ts);
+        this._applyResult(result);
+    }
+
+    _applyResult (result) {
+        const lm = result && result.faceLandmarks && result.faceLandmarks[0];
+        const bsList = result && result.faceBlendshapes && result.faceBlendshapes[0];
+        if (!lm) {
+            this._clearFace();
+            return;
+        }
+        this._faceFound = true;
+        this._geometry = core.faceGeometry(lm, this._isMirrored());
+        if (bsList) {
+            const raw = core.blendshapesToMap(bsList);
+            this._blendshapes = core.smoothMap(this._blendshapes, raw, SMOOTHING);
+            const r = core.computeEmotions(this._blendshapes);
+            this._scores = r.scores;
+            this._emotionKey = r.emotion;
+            this._confidence = Math.round(r.confidence * 100) / 100;
+        }
+    }
+
+    // ---------- 回報積木 ----------
+
+    /** 選單可以放變數：接受 'happy' 或「開心」、'Happy' */
+    _emotionKeyOf (value) {
+        const s = String(value).trim();
+        const lower = s.toLowerCase();
+        if (core.EMOTIONS.indexOf(lower) >= 0) return lower;
+        for (const k of core.EMOTIONS) {
+            const e = msg[`emotion_${k}`];
+            if (e['zh-tw'] === s || e.en === lower) return k;
+        }
+        return null;
+    }
+
+    _actionKeyOf (value) {
+        const s = String(value).trim();
+        if (core.ACTION_KEYS.indexOf(s) >= 0) return s;
+        for (const k of core.ACTION_KEYS) {
+            const e = msg[`action_${k}`];
+            if (e['zh-tw'] === s || e.en === s.toLowerCase()) return k;
+        }
+        return null;
+    }
+
+    whenEmotion (args) {
+        return this._faceFound && this._emotionKey === this._emotionKeyOf(args.EMOTION);
+    }
+
+    isEmotion (args) {
+        return this.whenEmotion(args);
+    }
+
+    isFaceDetected () {
+        return this._faceFound;
+    }
+
+    getEmotion () {
+        if (!this._detecting) return '';
+        if (!this._faceFound) return this._t('emotion_noFace');
+        return this._emotionKey ? this._t(`emotion_${this._emotionKey}`) : '';
+    }
+
+    getConfidence () {
+        return this._faceFound ? this._confidence : 0;
+    }
+
+    getEmotionScore (args) {
+        const key = this._emotionKeyOf(args.EMOTION);
+        if (!key || !this._faceFound || !this._scores) return 0;
+        return Math.round(this._scores[key] * 100);
+    }
+
+    getAction (args) {
+        const key = this._actionKeyOf(args.ACTION);
+        if (!key || !this._faceFound) return 0;
+        return core.actionValue(this._blendshapes, key);
+    }
+
+    getFaceProp (args) {
+        if (!this._faceFound || !this._geometry) return 0;
+        const v = this._geometry[String(args.PROP)];
+        return typeof v === 'number' ? v : 0;
+    }
+
+    getBlendshape (args) {
+        if (!this._faceFound || !this._blendshapes) return 0;
+        const v = this._blendshapes[String(args.NAME).trim()];
+        return typeof v === 'number' ? Math.round(v * 1000) / 1000 : 0;
+    }
+
+    getStatus () {
+        let text = this._t(`status_${this._status}`);
+        if (this._status === STATUS.RUNNING && this._delegate) text += `（${this._delegate}）`;
+        if (this._errorDetail && this._status.indexOf('err') === 0) text += `（${this._errorDetail}）`;
+        return text;
+    }
+}
+
+module.exports = Scratch3FaceExpressionMediapipe;
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/face-core.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * MediaPipe 臉部表情辨識：與 Scratch 無關的純計算（可在 Node 測試）
+ *
+ * - MediaPipe Face Landmarker 會輸出 52 個 blendshape（表情係數，0～1，ARKit 命名）
+ *   與 478 個臉部特徵點（x、y 為 0～1 的畫面比例）。
+ * - 表情是用下面 RULES 的規則從 blendshape 算出來的（不是另外訓練的模型），
+ *   每條規則都看得懂，可以直接調整門檻。
+ *
+ * 重要：不可使用 async/await（見專案的 regeneratorRuntime 調查）。
+ */
+
+const EMOTIONS = ['neutral', 'happy', 'sad', 'angry', 'fearful', 'disgusted', 'surprised'];
+
+/** 把 x 從 [lo, hi] 線性對應到 [0, 1]，超出範圍就截斷 */
+const ramp = (x, lo, hi) => {
+    if (!(x > lo)) return 0;
+    if (x >= hi) return 1;
+    return (x - lo) / (hi - lo);
+};
+
+const clamp01 = x => Math.max(0, Math.min(1, x));
+
+/** 取 blendshape 值，沒有就是 0 */
+const g = (bs, name) => (typeof bs[name] === 'number' ? bs[name] : 0);
+/** 左右平均 */
+const lr = (bs, base) => (g(bs, `${base}Left`) + g(bs, `${base}Right`)) / 2;
+
+/** 從 blendshape 整理出規則會用到的特徵（0～1） */
+const features = bs => ({
+    smile: lr(bs, 'mouthSmile'),
+    cheekSquint: lr(bs, 'cheekSquint'),
+    frown: lr(bs, 'mouthFrown'),
+    browDown: lr(bs, 'browDown'),
+    browInnerUp: g(bs, 'browInnerUp'),
+    browOuterUp: lr(bs, 'browOuterUp'),
+    eyeWide: lr(bs, 'eyeWide'),
+    eyeSquint: lr(bs, 'eyeSquint'),
+    jawOpen: g(bs, 'jawOpen'),
+    sneer: lr(bs, 'noseSneer'),
+    upperUp: lr(bs, 'mouthUpperUp'),
+    stretch: lr(bs, 'mouthStretch'),
+    press: lr(bs, 'mouthPress'),
+    shrugLower: g(bs, 'mouthShrugLower')
+});
+
+/**
+ * 表情規則（參考 FACS 臉部動作編碼的常見組合）
+ * ramp(特徵, 開始算的值, 算滿分的值)
+ */
+const RULES = {
+    // 嘴角上揚 + 臉頰上推
+    happy: f => clamp01(ramp(f.smile, 0.15, 0.6) * 0.85 + ramp(f.cheekSquint, 0.1, 0.5) * 0.15),
+    // 眉毛上揚 + 張嘴（或眼睛睜大）
+    surprised: f => clamp01(
+        ramp((f.browInnerUp + f.browOuterUp) / 2, 0.15, 0.55) * 0.5 +
+        ramp(f.jawOpen, 0.1, 0.5) * 0.35 +
+        ramp(f.eyeWide, 0.1, 0.4) * 0.15
+    ),
+    // 眼睛睜大 + 嘴角往兩側拉 + 眉頭上揚
+    fearful: f => clamp01(
+        ramp(f.eyeWide, 0.1, 0.4) * 0.4 +
+        ramp(f.stretch, 0.1, 0.4) * 0.4 +
+        ramp(f.browInnerUp, 0.15, 0.5) * 0.2
+    ),
+    // 嘴角下垂 + 眉頭上揚（嘴巴張開時比較不像難過）
+    sad: f => clamp01(
+        (ramp(f.frown, 0.05, 0.3) * 0.55 +
+         ramp(f.browInnerUp, 0.15, 0.5) * 0.3 +
+         ramp(f.shrugLower, 0.1, 0.4) * 0.15) *
+        (1 - ramp(f.jawOpen, 0.15, 0.5))
+    ),
+    // 皺眉（眉毛往下）+ 抿嘴 + 瞇眼
+    angry: f => clamp01(
+        ramp(f.browDown, 0.1, 0.45) * 0.7 +
+        ramp(f.press, 0.1, 0.4) * 0.15 +
+        ramp(f.eyeSquint, 0.2, 0.6) * 0.15
+    ),
+    // 皺鼻子 + 上唇上揚
+    disgusted: f => clamp01(ramp(f.sneer, 0.05, 0.35) * 0.7 + ramp(f.upperUp, 0.05, 0.35) * 0.3)
+};
+
+/** 其他表情的最高分低於這個值時，判定為「平靜」 */
+const NEUTRAL_THRESHOLD = 0.35;
+
+/**
+ * 從 blendshape 算出 7 種表情的分數（0～1）與最可能的表情
+ * @param {object} bs blendshape 名稱 → 值
+ * @returns {{scores: object, emotion: string, confidence: number}}
+ */
+const computeEmotions = bs => {
+    const f = features(bs || {});
+    const scores = {};
+    let maxOther = 0;
+    Object.keys(RULES).forEach(key => {
+        let s = RULES[key](f);
+        // 笑的時候，其他負面/驚訝的表情分數打折（笑容常伴隨瞇眼、張嘴）
+        if (key !== 'happy') s *= (1 - 0.8 * ramp(f.smile, 0.15, 0.6));
+        scores[key] = s;
+        if (s > maxOther) maxOther = s;
+    });
+    // 平靜：其他表情越弱分數越高；在最高分剛好等於門檻時，平靜分數也等於門檻
+    scores.neutral = clamp01((1 - maxOther) * NEUTRAL_THRESHOLD / (1 - NEUTRAL_THRESHOLD));
+
+    let emotion = 'neutral';
+    EMOTIONS.forEach(key => {
+        if (scores[key] > scores[emotion]) emotion = key;
+    });
+    return {scores, emotion, confidence: scores[emotion]};
+};
+
+/** MediaPipe 的 faceBlendshapes[0].categories → {名稱: 值} */
+const blendshapesToMap = classifications => {
+    const map = {};
+    if (!classifications || !classifications.categories) return map;
+    classifications.categories.forEach(c => {
+        map[c.categoryName] = c.score;
+    });
+    return map;
+};
+
+/** 指數平滑，減少每一幀之間的跳動；alpha 越大越即時 */
+const smoothMap = (prev, next, alpha) => {
+    if (!prev) return Object.assign({}, next);
+    const out = {};
+    Object.keys(next).forEach(k => {
+        const p = typeof prev[k] === 'number' ? prev[k] : next[k];
+        out[k] = p + (next[k] - p) * alpha;
+    });
+    return out;
+};
+
+/** 臉部動作（給學生直接用的 0～100 數值）；左右指的是「被拍的人自己的」左右 */
+const ACTIONS = {
+    smile: bs => lr(bs, 'mouthSmile'),
+    mouthOpen: bs => g(bs, 'jawOpen'),
+    leftEyeClosed: bs => g(bs, 'eyeBlinkLeft'),
+    rightEyeClosed: bs => g(bs, 'eyeBlinkRight'),
+    browUp: bs => Math.max(g(bs, 'browInnerUp'), lr(bs, 'browOuterUp')),
+    browDown: bs => lr(bs, 'browDown'),
+    pucker: bs => g(bs, 'mouthPucker'),
+    cheekPuff: bs => g(bs, 'cheekPuff'),
+    noseSneer: bs => lr(bs, 'noseSneer'),
+    mouthFrown: bs => lr(bs, 'mouthFrown'),
+    eyeWide: bs => lr(bs, 'eyeWide')
+};
+
+const ACTION_KEYS = Object.keys(ACTIONS);
+
+const actionValue = (bs, key) => {
+    const fn = ACTIONS[key];
+    if (!fn || !bs) return 0;
+    return Math.round(clamp01(fn(bs)) * 100);
+};
+
+// 特徵點編號（MediaPipe 478 點臉部網格）
+const LM = {
+    NOSE_TIP: 1,
+    FOREHEAD: 10,
+    CHIN: 152,
+    RIGHT_CHEEK: 234, // 畫面左側（人的右臉）
+    LEFT_CHEEK: 454, // 畫面右側（人的左臉）
+    RIGHT_EYE_OUTER: 33,
+    LEFT_EYE_OUTER: 263
+};
+
+const STAGE_W = 480;
+const STAGE_H = 360;
+const toDeg = r => (r * 180) / Math.PI;
+
+/**
+ * 臉在舞台上的位置與頭部角度
+ * @param {Array<{x:number,y:number}>} lm 特徵點（0～1）
+ * @param {boolean} mirror 舞台畫面是否鏡像（Scratch 視訊「開啟」= 鏡像）
+ * @returns {{x,y,width,height,yaw,pitch,roll}} 舞台座標；角度大約值（度）
+ *   yaw：往舞台右邊轉為正；pitch：抬頭為正；roll：頭往舞台右邊歪為正
+ */
+const faceGeometry = (lm, mirror) => {
+    if (!lm || lm.length < 455) return null;
+    let minX = 1;
+    let maxX = 0;
+    let minY = 1;
+    let maxY = 0;
+    lm.forEach(p => {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    });
+    const sx = mirror ? -1 : 1; // 鏡像時，畫面左右相反
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+
+    const nose = lm[LM.NOSE_TIP];
+    const rc = lm[LM.RIGHT_CHEEK];
+    const lc = lm[LM.LEFT_CHEEK];
+    const fh = lm[LM.FOREHEAD];
+    const chin = lm[LM.CHIN];
+    const re = lm[LM.RIGHT_EYE_OUTER];
+    const le = lm[LM.LEFT_EYE_OUTER];
+
+    // 左右轉：鼻尖偏離兩頰中點的比例（約略換成角度）
+    const halfW = Math.abs(lc.x - rc.x) / 2 || 1e-6;
+    const yawRatio = Math.max(-1, Math.min(1, (nose.x - (lc.x + rc.x) / 2) / halfW));
+    const yaw = toDeg(Math.asin(yawRatio)) * sx;
+
+    // 上下：鼻尖在額頭～下巴之間的位置（正視約 0.55～0.6），抬頭時鼻尖往上
+    const faceH = (chin.y - fh.y) || 1e-6;
+    const pitchRatio = Math.max(-1, Math.min(1, (0.58 - (nose.y - fh.y) / faceH) / 0.3));
+    const pitch = toDeg(Math.asin(pitchRatio));
+
+    // 歪頭：兩眼外角連線的角度（畫面座標 y 向下）
+    const dx = (le.x - re.x) * STAGE_W;
+    const dy = (le.y - re.y) * STAGE_H;
+    let roll = toDeg(Math.atan2(dy, dx));
+    if (roll > 90) roll -= 180;
+    if (roll < -90) roll += 180;
+    roll *= sx;
+
+    const round1 = v => Math.round(v * 10) / 10;
+    return {
+        x: Math.round((cx - 0.5) * STAGE_W * sx),
+        y: Math.round((0.5 - cy) * STAGE_H),
+        width: Math.round((maxX - minX) * STAGE_W),
+        height: Math.round((maxY - minY) * STAGE_H),
+        yaw: round1(yaw),
+        pitch: round1(pitch),
+        roll: round1(roll)
+    };
+};
+
+module.exports = {
+    EMOTIONS,
+    RULES,
+    NEUTRAL_THRESHOLD,
+    ACTION_KEYS,
+    LM,
+    ramp,
+    features,
+    computeEmotions,
+    blendshapesToMap,
+    smoothMap,
+    actionValue,
+    faceGeometry
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/mp-config.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * MediaPipe 載入設定
+ * 要離線使用時，把 wasm 資料夾與 face_landmarker.task 放到網站的 static 底下，
+ * 再把下面兩個網址改成例如 './static/mediapipe/wasm'、'./static/mediapipe/face_landmarker.task'。
+ */
+const MP_VERSION = '1.2.2';
+
+module.exports = {
+    MP_VERSION,
+    // @mediapipe/tasks-vision（ES module），執行期從 CDN 載入，不必改 package.json
+    BUNDLE_URL: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/vision_bundle.mjs`,
+    WASM_BASE: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/wasm`,
+    // Face Landmarker 模型（約 3.6 MB，含臉部偵測、478 特徵點、52 個 blendshape）
+    MODEL_URL: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
+};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/mp-loader.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/**
+ * 載入 MediaPipe Face Landmarker（先試 GPU，失敗改用 CPU）
+ * 不可使用 async/await。
+ */
+const config = __webpack_require__(/*! ./mp-config */ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/mp-config.js");
+
+/** 瀏覽器預設：用動態 import 從 CDN 載入（避開 webpack 4 打包 ES module 的問題） */
+const defaultImport = url => {
+    const dynamicImport = new Function('url', 'return import(url)'); // eslint-disable-line no-new-func
+    return dynamicImport(url);
+};
+
+/** 每一個錯誤都帶 stage，讓插件知道是哪一步失敗 */
+const stageError = (stage, cause) => {
+    const err = new Error(stage);
+    err.stage = stage;
+    err.cause = cause;
+    return err;
+};
+
+/**
+ * @param {object} [opts]
+ * @param {function} [opts.importer] 測試用：取代動態 import
+ * @param {object} [opts.config] 取代 mp-config
+ * @returns {Promise<{landmarker: object, delegate: string}>}
+ */
+const createFaceLandmarker = (opts = {}) => {
+    const cfg = Object.assign({}, config, opts.config || {});
+    const importer = opts.importer || defaultImport;
+    let vision;
+
+    const build = (lib, fileset, delegate) => lib.FaceLandmarker.createFromOptions(fileset, {
+        baseOptions: {modelAssetPath: cfg.MODEL_URL, delegate},
+        runningMode: 'VIDEO',
+        numFaces: 1,
+        outputFaceBlendshapes: true,
+        outputFacialTransformationMatrixes: false
+    });
+
+    return Promise.resolve()
+        .then(() => importer(cfg.BUNDLE_URL))
+        .catch(e => { throw stageError('library', e); })
+        .then(lib => {
+            vision = lib;
+            return lib.FilesetResolver.forVisionTasks(cfg.WASM_BASE);
+        })
+        .catch(e => { throw e.stage ? e : stageError('wasm', e); })
+        .then(fileset => build(vision, fileset, 'GPU')
+            .then(landmarker => ({landmarker, delegate: 'GPU'}))
+            .catch(gpuErr => {
+                console.warn('MediaPipe GPU 模式失敗，改用 CPU:', gpuErr); // eslint-disable-line no-console
+                return build(vision, fileset, 'CPU').then(landmarker => ({landmarker, delegate: 'CPU'}));
+            }))
+        .catch(e => { throw e.stage ? e : stageError('model', e); });
+};
+
+module.exports = {createFaceLandmarker};
+
+
+/***/ },
+
+/***/ "./node_modules/scratch-vm/src/extensions/scratch3_faceExpressionMediapipe/translation.js"
+/*! //osep add (claude/textSentiment/faceExpressionMediapipe) */
+(module, exports, __webpack_require__) {
+
+/* 中英文字（CommonJS，可直接在 Node 測試） */
+const t = (en, zh) => ({'en': en, 'zh-tw': zh});
+
+module.exports = {
+    title: t('Face Expression (MediaPipe)', '臉部表情辨識 (MediaPipe)'),
+
+    // 積木
+    videoToggle: t('set video to [VIDEO_STATE]', '視訊設為 [VIDEO_STATE]'),
+    start: t('start face expression recognition', '開始臉部表情辨識'),
+    stop: t('stop face expression recognition', '停止臉部表情辨識'),
+    whenEmotion: t('when facial emotion becomes [EMOTION]', '當臉部情緒變成 [EMOTION]'),
+    faceDetected: t('face detected?', '偵測到臉部?'),
+    isEmotion: t('facial emotion is [EMOTION]?', '臉部情緒是 [EMOTION]?'),
+    emotion: t('facial emotion', '臉部情緒'),
+    confidence: t('facial expression confidence', '臉部表情置信度'),
+    emotionScore: t('score of [EMOTION]', '[EMOTION] 的分數'),
+    action: t('[ACTION] amount', '[ACTION] 的程度'),
+    face: t('face [PROP]', '臉部 [PROP]'),
+    blendshape: t('blendshape [NAME] value', '表情係數 [NAME] 的值'),
+    status: t('recognition status', '辨識狀態'),
+
+    // 選單
+    off: t('off', '關閉'),
+    on: t('on', '開啟'),
+    onFlipped: t('on flipped', '翻轉'),
+
+    emotion_neutral: t('neutral', '平靜'),
+    emotion_happy: t('happy', '開心'),
+    emotion_sad: t('sad', '難過'),
+    emotion_angry: t('angry', '生氣'),
+    emotion_fearful: t('fearful', '害怕'),
+    emotion_disgusted: t('disgusted', '厭惡'),
+    emotion_surprised: t('surprised', '驚訝'),
+    emotion_noFace: t('no face detected', '無法偵測到臉部'),
+
+    action_smile: t('smile', '微笑'),
+    action_mouthOpen: t('mouth open', '張嘴'),
+    action_leftEyeClosed: t('left eye closed', '閉左眼'),
+    action_rightEyeClosed: t('right eye closed', '閉右眼'),
+    action_browUp: t('eyebrows raised', '挑眉'),
+    action_browDown: t('eyebrows lowered', '皺眉'),
+    action_pucker: t('pucker lips', '嘟嘴'),
+    action_cheekPuff: t('cheek puff', '鼓臉頰'),
+    action_noseSneer: t('nose wrinkle', '皺鼻子'),
+    action_mouthFrown: t('mouth corners down', '嘴角下垂'),
+    action_eyeWide: t('eyes wide open', '眼睛睜大'),
+
+    prop_x: t('x', 'x 座標'),
+    prop_y: t('y', 'y 座標'),
+    prop_width: t('width', '寬度'),
+    prop_height: t('height', '高度'),
+    prop_yaw: t('turn left/right (°)', '左右轉角度'),
+    prop_pitch: t('look up/down (°)', '上下抬頭角度'),
+    prop_roll: t('tilt (°)', '歪頭角度'),
+
+    // 狀態
+    status_idle: t('Not started', '尚未開始'),
+    status_loading: t('Loading MediaPipe model...', 'MediaPipe 模型載入中…'),
+    status_camera: t('Opening camera...', '開啟攝影機中…'),
+    status_running: t('Recognizing', '辨識中'),
+    status_stopped: t('Stopped', '已停止'),
+    status_videoOff: t('Video is off, set video to On', '視訊已關閉，請把視訊設為開啟'),
+    status_errCamera: t('Error: cannot open camera, please allow camera access in the browser',
+        '錯誤：無法開啟攝影機，請允許瀏覽器使用攝影機'),
+    status_errLibrary: t('Error: cannot load MediaPipe library (check the internet connection)',
+        '錯誤：無法載入 MediaPipe 程式庫（請確認網路連線）'),
+    status_errWasm: t('Error: cannot load MediaPipe WebAssembly files', '錯誤：無法載入 MediaPipe WebAssembly 檔案'),
+    status_errModel: t('Error: cannot load the face model', '錯誤：無法載入臉部模型'),
+    status_errOther: t('Error', '錯誤')
+};
+
 
 /***/ },
 
@@ -113275,6 +115573,57 @@ __webpack_require__.r(__webpack_exports__);
   // launchPeripheralConnectionFlow: false,
   useAutoScan: false,
   helpLink: "https://www.gemini.com/"
+}
+//osep add (claude/textSentiment/faceExpressionMediapipe)
+, {
+  name: "Claude",
+  extensionId: "claude",
+  collaborator: "Anthropic API",
+  iconURL: "static/osep/claude.png",
+  insetIconURL: "static/osep/claude-small.svg",
+  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__.FormattedMessage, {
+    defaultMessage: "Chat with Claude AI (needs your own API key).",
+    id: "gui.extension.claude.description"
+  }),
+  featured: true,
+  disabled: false,
+  internetConnectionRequired: true,
+  useAutoScan: false,
+  helpLink: "https://docs.claude.com/"
+}, {
+  name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__.FormattedMessage, {
+    defaultMessage: "Text Sentiment",
+    id: "gui.extension.textSentiment.title"
+  }),
+  extensionId: "textSentiment",
+  collaborator: "TYiC",
+  iconURL: "static/osep/textSentiment.png",
+  insetIconURL: "static/osep/textSentiment-small.png",
+  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__.FormattedMessage, {
+    defaultMessage: "Text Sentiment.",
+    id: "gui.extension.textSentiment.description"
+  }),
+  featured: true,
+  disabled: false,
+  internetConnectionRequired: true,
+  useAutoScan: false,
+  helpLink: "https://github.com/estea8968/scratch3-internet"
+}, {
+  name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__.FormattedMessage, {
+    defaultMessage: "Face Expression (MediaPipe)",
+    id: "gui.extension.faceExpressionMediapipe.title"
+  }),
+  extensionId: "faceExpressionMediapipe",
+  iconURL: "static/osep/faceExpressionMediapipe.png",
+  insetIconURL: "static/osep/faceExpressionMediapipe-small.svg",
+  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__.FormattedMessage, {
+    defaultMessage: "Recognize facial expressions, face actions and head pose with MediaPipe.",
+    id: "gui.extension.faceExpressionMediapipe.description"
+  }),
+  featured: true,
+  disabled: false,
+  internetConnectionRequired: true,
+  useAutoScan: false
 }]);
 
 /***/ },
@@ -373714,6 +376063,12 @@ __webpack_require__.r(__webpack_exports__);
     //osep add
     "gui.extension.openai.description":"使用 OpenAI 的人工智慧模型進行自然語言處理任務",
     "gui.extension.gemini.description":"使用 Google Gemini 的人工智慧模型進行自然語言處理任務",
+    //osep add (claude/textSentiment/faceExpressionMediapipe)
+    "gui.extension.claude.description":"與 Claude AI 對話（可用自己的 API 金鑰或學校的中繼網址）",
+    "gui.extension.textSentiment.title":"文本情緒辨識",
+    "gui.extension.textSentiment.description":"使用文本情緒模型，辨識文本是否為正面或負面情緒",
+    "gui.extension.faceExpressionMediapipe.title":"臉部表情辨識 (MediaPipe)",
+    "gui.extension.faceExpressionMediapipe.description":"使用 MediaPipe 辨識臉部表情、臉部動作（微笑、眨眼、張嘴…）與頭部角度",
   }
 });
 
