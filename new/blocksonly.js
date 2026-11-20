@@ -136497,13 +136497,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icon_about_svg__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./icon--about.svg */ "./src/components/menu-bar/icon--about.svg");
 /* harmony import */ var _icon_file_svg__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./icon--file.svg */ "./src/components/menu-bar/icon--file.svg");
 /* harmony import */ var _icon_edit_svg__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./icon--edit.svg */ "./src/components/menu-bar/icon--edit.svg");
-/* harmony import */ var _debug_modal_icons_icon_debug_svg__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ../debug-modal/icons/icon--debug.svg */ "./src/components/debug-modal/icons/icon--debug.svg");
-/* harmony import */ var _scratch_logo_svg__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./scratch-logo.svg */ "./src/components/menu-bar/scratch-logo.svg");
-/* harmony import */ var _nineties_logo_svg__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./nineties_logo.svg */ "./src/components/menu-bar/nineties_logo.svg");
-/* harmony import */ var _cat_logo_svg__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./cat_logo.svg */ "./src/components/menu-bar/cat_logo.svg");
-/* harmony import */ var _prehistoric_logo_svg__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./prehistoric-logo.svg */ "./src/components/menu-bar/prehistoric-logo.svg");
-/* harmony import */ var _oldtimey_logo_svg__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./oldtimey-logo.svg */ "./src/components/menu-bar/oldtimey-logo.svg");
-/* harmony import */ var _lib_shared_messages__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ../../lib/shared-messages */ "./src/lib/shared-messages.js");
+/* harmony import */ var _icon_fire_svg__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./icon--fire.svg */ "./src/components/menu-bar/icon--fire.svg");
+/* harmony import */ var _debug_modal_icons_icon_debug_svg__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ../debug-modal/icons/icon--debug.svg */ "./src/components/debug-modal/icons/icon--debug.svg");
+/* harmony import */ var _scratch_logo_svg__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./scratch-logo.svg */ "./src/components/menu-bar/scratch-logo.svg");
+/* harmony import */ var _nineties_logo_svg__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./nineties_logo.svg */ "./src/components/menu-bar/nineties_logo.svg");
+/* harmony import */ var _cat_logo_svg__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./cat_logo.svg */ "./src/components/menu-bar/cat_logo.svg");
+/* harmony import */ var _prehistoric_logo_svg__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./prehistoric-logo.svg */ "./src/components/menu-bar/prehistoric-logo.svg");
+/* harmony import */ var _oldtimey_logo_svg__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./oldtimey-logo.svg */ "./src/components/menu-bar/oldtimey-logo.svg");
+/* harmony import */ var _lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ../../lib/shared-messages */ "./src/lib/shared-messages.js");
+
 
 
 
@@ -136619,12 +136621,12 @@ AboutButton.propTypes = {
 class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
   constructor(props) {
     super(props);
-    lodash_bindall__WEBPACK_IMPORTED_MODULE_5___default()(this, ['handleClickNew', 'handleClickRemix', 'handleClickSave', 'handleClickSaveAsCopy', 'handleClickSeeCommunity', 'handleClickShare', 'handleSetMode', 'handleKeyPress', 'handleRestoreOption', 'getSaveToComputerHandler', 'restoreOptionMessage'
+    this.state = {
+      flashMenuOpen: false
+    };
+    lodash_bindall__WEBPACK_IMPORTED_MODULE_5___default()(this, ['handleClickNew', 'handleClickRemix', 'handleClickSave', 'handleClickSaveAsCopy', 'handleClickSeeCommunity', 'handleClickShare', 'handleSetMode', 'handleKeyPress', 'handleRestoreOption', 'getSaveToComputerHandler', 'restoreOptionMessage',
     //add estea
-    //'handleClickFlash',
-    //'handleRequestCloseFlash',
-    //'handleOpenFlashLink'
-    ]);
+    'handleClickFlash', 'handleRequestCloseFlash', 'handleOpenFlashLink']);
   }
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -136638,7 +136640,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
     // downloading or logging in first.
     // Note that if user is logged in and editing someone else's project,
     // they'll lose their work.
-    const readyToReplaceProject = this.props.confirmReadyToReplaceProject(this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_49__["default"].replaceProjectWarning));
+    const readyToReplaceProject = this.props.confirmReadyToReplaceProject(this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__["default"].replaceProjectWarning));
     this.props.onRequestCloseFile();
     if (readyToReplaceProject) {
       this.props.onClickNew(this.props.canSave && this.props.canCreateNew);
@@ -136696,13 +136698,13 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
 
       // Change logo for modes
       if (mode === '1990') {
-        document.getElementById('logo_img').src = _nineties_logo_svg__WEBPACK_IMPORTED_MODULE_45__;
+        document.getElementById('logo_img').src = _nineties_logo_svg__WEBPACK_IMPORTED_MODULE_46__;
       } else if (mode === '2020') {
-        document.getElementById('logo_img').src = _cat_logo_svg__WEBPACK_IMPORTED_MODULE_46__;
+        document.getElementById('logo_img').src = _cat_logo_svg__WEBPACK_IMPORTED_MODULE_47__;
       } else if (mode === '1920') {
-        document.getElementById('logo_img').src = _oldtimey_logo_svg__WEBPACK_IMPORTED_MODULE_48__;
+        document.getElementById('logo_img').src = _oldtimey_logo_svg__WEBPACK_IMPORTED_MODULE_49__;
       } else if (mode === '220022BC') {
-        document.getElementById('logo_img').src = _prehistoric_logo_svg__WEBPACK_IMPORTED_MODULE_47__;
+        document.getElementById('logo_img').src = _prehistoric_logo_svg__WEBPACK_IMPORTED_MODULE_48__;
       } else {
         document.getElementById('logo_img').src = this.props.logo;
       }
@@ -136895,7 +136897,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
       onClick: this.handleClickRemix
     }, remixMessage)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuSection, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
       onClick: this.props.onStartSelectingFileUpload
-    }, this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_49__["default"].loadFromComputerTitle)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_containers_sb3_downloader_jsx__WEBPACK_IMPORTED_MODULE_23__["default"], null, (className, downloadProjectCallback) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+    }, this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__["default"].loadFromComputerTitle)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_containers_sb3_downloader_jsx__WEBPACK_IMPORTED_MODULE_23__["default"], null, (className, downloadProjectCallback) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
       className: className,
       onClick: this.getSaveToComputerHandler(downloadProjectCallback)
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
@@ -136944,24 +136946,40 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
     })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_divider_divider_jsx__WEBPACK_IMPORTED_MODULE_14__["default"], {
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].divider)
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
-      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].hoverable),
-      onClick: () => window.open('./static/burn_hex/')
+      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].hoverable, {
+        [_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].active]: this.state.flashMenuOpen
+      }),
+      onMouseUp: this.handleClickFlash
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("img", {
+      src: _icon_fire_svg__WEBPACK_IMPORTED_MODULE_43__
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("span", {
+      className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].collapsibleLabel
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
+      defaultMessage: "Load Firmware",
+      id: "gui.menuBar.burnFirm"
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("img", {
+      src: _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_39__
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_bar_menu_jsx__WEBPACK_IMPORTED_MODULE_17__["default"], {
+      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarMenu),
+      open: this.state.flashMenuOpen,
+      place: this.props.isRtl ? 'left' : 'right',
+      onRequestClose: this.handleRequestCloseFlash
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuSection, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+      onClick: this.handleOpenFlashLink('./static/burn_hex/')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
       defaultMessage: "Load Firmware A",
       id: "gui.menuBar.burnFirmware_a"
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
-      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].hoverable),
-      onClick: () => window.open('./static/burn_esp/')
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+      onClick: this.handleOpenFlashLink('./static/burn_esp/')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
       defaultMessage: "Load Firmware E",
       id: "gui.menuBar.burnFirmware_e"
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
-      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].hoverable),
-      onClick: () => window.open('./static/microbit/')
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+      onClick: this.handleOpenFlashLink('./static/microbit/')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
       defaultMessage: "Load Firmware microbit",
       id: "gui.menuBar.burnFirmware_m"
-    })), this.props.isTotallyNormal && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
+    }))))), this.props.isTotallyNormal && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].hoverable, {
         [_menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].active]: this.props.modeMenuOpen
       }),
@@ -137057,7 +137075,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
       onClick: this.props.onOpenDebugModal
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("img", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].helpIcon,
-      src: _debug_modal_icons_icon_debug_svg__WEBPACK_IMPORTED_MODULE_43__
+      src: _debug_modal_icons_icon_debug_svg__WEBPACK_IMPORTED_MODULE_44__
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("span", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].debugLabel
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, ariaMessages.debug))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
@@ -137218,7 +137236,7 @@ MenuBar.propTypes = {
   vm: prop_types__WEBPACK_IMPORTED_MODULE_4___default().instanceOf((scratch_vm__WEBPACK_IMPORTED_MODULE_8___default())).isRequired
 };
 MenuBar.defaultProps = {
-  logo: _scratch_logo_svg__WEBPACK_IMPORTED_MODULE_44__,
+  logo: _scratch_logo_svg__WEBPACK_IMPORTED_MODULE_45__,
   onShare: () => {}
 };
 const mapStateToProps = (state, ownProps) => {
@@ -450542,6 +450560,7 @@ __webpack_require__.r(__webpack_exports__);
     "gui.menuBar.burnFirmware_a":"燒錄Arduino",
     "gui.menuBar.burnFirmware_e":"燒錄ESP",
     "gui.menuBar.burnFirmware_m":"燒錄Microbit",
+    "gui.menuBar.burnFirm":"燒錄",
   }
 });
 
@@ -502309,6 +502328,17 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjAi
 
 "use strict";
 module.exports = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00Ljk4MTE2IDFIMTUuMDE5NkMxNi40MDQyIDEgMTcuNjE1OCAyLjIxMTU0IDE3LjYxNTggMy41OTYxNVYxMC44NjU0SDEzLjYzNUMxMS4zODUgMTAuODY1NCA5LjY1NDI0IDEyLjc2OTIgOS42NTQyNCAxNC44NDYyVjE4LjgyNjlINC45ODExNkMzLjU5NjU1IDE4LjgyNjkgMi4zODUwMSAxNy42MTU0IDIuMzg1MDEgMTYuMjMwOFYzLjU5NjE1QzIuMzg1MDEgMi4yMTE1NCAzLjU5NjU1IDEgNC45ODExNiAxWk02LjAxOTYzIDkuODI2OTJIOC43ODg4NkM5LjQ4MTE2IDkuODI2OTIgMTAuMDAwNCA5LjQ4MDc3IDEwLjAwMDQgOC43ODg0NkMxMC4wMDA0IDguMDk2MTUgOS40ODExNiA3Ljc1IDguOTYxOTMgNy43NUg2LjAxOTYzQzUuNTAwMzkgNy43NSA0Ljk4MTE2IDguMjY5MjMgNC45ODExNiA4Ljc4ODQ2QzQuOTgxMTYgOS4zMDc2OSA1LjUwMDM5IDkuODI2OTIgNi4wMTk2MyA5LjgyNjkyWk0xNC4xNTQyIDUuODQ2MTVINi4wMTk2M0M1LjMyNzMyIDUuODQ2MTUgNC45ODExNiA1LjMyNjkyIDQuOTgxMTYgNC44MDc2OUM0Ljk4MTE2IDQuMjg4NDYgNS41MDAzOSAzLjc2OTIzIDYuMDE5NjMgMy43NjkyM0gxNC4xNTQyQzE0LjY3MzUgMy43NjkyMyAxNS4xOTI3IDQuMjg4NDYgMTUuMTkyNyA0LjgwNzY5QzE1LjAxOTYgNS4zMjY5MiAxNC42NzM1IDUuODQ2MTUgMTQuMTU0MiA1Ljg0NjE1Wk0xNy40NDI3IDEyLjI1SDEzLjQ2MTlDMTIuMDc3MyAxMi4yNSAxMC44NjU4IDEzLjQ2MTUgMTAuODY1OCAxNS4wMTkyVjE5TDE3LjQ0MjcgMTIuMjVaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K";
+
+/***/ },
+
+/***/ "./src/components/menu-bar/icon--fire.svg"
+/*!************************************************!*\
+  !*** ./src/components/menu-bar/icon--fire.svg ***!
+  \************************************************/
+(module) {
+
+"use strict";
+module.exports = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgd2lkdGg9IjE2IgogICBoZWlnaHQ9IjE2IgogICBmaWxsPSJjdXJyZW50Q29sb3IiCiAgIGNsYXNzPSJiaSBiaS1maXJlIgogICB2aWV3Qm94PSIwIDAgMTYgMTYiCiAgIHZlcnNpb249IjEuMSIKICAgaWQ9InN2ZzQ2NTMiCiAgIHNvZGlwb2RpOmRvY25hbWU9Imljb24tLWZpcmUuc3ZnIgogICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjkyLjUgKDIwNjBlYzFmOWYsIDIwMjAtMDQtMDgpIj4KICA8bWV0YWRhdGEKICAgICBpZD0ibWV0YWRhdGE0NjU5Ij4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNDY1NyIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICAgIGJvcmRlcm9wYWNpdHk9IjEiCiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIKICAgICBncmlkdG9sZXJhbmNlPSIxMCIKICAgICBndWlkZXRvbGVyYW5jZT0iMTAiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiCiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE4NTYiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAxNiIKICAgICBpZD0ibmFtZWR2aWV3NDY1NSIKICAgICBzaG93Z3JpZD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6em9vbT0iMTQuNzUiCiAgICAgaW5rc2NhcGU6Y3g9IjgiCiAgICAgaW5rc2NhcGU6Y3k9IjcuNzk2NjEwMiIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iNjQiCiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjI3IgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ic3ZnNDY1MyIgLz4KICA8cGF0aAogICAgIGQ9Ik04IDE2YzMuMzE0IDAgNi0yIDYtNS41IDAtMS41LS41LTQtMi41LTYgLjI1IDEuNS0xLjI1IDItMS4yNSAyQzExIDQgOSAuNSA2IDBjLjM1NyAyIC41IDQtMiA2LTEuMjUgMS0yIDIuNzI5LTIgNC41QzIgMTQgNC42ODYgMTYgOCAxNm0wLTFjLTEuNjU3IDAtMy0xLTMtMi43NSAwLS43NS4yNS0yIDEuMjUtM0M2LjEyNSAxMCA3IDEwLjUgNyAxMC41Yy0uMzc1LTEuMjUuNS0zLjI1IDItMy41LS4xNzkgMS0uMjUgMiAxIDMgLjYyNS41IDEgMS4zNjQgMSAyLjI1QzExIDE0IDkuNjU3IDE1IDggMTUiCiAgICAgaWQ9InBhdGg0NjUxIgogICAgIHN0eWxlPSJmaWxsOiNlNmU2ZTYiIC8+Cjwvc3ZnPgo=";
 
 /***/ },
 
