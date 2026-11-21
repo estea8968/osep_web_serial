@@ -136505,6 +136505,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _prehistoric_logo_svg__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./prehistoric-logo.svg */ "./src/components/menu-bar/prehistoric-logo.svg");
 /* harmony import */ var _oldtimey_logo_svg__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./oldtimey-logo.svg */ "./src/components/menu-bar/oldtimey-logo.svg");
 /* harmony import */ var _lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ../../lib/shared-messages */ "./src/lib/shared-messages.js");
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 
 
@@ -136556,6 +136558,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+//add estea
+//const GAS_URL = '貼上你剛剛複製的GAS網頁應用程式網址';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzyYk4nman9LKwtBUxGlwnejQp-1Xsqx6oX6I3_EgehQumGZ1IYfaImdkt1fz0EMnE/exec';
 const ariaMessages = (0,react_intl__WEBPACK_IMPORTED_MODULE_3__.defineMessages)({
   tutorials: {
     "id": "gui.menuBar.tutorialsLibrary",
@@ -136622,11 +136627,29 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
   constructor(props) {
     super(props);
     this.state = {
-      flashMenuOpen: false
+      flashMenuOpen: false,
+      //google雲端硬碟使用
+      flashMenuOpen: false,
+      driveModalOpen: false,
+      driveFolderUrl: '',
+      driveFiles: [],
+      isLoadingDrive: false
     };
     lodash_bindall__WEBPACK_IMPORTED_MODULE_5___default()(this, ['handleClickNew', 'handleClickRemix', 'handleClickSave', 'handleClickSaveAsCopy', 'handleClickSeeCommunity', 'handleClickShare', 'handleSetMode', 'handleKeyPress', 'handleRestoreOption', 'getSaveToComputerHandler', 'restoreOptionMessage',
     //add estea
-    'handleClickFlash', 'handleRequestCloseFlash', 'handleOpenFlashLink']);
+    'handleClickFlash', 'handleRequestCloseFlash', 'handleOpenFlashLink',
+    //google雲端硬碟            
+    'handleOpenDriveModal',
+    // 確認有這行
+    'handleCloseDriveModal',
+    // 確認有這行
+    'handleLoadDriveFile',
+    // 確認有這行            
+    //'handleOpenDriveModal',
+    //'handleCloseDriveModal',
+    'handleDriveUrlChange', 'handleFetchDriveFiles'
+    //'handleLoadDriveFile'
+    ]);
   }
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -136734,6 +136757,98 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
       this.handleRequestCloseFlash();
     };
   }
+  //google 雲端硬碟
+  handleOpenDriveModal() {
+    this.props.onRequestCloseFile();
+    this.setState({
+      driveModalOpen: true
+    });
+  }
+  handleDriveUrlChange(e) {
+    this.setState({
+      driveFolderUrl: e.target.value
+    });
+  }
+  handleFetchDriveFiles() {
+    var _this = this;
+    return _asyncToGenerator(function* () {
+      const input = _this.state.driveFolderUrl.trim();
+      if (!input) {
+        alert('請先貼上 Google 雲端資料夾連結');
+        return;
+      }
+      // 從連結中萃取出 folderId，若直接貼 ID 也能相容
+      const match = input.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+      const folderId = match ? match[1] : input;
+      _this.setState({
+        isLoadingDrive: true,
+        driveFiles: []
+      });
+      try {
+        const res = yield fetch("".concat(GAS_URL, "?folderId=").concat(encodeURIComponent(folderId)));
+        const result = yield res.json();
+        if (result.success) {
+          _this.setState({
+            driveFiles: result.files,
+            isLoadingDrive: false
+          });
+        } else {
+          alert('讀取清單失敗：' + result.error);
+          _this.setState({
+            isLoadingDrive: false
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        alert('連線到 Google 雲端失敗');
+        _this.setState({
+          isLoadingDrive: false
+        });
+      }
+    })();
+  }
+  handleCloseDriveModal() {
+    this.setState({
+      driveModalOpen: false
+    });
+  }
+  handleLoadDriveFile(fileId) {
+    var _this2 = this;
+    return _asyncToGenerator(function* () {
+      _this2.setState({
+        isLoadingDrive: true
+      });
+      try {
+        const res = yield fetch("".concat(GAS_URL, "?fileId=").concat(fileId));
+        const result = yield res.json();
+        if (result.success) {
+          // 將 Base64 轉回 ArrayBuffer 給 Scratch VM 載入
+          const binaryString = window.atob(result.data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          yield _this2.props.vm.loadProject(bytes.buffer);
+          _this2.setState({
+            driveModalOpen: false,
+            isLoadingDrive: false
+          });
+        } else {
+          alert('載入檔案失敗：' + result.error);
+          _this2.setState({
+            isLoadingDrive: false
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        alert('下載檔案失敗');
+        _this2.setState({
+          isLoadingDrive: false
+        });
+      }
+    })();
+  }
+
   //end
   handleKeyPress(event) {
     const modifier = (bowser__WEBPACK_IMPORTED_MODULE_6___default().mac) ? event.metaKey : event.ctrlKey;
@@ -136897,7 +137012,9 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
       onClick: this.handleClickRemix
     }, remixMessage)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuSection, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
       onClick: this.props.onStartSelectingFileUpload
-    }, this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__["default"].loadFromComputerTitle)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_containers_sb3_downloader_jsx__WEBPACK_IMPORTED_MODULE_23__["default"], null, (className, downloadProjectCallback) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+    }, this.props.intl.formatMessage(_lib_shared_messages__WEBPACK_IMPORTED_MODULE_50__["default"].loadFromComputerTitle)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
+      onClick: this.handleOpenDriveModal
+    }, '從雲端硬碟開啟'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_containers_sb3_downloader_jsx__WEBPACK_IMPORTED_MODULE_23__["default"], null, (className, downloadProjectCallback) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__.MenuItem, {
       className: className,
       onClick: this.getSaveToComputerHandler(downloadProjectCallback)
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
@@ -137147,7 +137264,94 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7__.Component {
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("span", null, 'scratch-cat'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("img", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_34__["default"].dropdownCaretIcon,
       src: _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_39__
-    })))) : [])), aboutButton);
+    })))) : [])), aboutButton, "/*// add estea*/", this.state.driveModalOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
+      style: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
+      style: {
+        backgroundColor: '#fff',
+        color: '#333',
+        padding: '20px',
+        borderRadius: '8px',
+        width: '360px',
+        maxHeight: '70vh',
+        overflowY: 'auto',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
+      style: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '12px'
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("strong", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
+      defaultMessage: "Open from Google Drive(.sb3)",
+      id: "gui.menuBar.googledriveopen"
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("button", {
+      style: {
+        cursor: 'pointer'
+      },
+      onClick: this.handleCloseDriveModal
+    }, '✕')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("div", {
+      style: {
+        display: 'flex',
+        gap: '6px',
+        marginBottom: '12px'
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("input", {
+      placeholder: "\u8CBC\u4E0A Google \u96F2\u7AEF\u8CC7\u6599\u593E\u5206\u4EAB\u9023\u7D50",
+      style: {
+        flex: 1,
+        padding: '6px 8px',
+        border: '1px solid #ccc',
+        borderRadius: '4px'
+      },
+      type: "text",
+      value: this.state.driveFolderUrl,
+      onChange: this.handleDriveUrlChange
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("button", {
+      style: {
+        padding: '6px 12px',
+        cursor: 'pointer',
+        backgroundColor: '#4C97FF',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px'
+      },
+      onClick: this.handleFetchDriveFiles
+    }, 'read 讀取')), this.state.isLoadingDrive ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
+      defaultMessage: "Load file. Please wait ...",
+      id: "gui.menuBar.pleasewait"
+    })) : this.state.driveFiles.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__.FormattedMessage, {
+      defaultMessage: "Not find .sb3 file",
+      id: "gui.menuBar.notfindsb3"
+    })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("ul", {
+      style: {
+        listStyle: 'none',
+        padding: 0,
+        margin: 0
+      }
+    }, this.state.driveFiles.map(file => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement("li", {
+      key: file.id,
+      style: {
+        padding: '8px 10px',
+        borderBottom: '1px solid #eee',
+        cursor: 'pointer'
+      }
+      /* eslint-disable react/jsx-no-bind */,
+      onClick: () => this.handleLoadDriveFile(file.id)
+      /* eslint-enable react/jsx-no-bind */
+    }, file.name))))), "/*//end*/");
   }
 }
 MenuBar.propTypes = {
@@ -455135,6 +455339,9 @@ __webpack_require__.r(__webpack_exports__);
     "gui.menuBar.burnFirmware_e":"燒錄ESP",
     "gui.menuBar.burnFirmware_m":"燒錄Microbit",
     "gui.menuBar.burnFirm":"燒錄",
+    "gui.menuBar.googledriveopen":"從雲端資料夾開啟 (.sb3)",
+    "gui.menuBar.notfindsb3":"沒有找到 .sb3 檔案",
+    "gui.menuBar.pleasewait":"載入中，請稍候...",
   }
 });
 
